@@ -1,0 +1,49 @@
+
+.custom-swiper-navigation {
+    position: absolute;
+    bottom: -100px; /* Adjust the value to your preference */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-between;
+    width: 120px; /* Adjust the width to your preference */
+}
+
+.custom-swiper-navigation .swiper-button-prev,
+.custom-swiper-navigation .swiper-button-next {
+    position: static;
+    margin: 0 10px;
+    color: transparent;
+    background-image: url('../../../public/svg/previous.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 40px;
+    object-fit: cover;
+    width: 60px;
+    height: 60px;
+}
+
+
+.custom-swiper-navigation .swiper-button-next{
+    background-image: url('../../../public/svg/next.svg');
+}
+
+
+  
+.underlineCS {
+    text-decoration: underline;
+    text-decoration-color: red; /* Ubah warna menjadi putih */
+    text-decoration-thickness: 4px; /* Opsional: sesuaikan ketebalan underline */
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+  }
+
+  .coba {
+    color: aliceblue;
+    background-color: red;
+  }

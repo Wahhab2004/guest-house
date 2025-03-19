@@ -2,20 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.hoverUnderline {
+	position: relative;
+	display: inline-block;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.hoverUnderline::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -10px;
+	width: 100%;
+	height: 5px;
+	border-block: 2px solid #3252DF;
+	transform: scaleX(0.6);
+	opacity: 0;
+	transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.hoverUnderline:hover::after,
+.hoverUnderline:focus-visible::after {
+	transform: scaleX(1);
+	opacity: 1;
+}
+
+.activeUnderline {
+	position: relative;
+	padding-bottom: 0px; /* Tambahkan padding untuk memberi ruang bagi underline */
   }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
+  
+  .activeUnderline {
+	
+	position: absolute;
+	left: ;
+	bottom: -10px; /* Pastikan garis berada tepat di bawah teks */
+	width: 10%;
+	height: 2px;
+	background-color: #3252DF;
+  }
+  
