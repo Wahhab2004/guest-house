@@ -34,7 +34,6 @@
   .activeUnderline {
 	
 	position: absolute;
-	left: ;
 	bottom: -10px; /* Pastikan garis berada tepat di bawah teks */
 	width: 10%;
 	height: 2px;

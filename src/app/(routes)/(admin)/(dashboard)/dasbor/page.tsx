@@ -33,7 +33,7 @@ export default async function DashboardPage() {
 							Rooms Available
 						</h3>
 
-						<p className="text-[#5D6679] text-3xl font-bold">{totalRoomsAvailable}</p>
+						<p className="text-[#5D6679] text-3xl font-bold">s</p>
 
 						<Link href="/room">
 							<p className="text-[#00B69B] font-semibold text-sm">
@@ -56,7 +56,7 @@ export default async function DashboardPage() {
 					<div>
 						<h3 className="text-[#5D6679] text-sm font-semibold">Used Room</h3>
 
-						<p className="text-[#5D6679] text-3xl font-bold">{totalRoomsUsed}</p>
+						<p className="text-[#5D6679] text-3xl font-bold">s</p>
 
 						<Link href="/room">
 							<p className="text-[#00B69B] font-semibold text-sm">
@@ -81,7 +81,7 @@ export default async function DashboardPage() {
 							Guest Overnight
 						</h3>
 
-						<p className="text-[#5D6679] text-3xl font-bold">{totalGuestOvernight}</p>
+						<p className="text-[#5D6679] text-3xl font-bold">s</p>
 
 						<Link href="/room">
 							<p className="text-[#00B69B] font-semibold text-sm">
