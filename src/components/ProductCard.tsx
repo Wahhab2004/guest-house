@@ -8,8 +8,9 @@ type ProductPageProps = {
 }
 
 async function ProductCard(props: ProductPageProps) {
+	const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 	const { params } = props;
-	const products = await getData("http://localhost:3000/api/room"); // Dapatkan data dari API
+	const products = await getData(`${baseUrl}room`); // Dapatkan data dari API
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-6 mt-6 mx-auto max-w-7xl">
@@ -17,7 +18,7 @@ async function ProductCard(props: ProductPageProps) {
 				<div key={product.id} className="w-full max-w-sm bg-white border-2 border-gray-200 rounded-lg shadow-xl">
 					<a href="#">
 						<Image
-							className="p-4 rounded-t-lg"
+							classsName="p-4 rounded-t-lg"
 							src={product.image ? `${product.image}` : '/images/rooms/room-1.png'}
 							alt={product.roomType || 'Product image'}
 							width={600}

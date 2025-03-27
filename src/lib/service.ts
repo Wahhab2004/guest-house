@@ -1,8 +1,6 @@
 import { collection, doc, getDoc, getDocs, getFirestore } from "firebase/firestore";
 import app from './firebaseConfig';
 
-
-
 const firestore = getFirestore(app);
 
 export async function retrieveData(collectionName: string) {
