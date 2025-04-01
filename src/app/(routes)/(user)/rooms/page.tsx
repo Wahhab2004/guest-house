@@ -31,11 +31,7 @@ async function Rooms() {
 				<p className="text-gray-400 lg:ml-20">Make yourself at home at GuestHouse Ummu 
 				– where every stay feels special.</p>
 
-                <ProductCard
-                    params={{
-                        slug: [],
-                    }}
-                />
+                <ProductCard />
             </div>
 
 		</section>

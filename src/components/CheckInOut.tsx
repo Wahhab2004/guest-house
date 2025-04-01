@@ -1,7 +1,6 @@
 "use client";
 
 import { getData } from "@/services/products";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 
 

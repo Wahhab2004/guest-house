@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import path from "path";
+import { usePathname } from "next/navigation";
+
 
 export default function RootLayout({
 	children,

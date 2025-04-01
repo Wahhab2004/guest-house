@@ -352,15 +352,15 @@ export default function GuestHistory() {
 		}
 	};
 
-	const handleStatusChange = (id: any, newStatus: any) => {
-		setFilteredReservations((prevReservations: any[]) =>
-			prevReservations.map((reservation) =>
-				reservation.id === id
-					? { ...reservation, paymentStatus: newStatus }
-					: reservation
-			)
-		);
-	};
+	// const handleStatusChange = (id: any, newStatus: any) => {
+	// 	setFilteredReservations((prevReservations: any[]) =>
+	// 		prevReservations.map((reservation) =>
+	// 			reservation.id === id
+	// 				? { ...reservation, paymentStatus: newStatus }
+	// 				: reservation
+	// 		)
+	// 	);
+	// };
 
 	return (
 		<main>

@@ -1,13 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import "./styles/style.css";
 
 const NavbarReservation = () => {
-	const [isOpen, setIsOpen] = useState(false);
-	const toggleMenu = () => setIsOpen(!isOpen);
 
 	const pathname = usePathname();
 	const pathReservations = pathname.startsWith("/my-reservations/reservations/");

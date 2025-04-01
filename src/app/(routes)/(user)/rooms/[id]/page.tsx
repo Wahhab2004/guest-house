@@ -1,19 +1,30 @@
-import { getData } from "@/services/products";
+"use client";
+
+
 import Link from "next/link";
 import Image from "next/image";
 import Calendar from "@/components/Calendar";
 import FeedbackForm from "@/components/FeedbackForm";
 import Review from "@/components/Review";
+import { useEffect, useState } from "react";
+import { fetchRoomById, Room } from "@/fetching";
+import { useParams } from "next/navigation";
 
-export default async function DetailProductPage(props: any) {
-	const { params } = props;
-	const product = await getData(
-		"http://localhost:3000/api/room/?id=" + params.id
-	);
+export default  function DetailProductPage() {
+	const [room, setRooms] = useState<Room | null>(null);
+	const { id } = useParams();
+
+	useEffect(() => {
+		const fetchRoomsId = async () => {
+			if (!id) return;
+			const data = await fetchRoomById(String(id));
+			setRooms(data);
+		};
+		fetchRoomsId();
+	}, [id]);
 
 	return (
 		<section>
-			{/* Navbar */}
 			<nav className="fixed top-0 left-0 right-0 z-50 w-full text-white border-b-2 p-4 flex items-center justify-between lg:justify-between bg-white lg:p-6">
 				<Link href="/">
 					<p className="text-xl font-bold hover:text-gray-700 cursor-pointer text-black w-1/2 lg:w-full">
@@ -21,26 +32,26 @@ export default async function DetailProductPage(props: any) {
 					</p>
 				</Link>
 
-				<p className="text-gray-600 lg:font-semibold">Detail {product.data.roomType}</p>
+				<p className="text-gray-600 lg:font-semibold">
+					Detail room {room?.roomNumber}
+				</p>
 
 				<div className="hidden lg:block"></div>
 			</nav>
 
 			<main className=" w-11/12 mx-auto mt-28 mb-20 object-cover lg:w-[85%]">
 				{/* Room */}
-				{/* <h2 className="font-bold text-xl ml-4">{product.data.name}</h2> */}
+				{/* <h2 className="font-bold text-xl ml-4">{room.name}</h2> */}
 				<div className="p-4 font-bold text-xl shadow lg:w-2/3 mx-auto">
 					<Link href="#">
 						<Image
 							className="rounded-xl lg:h-[460px]"
-							src={product.data.image}
-							alt={product.data.roomType || "Product image"}
+							src={room?.image ? room.image : "/fallback-image.png"}
+							alt={room?.roomNumber || "Product image"}
 							width={1000}
 							height={270}
 						/>
 					</Link>
-
-				
 
 					<div className="bg-gray-800 rounded-lg p-4 mt-2 text-white">
 						images
@@ -49,7 +60,7 @@ export default async function DetailProductPage(props: any) {
 					<div className="pb-5 mt-10">
 						<Link href="#">
 							<h5 className="text-xl font-semibold tracking-tight text-black">
-								{product.data.roomType} {/* Tampilkan nama produk */}
+								{room?.roomNumber} {/* Tampilkan nama produk */}
 							</h5>
 						</Link>
 						<div className="flex items-center mt-2.5 mb-5">
@@ -77,12 +88,12 @@ export default async function DetailProductPage(props: any) {
 								</svg>
 							</div>
 							<span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded ms-3">
-								{product.data.rating || "5.0"} {/* Tampilkan rating */}
+								{room?.rating || "5.0"} {/* Tampilkan rating */}
 							</span>
 						</div>
 						<div className="flex items-center justify-between">
 							<span className="text-xl font-bold text-black w-1/2">
-								¥{product.data.pricePerNight || "4000"} / night {/* Tampilkan harga */}
+								¥{room?.price || "4000"} / night {/* Tampilkan harga */}
 							</span>
 							<Link
 								href={`/my-reservations`}
@@ -284,11 +295,10 @@ export default async function DetailProductPage(props: any) {
 						</div>
 					</div>
 					<FeedbackForm />
-					
+
 					<Review />
 				</div>
 			</main>
-
 		</section>
 	);
 }

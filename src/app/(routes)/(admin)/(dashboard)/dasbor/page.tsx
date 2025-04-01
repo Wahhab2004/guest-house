@@ -3,18 +3,17 @@
 import CheckInOut from "@/components/CheckInOut";
 import CurrentDate from "@/components/CurrentDate";
 import GuestReservation from "@/components/GuestReservation";
-import { getData } from "@/services/products";
 import Image from "next/image";
 import Link from "next/link";
 
 
 export default async function DashboardPage() {
 	
-	const rooms = await getData("http://localhost:3000/api/room");
+	// const rooms = await getData("http://localhost:3000/api/room");
 
-	const totalRoomsAvailable = rooms.data.filter((room: any) => room.roomStatus === "available").length;
-	const totalRoomsUsed = rooms.data.filter((room: any) => room.roomStatus === "used").length;
-	const totalGuestOvernight = rooms.data.filter((room: any) => room.roomStatus === "guest overnight").length;
+	// const totalRoomsAvailable = rooms.data.filter((room: any) => room.roomStatus === "available").length;
+	// const totalRoomsUsed = rooms.data.filter((room: any) => room.roomStatus === "used").length;
+	// const totalGuestOvernight = rooms.data.filter((room: any) => room.roomStatus === "guest overnight").length;
 
 	return (
 		<main>

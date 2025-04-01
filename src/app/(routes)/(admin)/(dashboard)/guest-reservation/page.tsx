@@ -352,7 +352,7 @@ export default function GuestReservation() {
 		}
 	};
 
-	const handleStatusChange = (id: any, newStatus: any) => {
+	const handleStatusChange = (id: string, newStatus: string) => {
 		setFilteredReservations((prevReservations: any[]) =>
 			prevReservations.map((reservation) =>
 				reservation.id === id

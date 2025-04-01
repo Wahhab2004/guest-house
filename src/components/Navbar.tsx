@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import {usePathname, useRouter} from "next/navigation";
+import {usePathname} from "next/navigation";
 import './styles/style.css';
 
 const Navbar = () => {
@@ -11,7 +11,7 @@ const Navbar = () => {
 
 
     const pathname = usePathname();
-    const router = useRouter();
+
 
 	return (
 		<nav className="fixed top-0 left-0 right-0 z-50 w-full bg-gray-100 shadow">

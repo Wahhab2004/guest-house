@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 const Calendar = () => {
 	const today = new Date();
 	const [currentMonthIndex, setCurrentMonthIndex] = useState(today.getMonth()); // Index bulan saat ini
-	const [currentYear, setCurrentYear] = useState(today.getFullYear()); // Tahun saat ini
+	const [currentYear] = useState(today.getFullYear()); // Tahun saat ini
 	const [selectedDate, setSelectedDate] = useState(null); // Menyimpan tanggal yang dipilih
 
 	const months = [
@@ -56,7 +56,7 @@ const Calendar = () => {
 
 	const renderDays = () => {
 		const { days, firstDay } = calendarData;
-		let daysCells = [];
+		const daysCells = [];
 
 		// Tambahkan cell kosong untuk menyesuaikan hari pertama
 		for (let i = 0; i < firstDay; i++) {

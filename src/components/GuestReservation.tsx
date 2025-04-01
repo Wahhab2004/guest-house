@@ -1,17 +1,17 @@
 "use client";
-import { getData } from "@/services/products";
+import { Reservation, fetchReservations } from "@/fetching";
 import React, { useEffect, useState } from "react";
 
 const GuestReservation = () => {
-	const [reservations, setReservations] = useState([]);
+	const [reservations, setReservations] = useState<Reservation[]>([]);
 	const [currentPageCheckIn, setCurrentPageCheckIn] = useState(1);
 	const itemsPerPage = 3;
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch("/api/reservation"); // Menggunakan path relatif
-				const data = await response.json();
+				
+				const data = await fetchReservations();
 				setReservations(data);
 			} catch (error) {
 				console.error("Error fetching data:", error);
@@ -21,46 +21,8 @@ const GuestReservation = () => {
 		fetchData();
 	}, []);
 
-	// const reservations = [
-	// 	{
-	// 		name: "Aminoff",
-	// 		room: 1,
-	// 		date: "2024-12-27 10:30",
-	// 		amount: 50000,
-	// 		paymentStatus: "pending payment",
-	// 	},
-	// 	{
-	// 		name: "Maria Korsgaard",
-	// 		room: 2,
-	// 		date: "2024-12-27 10:30",
-	// 		amount: 50000,
-	// 		paymentStatus: "paid",
-	// 	},
-	// 	{
-	// 		name: "Charlie Rhiel Madsen",
-	// 		room: 3,
-	// 		date: "2024-12-27 10:30",
-	// 		amount: 50000,
-	// 		paymentStatus: "paid",
-	// 	},
-	// 	{
-	// 		name: "John Doe",
-	// 		room: 4,
-	// 		date: "2024-12-27 11:00",
-	// 		amount: 50000,
-	// 		paymentStatus: "paid",
-	// 	},
-	// 	{
-	// 		name: "Jane Smith",
-	// 		room: 5,
-	// 		date: "2024-12-27 11:30",
-	// 		amount: 50000,
-	// 		paymentStatus: "pending verification",
-	// 	},
-	// ];
 
-	console.log(reservations, "bro");
-	const getPaginatedData = (data: string | any[], page: number) =>
+	const getPaginatedData = (data: Reservation[], page: number) =>
 		data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
 	const totalPagesCheckIn = Math.ceil(reservations.length / itemsPerPage);

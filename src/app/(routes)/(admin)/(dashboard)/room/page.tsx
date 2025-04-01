@@ -28,7 +28,7 @@ export default async function Rooms() {
 					</tr>
 				</thead>
 				<tbody>
-					{rooms.data.map((room: any) => (
+					{rooms.data.map((room: { id: string; roomType: string; capacity: string; roomStatus: string; }) => (
 						<tr key={room.id} className="border-t">
 							<td className="p-2 text-[#5D6679] text-sm">{room.id}</td>
 							<td className="p-2 text-[#5D6679] text-sm">{room.roomType}</td>

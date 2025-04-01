@@ -1,18 +1,11 @@
 "use client";
-import NavbarReservation from "@/components/NavbarReservation";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import "../../../styles/globals.css";
-import NavbarMyReservation from "@/components/NavbarMyReservation";
 
 
 export default function MyReservations() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-
-	const pathName = usePathname();
 
 	useEffect(() => {
 		// Check login status, e.g., from localStorage or session
