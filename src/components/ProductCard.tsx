@@ -38,9 +38,10 @@ function ProductCard() {
 					>
 						<Link href="#">
 							<Image
-								className="p-4 rounded-t-lg"
+								className="p-4 rounded-t-lg w-full h-[18rem]"
 								src={room.image ? `${room.image}` : "/images/rooms/room-1.png"}
 								alt={room.image}
+								objectFit="cover"
 								width={600}
 								height={300}
 							/>
@@ -81,7 +82,7 @@ function ProductCard() {
 							</div>
 							<div className="flex items-center justify-between">
 								<span className="text-3xl font-bold text-black">
-									¥{room.price || "4000"} / person
+									¥{room.pricePerNight || "4000"} / person
 								</span>
 								<Link
 									href={`/rooms/${room.id}`}

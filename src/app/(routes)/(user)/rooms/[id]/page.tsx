@@ -11,14 +11,14 @@ import { fetchRoomById, Room } from "@/fetching";
 import { useParams } from "next/navigation";
 
 export default  function DetailProductPage() {
-	const [room, setRooms] = useState<Room | null>(null);
+	const [room, setRoom] = useState<Room | null>(null);
 	const { id } = useParams();
 
 	useEffect(() => {
 		const fetchRoomsId = async () => {
 			if (!id) return;
 			const data = await fetchRoomById(String(id));
-			setRooms(data);
+			setRoom(data);
 		};
 		fetchRoomsId();
 	}, [id]);
@@ -33,7 +33,7 @@ export default  function DetailProductPage() {
 				</Link>
 
 				<p className="text-gray-600 lg:font-semibold">
-					Detail room {room?.roomNumber}
+					Detail Room {room?.roomNumber}
 				</p>
 
 				<div className="hidden lg:block"></div>
@@ -45,7 +45,7 @@ export default  function DetailProductPage() {
 				<div className="p-4 font-bold text-xl shadow lg:w-2/3 mx-auto">
 					<Link href="#">
 						<Image
-							className="rounded-xl lg:h-[460px]"
+							className="rounded-xl lg:h-[600px] object-cover w-full"
 							src={room?.image ? room.image : "/fallback-image.png"}
 							alt={room?.roomNumber || "Product image"}
 							width={1000}
@@ -60,7 +60,7 @@ export default  function DetailProductPage() {
 					<div className="pb-5 mt-10">
 						<Link href="#">
 							<h5 className="text-xl font-semibold tracking-tight text-black">
-								{room?.roomNumber} {/* Tampilkan nama produk */}
+								Room {room?.roomNumber} {/* Tampilkan nama produk */}
 							</h5>
 						</Link>
 						<div className="flex items-center mt-2.5 mb-5">
@@ -93,7 +93,7 @@ export default  function DetailProductPage() {
 						</div>
 						<div className="flex items-center justify-between">
 							<span className="text-xl font-bold text-black w-1/2">
-								¥{room?.price || "4000"} / night {/* Tampilkan harga */}
+								¥{room?.pricePerNight || "4000"} / night {/* Tampilkan harga */}
 							</span>
 							<Link
 								href={`/my-reservations`}

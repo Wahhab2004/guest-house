@@ -1,8 +1,8 @@
 // Room
 export interface Room {
+	pricePerNight: number;
 	image: string;
 	id: string;
-	price: number;
 	rating: number;
 	roomNumber: string;
 	roomStatus: string;
@@ -94,7 +94,7 @@ export const fetchRooms = async (): Promise<Room[]> => {
 export const fetchRoomById = async (id: string): Promise<Room | null> => {
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-		const response = await fetch(`${baseUrl}/room/${id}`, {
+		const response = await fetch(`${baseUrl}/room?id=${id}`, {
 			cache: "no-store",
 		});
 		const jsonData = await response.json();

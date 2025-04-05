@@ -3,10 +3,16 @@
 1. Collection database --> field checkinStatus tidak perlu.
 
 ## Saturday, 5 April 2025
-TO Do List
+Completed ✔️✔️
+1. Fetching room by id 
+2. 
+
+
+To Do List
 1. Bug fixing run build
 2. Frontend halaman login, reset password, send notification
 3. Operasi CRUD --> Menyimpan data reservasi, login, google
 4. Membenahi database --> Reservation
-
+5. Pertimbangkan apakah room perlu pakai API ? (Berhubung cuman 3 rooms aja)
+6. Fix design calendar
 
