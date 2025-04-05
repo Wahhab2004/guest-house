@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const id = searchParams.get("id");
 
     if(id) {
-        const detailProduct = await retrieveDataById("Guests", String(id));
+        const detailProduct = await retrieveDataById("Account", String(id));
         if(detailProduct){
             return NextResponse.json({
                 status:200, 
@@ -22,6 +22,6 @@ export async function GET(request: NextRequest) {
         })
     }
 
-    const products = await retrieveData("Guests");
+    const products = await retrieveData("Account");
     return NextResponse.json({ status:200, message: "Success", data: products });
 }
