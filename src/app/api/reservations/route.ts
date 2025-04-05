@@ -1,27 +1,72 @@
+import { Account, Payments, Reservation, Room } from "@/fetching";
 import { retrieveData, retrieveDataById } from "@/lib/service";
 import { NextRequest, NextResponse } from "next/server";
 
-
 export async function GET(request: NextRequest) {
-    const {searchParams} = new URL(request.url);
-    const id = searchParams.get("id");
+	try {
+		const { searchParams } = new URL(request.url);
+		const id = searchParams.get("id");
 
-    if(id) {
-        const detailProduct = await retrieveDataById("Reservations", String(id));
-        if(detailProduct){
-            return NextResponse.json({
-                status:200, 
-                message: "Success", 
-                data: detailProduct})
-        }
+		// Jika ada ID, ambil data spesifik
+		if (id) {
+			const reservation = await retrieveDataById<Reservation>("Reservations", String(id));
 
-        return NextResponse.json({
-            status:404, 
-            message: "Not Found", 
-            data: {}
-        })
-    }
+			if (!reservation) {
+				return NextResponse.json({
+					status: 404,
+					message: "Reservation Not Found",
+					data: {},
+				});
+			}
 
-    const products = await retrieveData("Reservations");
-    return NextResponse.json({ status:200, message: "Success", data: products });
+			// Ambil data tambahan (join query manual)
+			const payment = await retrieveDataById<Payments>("Payments", reservation.idPayment);
+			const room = await retrieveDataById<Room>("Rooms", reservation.idRoom);
+			const guest = await retrieveDataById<Account>("Account", reservation.idAccount);
+
+			return NextResponse.json({
+				status: 200,
+				message: "Success",
+				data: {
+					...reservation,
+					payment: payment || null, // Jika undefined, return null agar lebih aman
+					room: room || null,
+					guest: guest || null,
+				},
+			});
+		}
+
+		// Jika tidak ada ID, ambil semua reservasi
+		const reservations = await retrieveData<Reservation>("Reservations");
+
+
+		// Ambil detail tambahan dari koleksi lain
+		const detailedReservations = await Promise.all(
+			reservations.map(async (res) => {
+				const payment = await retrieveDataById<Payments>("Payments", res.idPayment);
+				const room = await retrieveDataById<Room>("Rooms", res.idRoom);
+				const guest = await retrieveDataById<Account>("Account", res.idAccount);
+
+				return {
+					...res,
+					payment: payment || null,
+					room: room || null,
+					guest: guest || null,
+				};
+			})
+		);
+
+		return NextResponse.json({
+			status: 200,
+			message: "Success",
+			data: detailedReservations,
+		});
+	} catch (error) {
+		console.error("Error fetching reservations:", error);
+		return NextResponse.json({
+			status: 500,
+			message: "Internal Server Error",
+			data: {},
+		});
+	}
 }

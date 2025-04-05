@@ -32,6 +32,8 @@ export interface Review {
 
 // Reservation
 export interface Reservation {
+    idAccount: string;
+    idPayment: string;
 	guestDetails: any;
 	id: string;
 	idRoom: string;

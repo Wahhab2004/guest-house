@@ -191,7 +191,7 @@ export default function NavbarAdmin() {
 									pathname === "/guest-history" ? "text-[#1366D9]" : "text-gray-600"
 								}`} // Hover berdasarkan parent
 							>
-								Guest Histroy
+								Guest History
 							</li>
 						</Link>
 
