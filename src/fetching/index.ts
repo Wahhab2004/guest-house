@@ -12,7 +12,7 @@ export interface Room {
 export interface Payments {
 	id: string;
 	idReservation: string;
-	amount: number;
+	totalAmountPaid: number;
 	paymentMethod: string;
 	paymentStatus: string;
 	proofOfPayment: string;
@@ -32,14 +32,17 @@ export interface Review {
 
 // Reservation
 export interface Reservation {
-    idAccount: string;
-    idPayment: string;
-	guestDetails: any;
+	dateReservation: { seconds: number; nanoseconds: number };
 	id: string;
+	idAccount: string;
+	idPayment: string;
+	guest: Account;
 	idRoom: string;
+	room: Room;
+	payment: Payments;
 	idGuest: string;
-	checkIn: string;
-	checkOut: string;
+	checkInDate: { seconds: number; nanoseconds: number };
+	checkOutDate: { seconds: number; nanoseconds: number };
 	paymentId: string;
 	paymentStatus: string;
 }
@@ -48,10 +51,11 @@ export interface Reservation {
 export interface Account {
 	id: string;
 	name: string;
-	userName: string;
+	username: string;
 	gender: string;
 	dataOfBirth: string;
 	phoneNumber: string;
+	photoProfile: string;
 	email: string;
 	password: string;
 	passport: string;
@@ -60,35 +64,33 @@ export interface Account {
 }
 
 export const fetchReservations = async (): Promise<Reservation[]> => {
-
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 		const response = await fetch(`${baseUrl}/reservations`, {
 			cache: "no-store",
 		});
 		const jsonData = await response.json();
-	
+
 		return jsonData.data as Reservation[];
 	} catch (error) {
 		console.error("Error fetching reservations:", error);
 		return [];
 	}
-}
+};
 
 export const fetchRooms = async (): Promise<Room[]> => {
+	try {
+		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+		const response = await fetch(`${baseUrl}/room`, {
+			cache: "no-store",
+		});
+		const jsonData = await response.json();
 
-    try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const response = await fetch(`${baseUrl}/room`, {
-            cache: "no-store",
-        });
-        const jsonData = await response.json();
-    
-        return jsonData.data as Room[];
-    } catch (error) {
-        console.error("Error fetching rooms:", error);
-        return [];
-    }
+		return jsonData.data as Room[];
+	} catch (error) {
+		console.error("Error fetching rooms:", error);
+		return [];
+	}
 };
 
 export const fetchRoomById = async (id: string): Promise<Room | null> => {
@@ -98,7 +100,7 @@ export const fetchRoomById = async (id: string): Promise<Room | null> => {
 			cache: "no-store",
 		});
 		const jsonData = await response.json();
-	
+
 		return jsonData.data as Room;
 	} catch (error) {
 		console.error("Error fetching room by ID:", error);
