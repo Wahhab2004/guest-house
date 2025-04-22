@@ -1,50 +1,73 @@
+"use client";
 
-
+import { fetchRooms, Room } from "@/fetching";
 import { getData } from "@/services/products";
+import { useEffect, useState } from "react";
 
-export default async function Rooms() {
-	const rooms = await getData("http://localhost:3000/api/room");
+export default function Rooms() {
+	const [rooms, setRooms] = useState<Room[]>([]);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const data = await fetchRooms();
+				setRooms(data);
+			} catch (error) {
+				console.error("Error fetching rooms:", error);
+			}
+		};
+
+		fetchData();
+	}, []);
 
 	return (
-		<main>
-			<h1 className="text-[#5D6679] text-xl font-bold mt-6 ml-[230px] ">
-				Room
-			</h1>
-
-			{/* Rooms Table */}
-			<table className="ml-[235px] mt-10 w-[80%] border-collapse">
-				<thead>
-					<tr className="bg-[#D9D9D9]">
-						{["Room ID", "Room Type", "Capacity", "Room Status"].map(
-							(header, idx) => (
-								<th
-									key={idx}
-									className="text-[#5D6679] text-xs font-semibold p-2 text-start"
-								>
-									{header}
-								</th>
-							)
-						)}
-					</tr>
-				</thead>
-				<tbody>
-					{rooms.data.map((room: { id: string; roomType: string; capacity: string; roomStatus: string; }) => (
-						<tr key={room.id} className="border-t">
-							<td className="p-2 text-[#5D6679] text-sm">{room.id}</td>
-							<td className="p-2 text-[#5D6679] text-sm">{room.roomType}</td>
-							<td className="p-2 text-[#5D6679] text-sm">{room.capacity}</td>
-							<td className="p-2 text-[#5D6679] text-sm">
-                                {room.roomStatus === "available" ? (
-                                    <span className="bg-blue-100 text-blue-600 py-1 px-2 rounded">{room.roomStatus}</span>
-                                ): (
-
-                                    <span className="bg-red-100 text-red-600 py-1 px-2 rounded">{room.roomStatus}</span>
-                                )}
-                            </td>
+		<section className="ml-[235px] mt-6">
+			{/* Title */}
+			<h1 className="text-[#5D6679] text-xl font-bold">Room</h1>
+			<div className="border shadow rounded p-4 mt-8 w-[90%]">
+				{/* Rooms Table */}
+				<table className="w-full">
+					<thead>
+						<tr>
+							{["Room ID", "Room Number", "PricePerNight", "Room Status"].map(
+								(header, idx) => (
+									<th
+										key={idx}
+										className="text-[#5D6679] font-semibold text-sm text-start"
+									>
+										{header}
+									</th>
+								)
+							)}
 						</tr>
-					))}
-				</tbody>
-			</table>
-		</main>
+					</thead>
+
+					<tbody>
+						{rooms.map((room) => (
+							<tr key={room.id} className="text-gray-400 text-sm border-b">
+								<td className="p-2 text-[#5D6679] text-sm">{room.id}</td>
+								<td className="p-2 text-[#5D6679] text-sm">
+									{room.roomNumber}
+								</td>
+								<td className="p-2 text-[#5D6679] text-sm">
+									¥{room.pricePerNight}
+								</td>
+								<td className="p-2 text-[#5D6679] text-sm">
+									{room.roomStatus === "available" ? (
+										<span className="bg-blue-100 text-blue-600 py-1 px-2 rounded">
+											{room.roomStatus}
+										</span>
+									) : (
+										<span className="bg-red-100 text-red-600 py-1 px-2 rounded">
+											{room.roomStatus}
+										</span>
+									)}
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		</section>
 	);
 }
