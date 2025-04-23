@@ -15,4 +15,37 @@ To Do List
 4. Membenahi database --> Reservation
 5. Pertimbangkan apakah room perlu pakai API ? (Berhubung cuman 3 rooms aja)
 6. Fix design calendar
+7. Optimize searching guest by name in reservation, book, and history
 
+
+
+## ADMIN
+# Dasbor
+  To do list
+  1. Fecthing api ✔️
+  2. Dasbor hanya berisi guest reservation ✔️
+  3. Tampilan sudah aman ✔️
+
+
+# Check In/Out
+  To do list
+  1. Fecthing use API
+  2. Optimize clean code
+  3. Filterisasi
+  4. Check In/Out dijadikan satu ✔️
+  5. Logic pencarian ✔️
+  6. Prev / Next page ✔️
+
+# Guest Reservation
+  To do list
+  1. Selaraskan payment status dengan dasbor
+  2. Membuat fungsi CRUD
+  3. Optimize search guest by name
+
+# Guest Book ✔️
+# Guest History
+# Room ✔️
+
+
+## Pertanyaan ke marsha
+1. Apa perbedaan see detail pada check in/out dengan reservation?

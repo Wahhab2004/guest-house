@@ -1,4 +1,4 @@
-const reservations = [
+const reservationss = [
 	{
 		id: "RES001",
 		guestName: "John Doe",
@@ -301,4 +301,4 @@ const reservations = [
 	},
 ];
 
-export default reservations;
+export default reservationss;

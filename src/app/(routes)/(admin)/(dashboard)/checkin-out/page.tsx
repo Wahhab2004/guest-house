@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import reservations from "./data";
+import reservations from "../../../../../components/admin/checkin-out/data";
 
 export default function CheckInOutPage() {
 	const [currentPage, setCurrentPage] = useState(1);
@@ -93,7 +93,7 @@ export default function CheckInOutPage() {
 
 			<div className="ml-[235px] border shadow rounded-lg p-4 w-[83%] ">
 				{/* Check In/Out Table */}
-				<table className="w-full text-left mt-2 tracking-wide ">
+				<table className="w-full text-left mt-2 tracking-wide">
 					<thead>
 						<tr>
 							{[
@@ -120,14 +120,14 @@ export default function CheckInOutPage() {
 									key={reservation.id}
 									className="text-gray-400 text-sm border-b"
 								>
-									<td className="py-2">{reservation.id}</td>
-									<td className="py-2">{reservation.guestName}</td>
-									<td className="py-2">{reservation.checkinDate}</td>
-									<td className="py-2">{reservation.checkoutDate}</td>
-									<td className="py-2">{reservation.roomType}</td>
-									<td className="py-2">{reservation.totalPaid}</td>
-									<td className="py-2">{reservation.paymentMethod}</td>
-									<td className="py-2">{reservation.numGuests}</td>
+									<td className="py-4">{reservation.id}</td>
+									<td className="py-4">{reservation.guestName}</td>
+									<td className="py-4">{reservation.checkinDate}</td>
+									<td className="py-4">{reservation.checkoutDate}</td>
+									<td className="py-4">{reservation.roomType}</td>
+									<td className="py-4">{reservation.totalPaid}</td>
+									<td className="py-4">{reservation.paymentMethod}</td>
+									<td className="py-4">{reservation.numGuests}</td>
 
 									<td className="p-2 text-blue-600 text-xs">
 										<Link href={`/checkin/${reservation.id}`}>See detail</Link>

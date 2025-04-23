@@ -2,322 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-
-const reservations = [
-	{
-		id: "RES001",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-		paymentStatus: "pending payment",
-	},
-	{
-		id: "RES002",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-		paymentStatus: "pending verification",
-	},
-	{
-		id: "RES003",
-		guestName: "Michael Brown",
-		checkoutDate: "2025-01-27 03:00 PM",
-		roomType: "Standard",
-		totalPaid: "$80",
-		paymentMethod: "Debit Card",
-		numGuests: 1,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-		paymentStatus: "paid",
-	},
-	{
-		id: "RES004",
-		guestName: "Emily Johnson",
-		checkoutDate: "2025-01-28 12:00 PM",
-		roomType: "Deluxe",
-		totalPaid: "$150",
-		paymentMethod: "Cash",
-		numGuests: 2,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-		paymentStatus: "paid",
-	},
-	{
-		id: "RES005",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-		paymentStatus: "paid",
-	},
-	{
-		id: "RES006",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-		paymentStatus: "paid",
-	},
-	{
-		id: "RES007",
-		guestName: "Emily Johnson",
-		checkoutDate: "2025-01-28 12:00 PM",
-		roomType: "Deluxe",
-		totalPaid: "$150",
-		paymentMethod: "Cash",
-		numGuests: 2,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-		paymentStatus: "paid",
-	},
-	{
-		id: "RES008",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-		paymentStatus: "paid",
-	},
-	{
-		id: "RES009",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-		paymentStatus: "paid",
-	},
-	{
-		id: "RES010",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-		paymentStatus: "paid",
-	},
-	{
-		id: "RES011",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-	},
-	{
-		id: "RES012",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-	},
-	{
-		id: "RES013",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-	},
-	{
-		id: "RES014",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-	},
-	{
-		id: "RES015",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-	},
-	{
-		id: "RES016",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-	},
-	{
-		id: "RES017",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-	},
-	{
-		id: "RES018",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-	},
-	{
-		id: "RES019",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-		proffPayment:
-			"https://hips.hearstapps.com/hmg-prod/images/cristiano-ronaldo-of-portugal-reacts-as-he-looks-on-during-news-photo-1725633476.jpg?crop=0.666xw:1.00xh;0.180xw,0&resize=1200:*",
-	},
-	{
-		id: "RES020",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-	},
-	{
-		id: "RES021",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-	},
-	{
-		id: "RES022",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-	},
-	{
-		id: "RES023",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-	},
-	{
-		id: "RES024",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-	},
-	{
-		id: "RES025",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-	},
-	{
-		id: "RES026",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-	},
-	{
-		id: "RES027",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-	},
-	{
-		id: "RES028",
-		guestName: "John Doe",
-		checkoutDate: "2025-01-25 11:00 AM",
-		roomType: "Deluxe",
-		totalPaid: "$120",
-		paymentMethod: "Credit Card",
-		numGuests: 2,
-	},
-	{
-		id: "RES029",
-		guestName: "Jane Smith",
-		checkoutDate: "2025-01-26 09:30 AM",
-		roomType: "Suite",
-		totalPaid: "$200",
-		paymentMethod: "PayPal",
-		numGuests: 3,
-	},
-];
+import reservationss from "@/components/admin/guest-reservation/data";
 
 export default function GuestReservation() {
+	const [reservations, setReservations] = useState(reservationss);
+
 	const [currentPage, setCurrentPage] = useState(1);
-	const itemsPerPage = 10;
+	const itemsPerPage = 15;
 
 	// Search
 	const [searchQuery, setSearchQuery] = useState("");
@@ -326,6 +17,7 @@ export default function GuestReservation() {
 
 	const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
 
+	// Fungsi mencari data pengguna berdasarkan nama
 	const handleSearch = () => {
 		const result = reservations.filter((reservation) =>
 			reservation.guestName.toLowerCase().includes(searchQuery.toLowerCase())
@@ -334,24 +26,28 @@ export default function GuestReservation() {
 		setCurrentPage(1); // Reset ke halaman 1 setelah pencarian
 	};
 
+	// Mengatur halaman
 	const getPaginatedData = () => {
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredReservations.slice(startIndex, endIndex);
 	};
 
+	// Fungsi pindah halaman selanjutnya
 	const handleNext = () => {
 		if (currentPage < totalPages) {
 			setCurrentPage(currentPage + 1);
 		}
 	};
 
+	// Fungsi pindah halaman sebelumnya
 	const handlePrevious = () => {
 		if (currentPage > 1) {
 			setCurrentPage(currentPage - 1);
 		}
 	};
 
+	// Mengubah status pembayaran
 	const handleStatusChange = (id: string, newStatus: string) => {
 		setFilteredReservations((prevReservations: any[]) =>
 			prevReservations.map((reservation) =>
@@ -362,8 +58,30 @@ export default function GuestReservation() {
 		);
 	};
 
+	const handleCheckStatusChange = (id: string, status: string) => {
+		// Menggunakan map untuk membuat array baru dengan status yang diupdate
+		const updatedReservations = reservations.map((reservation: any) => {
+			if (reservation.id === id) {
+				const now = new Date().toISOString();
+				return {
+					...reservation,
+					checkStatus: status === "checkin" ? "checked-in" : "checked-out",
+					confirmedCheckin:
+						status === "checkin" ? now : reservation.confirmedCheckin,
+					confirmedCheckout:
+						status === "checkout" ? now : reservation.confirmedCheckout,
+				};
+			}
+			return reservation;
+		});
+
+		// Mengupdate state reservations dengan array yang sudah diperbarui
+		setReservations(updatedReservations);
+	};
+
 	return (
-		<main>
+		<section>
+			{/* Title */}
 			<h1 className="text-[#5D6679] text-xl font-bold mt-6 ml-[230px] ">
 				Guest Reservation
 			</h1>
@@ -408,118 +126,142 @@ export default function GuestReservation() {
 				</button>
 			</div>
 
-			{/* Reservation Table */}
-			<table className="ml-[235px] mt-10 w-[80%] border-collapse">
-				<thead>
-					<tr className="bg-[#D9D9D9]">
-						{[
-							"Reservation ID",
-							"Guest Name",
-							"Date/Time Reservation",
-							"Total Amount Paid",
-							"Payment Method",
-							"Number of Guests",
-							"Reservation Detail",
-							"Proof Payment",
-							"Payment Status",
-							"Change Status Payment",
-							"Confirm Check In/Out",
-						].map((header, idx) => (
-							<th
-								key={idx}
-								className="text-[#5D6679] text-xs font-semibold p-2 text-start"
-							>
-								{header}
-							</th>
-						))}
-					</tr>
-				</thead>
-				<tbody>
-					{getPaginatedData().length > 0 ? (
-						getPaginatedData().map((reservation) => (
-							<tr key={reservation.id} className="border-t">
-								<td className="p-2 text-[#5D6679] text-sm">{reservation.id}</td>
-								<td className="p-2 text-[#5D6679] text-sm">
-									{reservation.guestName}
-								</td>
-								<td className="p-2 text-[#5D6679] text-sm">
-									{reservation.checkoutDate}
-								</td>
-								<td className="p-2 text-[#5D6679] text-sm">
-									{reservation.totalPaid}
-								</td>
-								<td className="p-2 text-[#5D6679] text-sm">
-									{reservation.paymentMethod}
-								</td>
-								<td className="p-2 text-[#5D6679] text-sm">
-									{reservation.numGuests}
-								</td>
-								<td className="p-2 text-blue-600 text-xs">
-									<Link href={`/checkout/${reservation.id}`}> See detail</Link>
-								</td>
+			<div className="ml-[235px] border shadow rounded-lg p-4 w-[83%]">
+				{/* Reservation Table */}
+				<table className="w-full text-left mt-2 tracking-wide">
+					<thead>
+						<tr>
+							{[
+								"Reservation ID",
+								"Guest Name",
+								"Date/Time Reservation",
+								"Total Amount Paid",
+								"Payment Method",
+								"Number of Guests",
+								"Reservation Detail",
+								"Proof Payment",
+								"Payment Status",
+								"Change Status Payment",
+								"Confirm Check In/Out",
+							].map((header, idx) => (
+								<th key={idx} className="text-[#5D6679] font-semibold text-sm">
+									{header}
+								</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{getPaginatedData().length > 0 ? (
+							getPaginatedData().map((reservation) => (
+								<tr
+									key={reservation.id}
+									className="text-gray-400 text-sm border-b"
+								>
+									<td className="py-4">{reservation.id}</td>
+									<td className="py-4">{reservation.guestName}</td>
+									<td className="py-4">{reservation.checkoutDate}</td>
+									<td className="py-4">{reservation.totalPaid}</td>
+									<td className="py-4">{reservation.paymentMethod}</td>
+									<td className="py-4">{reservation.numGuests}</td>
+									<td className="p-2 text-blue-600 text-xs">
+										<Link href={`/checkout/${reservation.id}`}>
+											{" "}
+											See detail
+										</Link>
+									</td>
 
-								<td className="p-2 text-blue-600 text-xs">
-									<Link href={`${reservation.proffPayment}`}>Check</Link>
-								</td>
+									<td className="p-2 text-blue-600 text-xs">
+										<Link href={`${reservation.proffPayment}`}>Check</Link>
+									</td>
 
-								<td className="p-2 text-xs w-[14%] ">
-									{reservation.paymentStatus === "paid" ? (
-										<span className="text-green-500 bg-green-100 p-1 rounded px-2">
-											{reservation.paymentStatus}
-										</span>
-									) : reservation.paymentStatus === "pending payment" ? (
-										<span className="text-orange-500 bg-orange-100 p-1 rounded px-2">
-											{reservation.paymentStatus}
-										</span>
-									) : reservation.paymentStatus === "pending verification" ? (
-										<span className="text-red-500 bg-red-100 p-1 rounded px-2">
-											{reservation.paymentStatus}
-										</span>
-									) : (
-										<span className="text-gray-400">
-											{reservation.paymentStatus}
-										</span>
-									)}
-								</td>
+									<td className="p-2 text-xs w-[14%] ">
+										{reservation.paymentStatus === "paid" ? (
+											<span className="text-green-500 bg-green-100 p-1 rounded px-2">
+												{reservation.paymentStatus}
+											</span>
+										) : reservation.paymentStatus === "pending payment" ? (
+											<span className="text-orange-500 bg-orange-100 p-1 rounded px-2">
+												{reservation.paymentStatus}
+											</span>
+										) : reservation.paymentStatus === "pending verification" ? (
+											<span className="text-red-500 bg-red-100 p-1 rounded px-2">
+												{reservation.paymentStatus}
+											</span>
+										) : (
+											<span className="text-gray-400">
+												{reservation.paymentStatus}
+											</span>
+										)}
+									</td>
 
-								<td>
-									<select
-										name="payment-status"
-										id="payment-status"
-										value={reservation.paymentStatus}
-										onChange={(e) =>
-											handleStatusChange(reservation.id, e.target.value)
-										}
-										className="p-2 border rounded text-[#5D6679] text-xs"
-									>
-										<option value="paid" className="p-2 text-[#5D6679] text-xs">
-											paid
-										</option>
-										<option
-											value="pending payment"
-											className="p-2 text-[#5D6679] text-xs"
+									<td>
+										<select
+											name="payment-status"
+											id="payment-status"
+											value={reservation.paymentStatus}
+											onChange={(e) =>
+												handleStatusChange(reservation.id, e.target.value)
+											}
+											className="p-2 border rounded text-[#5D6679] text-xs"
 										>
-											pending payment
-										</option>
-										<option
-											value="pending verification"
-											className="p-2 text-[#5D6679] text-xs"
-										>
-											pending verification
-										</option>
-									</select>
+											<option
+												value="paid"
+												className="p-2 text-[#5D6679] text-xs"
+											>
+												paid
+											</option>
+											<option
+												value="pending payment"
+												className="p-2 text-[#5D6679] text-xs"
+											>
+												pending payment
+											</option>
+											<option
+												value="pending verification"
+												className="p-2 text-[#5D6679] text-xs"
+											>
+												pending verification
+											</option>
+										</select>
+									</td>
+
+									<td>
+										<div className="flex flex-col items-start">
+											<div className="flex items-center gap-2">
+												<input
+													type="radio"
+													name="chekin"
+													id="chekin"
+													value="checkin"
+													onChange={(e) => handleCheckStatusChange(reservation.id, e.target.value)}
+												/>
+												<span>Check In</span>
+											</div>
+
+											<div className="flex items-center gap-2">
+												<input
+													type="radio"
+													name="checkout"
+													id="checkout"
+													value="checkout"
+													onChange={(e) => handleCheckStatusChange(reservation.id, e.target.value)}
+												/>
+												<span>Check Out</span>
+											</div>
+										</div>
+									</td>
+								</tr>
+							))
+						) : (
+							<tr>
+								<td className="p-4 text-center text-gray-500" colSpan={8}>
+									No reservations found.
 								</td>
 							</tr>
-						))
-					) : (
-						<tr>
-							<td className="p-4 text-center text-gray-500" colSpan={8}>
-								No reservations found.
-							</td>
-						</tr>
-					)}
-				</tbody>
-			</table>
+						)}
+					</tbody>
+				</table>
+			</div>
 
 			{/* Pagination Controls */}
 			<div className="flex justify-evenly mt-8 mb-20 items-center">
@@ -541,6 +283,6 @@ export default function GuestReservation() {
 					Next
 				</button>
 			</div>
-		</main>
+		</section>
 	);
 }
