@@ -55,9 +55,9 @@ export default function NavbarAdmin() {
 
 						{/* Checkin-out */}
 						<Link
-							href="/checkin"
+							href="/checkin-out"
 							className={`flex items-center p-2 rounded mb-2 hover:bg-blue-100 group ${
-								pathname === "/checkin" || pathname === "/checkout" ? "bg-blue-100" : ""
+								pathname === "/checkin-out" ? "bg-blue-100" : ""
 							}`} // Tambahkan "group"
 						>
 							<svg
@@ -74,7 +74,7 @@ export default function NavbarAdmin() {
 									strokeLinecap="round"
 									strokeLinejoin="round"
 									className={`group-hover:stroke-[#1366D9] group-hover:stroke-2 ${
-										pathname === "/checkin" || pathname === "/checkout"
+										pathname === "/checkin-out"
 											? "stroke-[#1366D9] stroke-2"
 											: ""
 									}`}
@@ -83,7 +83,7 @@ export default function NavbarAdmin() {
 
 							<li
 								className={`ml-2 font-medium group-hover:text-[#1366D9] text-sm ${
-									pathname === "/checkin" || pathname === "/checkout" ? "text-[#1366D9]" : "text-gray-600"
+									pathname === "/checkin-out" ? "text-[#1366D9]" : "text-gray-600"
 								}`} // Hover berdasarkan parent
 							>
 								Check in/ Out

@@ -45,9 +45,9 @@ const GuestReservation = () => {
 		<div className="mt-8 ml-[250px] mr-10">
 			<div className="border shadow rounded-lg p-4 ">
 				<h1 className="font-semibold text-[#5D6679]">Guest Reservation</h1>
-				<table className=" w-full text-left mt-2 tracking-wide">
+				<table className="w-full text-left mt-2 tracking-wide">
 					<thead>
-						<tr className="text-[#5D6679] font-semibold text-sm ">
+						<tr className="text-[#5D6679] font-semibold text-sm p-2">
 							<th>Guest Name</th>
 							<th>Room</th>
 							<th>Date/Time Check Reservation</th>
