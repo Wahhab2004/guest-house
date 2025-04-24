@@ -10,7 +10,7 @@ const reservations = [
 		numGuests: 2,
 		proffPayment: "https://example.com/proof1.jpg",
 		paymentStatus: "pending payment",
-		checkStatus: null, // checkStatus: "checked-in" | "checked-out"
+		checkStatus: "checkin-in",
 		confirmedCheckin: null,
 		confirmedCheckout: null,
 	},
@@ -25,7 +25,7 @@ const reservations = [
 		numGuests: 3,
 		proffPayment: "https://example.com/proof2.jpg",
 		paymentStatus: "pending verification",
-		checkStatus: null, // checkStatus: "checked-in" | "checked-out"
+		checkStatus: "checkin-in",
 		confirmedCheckin: null,
 		confirmedCheckout: null,
 	},
@@ -40,7 +40,7 @@ const reservations = [
 		numGuests: 1,
 		proffPayment: "https://example.com/proof3.jpg",
 		paymentStatus: "paid",
-		checkStatus: null, // checkStatus: "checked-in" | "checked-out"
+		checkStatus: "check-out", // cked-in" | "checked-out"
 		confirmedCheckin: null,
 		confirmedCheckout: null,
 	},

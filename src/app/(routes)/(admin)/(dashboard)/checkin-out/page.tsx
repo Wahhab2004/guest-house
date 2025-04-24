@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import reservations from "../../../../../components/admin/checkin-out/data";
 
 export default function CheckInOutPage() {
@@ -23,7 +23,11 @@ export default function CheckInOutPage() {
 		setFilteredReservations(result);
 		setCurrentPage(1); // Reset ke halaman 1 setelah pencarian
 	};
+	useEffect(() => {
+		handleSearch();
+	}, [searchQuery]);
 
+	
 	// Mengatur halaman
 	const getPaginatedData = () => {
 		const startIndex = (currentPage - 1) * itemsPerPage;

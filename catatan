@@ -25,6 +25,9 @@ To Do List
   1. Fecthing api ✔️
   2. Dasbor hanya berisi guest reservation ✔️
   3. Tampilan sudah aman ✔️
+  4. Optimize search guest by name ✔️
+  5. Optimasi guesthouse and fecthing method
+  6. Membuat fungsional CURD ✔️
 
 
 # Check In/Out
@@ -39,7 +42,7 @@ To Do List
 # Guest Reservation
   To do list
   1. Selaraskan payment status dengan dasbor
-  2. Membuat fungsi CRUD
+  2. Membuat fungsi CRUD (Update done)
   3. Optimize search guest by name
 
 # Guest Book ✔️

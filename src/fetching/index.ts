@@ -32,6 +32,11 @@ export interface Review {
 
 // Reservation
 export interface Reservation {
+	checkStatus: string;
+	numGuests: number;
+	// Nanti mungkin bisa diubah
+	confirmedCheckout: { seconds: number; nanoseconds: number };
+	confirmedCheckin: { seconds: number; nanoseconds: number };
 	dateReservation: { seconds: number; nanoseconds: number };
 	id: string;
 	idAccount: string;
