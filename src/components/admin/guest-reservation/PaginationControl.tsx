@@ -1,9 +1,16 @@
+interface PaginationControlProps {
+	currentPage: number;
+	totalPages: number;
+	handlePrevious: () => void;
+	handleNext: () => void;
+}
+
 export default function PaginationControl({
     currentPage,
     totalPages,
     handlePrevious,
     handleNext,
-}: any) {
+}: PaginationControlProps) {
 	return (
 		<div className="flex justify-evenly mt-8 mb-20 items-center">
 			<button

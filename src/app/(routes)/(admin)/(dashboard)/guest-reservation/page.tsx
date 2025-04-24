@@ -1,10 +1,11 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchReservations, Reservation } from "@/fetching";
 import PaginationControl from "@/components/admin/guest-reservation/PaginationControl";
 import SearchBar from "@/components/admin/guest-reservation/SearchBar";
 import GuestReservationTable from "@/components/admin/guest-reservation/GuestReservation";
+import { Timestamp } from "firebase/firestore";
 
 export default function GuestReservation() {
 	const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -35,7 +36,7 @@ export default function GuestReservation() {
 
 	// Fungsi untuk mengubah status pemesanan
 	const handleCheckStatusChange = async (id: string, newStatus: string) => {
-		const now = new Date().toISOString();
+		const now = Timestamp.fromDate(new Date());
 		const checkStatus = newStatus === "checkin" ? "checked-in" : "checked-out";
 
 		try {

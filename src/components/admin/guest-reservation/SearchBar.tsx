@@ -1,8 +1,14 @@
+interface SearchBarProps {
+	searchQuery: string;
+	setSearchQuery: (query: string) => void;
+	handleSearch: () => void;
+}
+
 export default function SearchBar({
 	searchQuery,
 	setSearchQuery,
 	handleSearch,
-}: any) {
+}: SearchBarProps) {
 	return (
 		<div>
 			<div className="flex gap-2 mb-4 items-center m-0 mt-4">
