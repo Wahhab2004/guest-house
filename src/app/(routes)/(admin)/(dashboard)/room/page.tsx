@@ -1,7 +1,6 @@
 "use client";
 
 import { fetchRooms, Room } from "@/fetching";
-import { getData } from "@/services/products";
 import { useEffect, useState } from "react";
 
 export default function Rooms() {
@@ -45,14 +44,14 @@ export default function Rooms() {
 					<tbody>
 						{rooms.map((room) => (
 							<tr key={room.id} className="text-gray-400 text-sm border-b">
-								<td className="p-2 text-[#5D6679] text-sm">{room.id}</td>
-								<td className="p-2 text-[#5D6679] text-sm">
+								<td className="py-4 text-[#5D6679] text-sm">{room.id}</td>
+								<td className="py-4 text-[#5D6679] text-sm">
 									{room.roomNumber}
 								</td>
-								<td className="p-2 text-[#5D6679] text-sm">
+								<td className="py-4 text-[#5D6679] text-sm">
 									¥{room.pricePerNight}
 								</td>
-								<td className="p-2 text-[#5D6679] text-sm">
+								<td className="py-4 text-[#5D6679] text-sm">
 									{room.roomStatus === "available" ? (
 										<span className="bg-blue-100 text-blue-600 py-1 px-2 rounded">
 											{room.roomStatus}

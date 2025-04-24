@@ -6,7 +6,7 @@ import reservations from "@/components/admin/guest-history/dataHistory";
 
 export default function GuestHistory() {
 	const [currentPage, setCurrentPage] = useState(1);
-	const itemsPerPage = 10;
+	const itemsPerPage = 30;
 
 	// Search
 	const [searchQuery, setSearchQuery] = useState("");

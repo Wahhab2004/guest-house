@@ -52,7 +52,7 @@ export default function GuestReservationTable({
 								</td>
 								<td className="py-4">{reservation.payment.totalAmountPaid}</td>
 								<td className="py-4">{reservation.payment.paymentMethod}</td>
-								<td className="py-4">{reservation.numGuests}</td>
+								<td className="py-4">{reservation.numOfGuests}</td>
 								<td className="p-2 text-blue-600 text-xs">
 									<Link href={`/checkout/${reservation.id}`}> See detail</Link>
 								</td>

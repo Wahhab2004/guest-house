@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchReservations, Reservation } from "@/fetching";
 import PaginationControl from "@/components/admin/guest-reservation/PaginationControl";
-import SearchBar from "@/components/admin/guest-reservation/SearchBar";
+import SearchBar from "@/components/admin/SearchBar";
 import GuestReservationTable from "@/components/admin/guest-reservation/GuestReservation";
 import { Timestamp } from "firebase/firestore";
 
@@ -74,30 +74,6 @@ export default function GuestReservation() {
 		}
 	};
 
-	// Fungsi mencari data pengguna berdasarkan nama
-	const handleSearch = () => {
-		if (!searchQuery) {
-			setFilteredReservations(reservations);
-			return;
-		}
-		console.log("Search triggered for:", searchQuery); // log query-nya
-
-		const result = reservations.filter((reservation) =>
-			reservation.guest?.name?.toLowerCase().includes(searchQuery.toLowerCase())
-		);
-
-		console.log("Filtered result:", result); // log hasilnya
-		setFilteredReservations(result);
-		setCurrentPage(1);
-	};
-
-	// Fungsi agar pencarian dilakukan setiap kali searchQuery berubah
-	useEffect(() => {
-		if (reservations.length > 0) {
-			handleSearch();
-		}
-	}, [searchQuery, reservations]);
-
 	// Mengatur halaman
 	const getPaginatedData = () => {
 		const startIndex = (currentPage - 1) * itemsPerPage;
@@ -138,10 +114,12 @@ export default function GuestReservation() {
 			</h1>
 
 			<SearchBar
-				searchQuery={searchQuery}
-				setSearchQuery={setSearchQuery}
-				handleSearch={handleSearch}
+				data={reservations}
+				searchField="guest.name"
+				onSearchResult={(results) => setFilteredReservations(results)}
+				placeholder="Search by guest name"
 			/>
+			
 			<GuestReservationTable
 				getPaginatedData={getPaginatedData}
 				handleCheckStatusChange={handleCheckStatusChange}

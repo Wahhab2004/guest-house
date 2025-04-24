@@ -61,13 +61,13 @@ const GuestReservation = () => {
 						{getPaginatedData(reservations, currentPageCheckIn).map(
 							(item, index) => (
 								<tr key={index} className="text-gray-400 text-sm border-b ">
-									<td className="py-2">{item.guest.name}</td>
-									<td className="py-2">{item.room.roomNumber}</td>
-									<td className="py-2">{ConvertDate(item.dateReservation)}</td>
-									<td className="py-2">{ConvertDate(item.checkInDate)}</td>
-									<td className="py-2">{ConvertDate(item.checkOutDate)}</td>
-									<td className="py-2">¥{item.payment.totalAmountPaid}</td>
-									<td className="py-2">
+									<td className="py-4">{item.guest.name}</td>
+									<td className="py-4">{item.room.roomNumber}</td>
+									<td className="py-4">{ConvertDate(item.dateReservation)}</td>
+									<td className="py-4">{ConvertDate(item.checkInDate)}</td>
+									<td className="py-4">{ConvertDate(item.checkOutDate)}</td>
+									<td className="py-4">¥{item.payment.totalAmountPaid}</td>
+									<td className="py-4">
 										{item.payment.paymentStatus === "paid" ? (
 											<span className="text-green-900 bg-green-100 p-1 border-green-200 border rounded-lg px-2">
 												{item.payment.paymentStatus}
