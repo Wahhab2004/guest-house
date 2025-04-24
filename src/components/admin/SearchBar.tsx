@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { Loader2, X } from "lucide-react"; // pastikan lucide-react sudah diinstall
 
 interface SearchBarProps<T> {
 	data: T[];
 	searchField: string;
 	onSearchResult: (results: T[]) => void;
 	placeholder?: string;
+	loading?: boolean; // tambahan props untuk loading
 }
 
 export default function SearchBar<T>({
@@ -12,6 +14,7 @@ export default function SearchBar<T>({
 	searchField,
 	onSearchResult,
 	placeholder = "Search...",
+	loading = false,
 }: SearchBarProps<T>) {
 	const [searchQuery, setSearchQuery] = useState("");
 
@@ -36,6 +39,8 @@ export default function SearchBar<T>({
 
 		onSearchResult(result);
 	}, [searchQuery, data]);
+
+	const handleClear = () => setSearchQuery("");
 
 	return (
 		<div className="mb-4 flex justify-end mr-20">
@@ -64,6 +69,15 @@ export default function SearchBar<T>({
 					onChange={(e) => setSearchQuery(e.target.value)}
 					className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400"
 				/>
+
+				{/* Loading or Clear Icon */}
+				{loading ? (
+					<Loader2 className="w-4 h-4 text-blue-500 animate-spin ml-2" />
+				) : searchQuery && (
+					<button onClick={handleClear}>
+						<X className="w-4 h-4 text-gray-400 hover:text-red-500 ml-2" />
+					</button>
+				)}
 			</div>
 		</div>
 	);
