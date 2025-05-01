@@ -12,7 +12,6 @@ export default function CheckInOutPage() {
 	const itemsPerPage = 15;
 
 	// Search
-	const [searchQuery, setSearchQuery] = useState("");
 	const [filteredReservations, setFilteredReservations] =
 		useState(reservations);
 

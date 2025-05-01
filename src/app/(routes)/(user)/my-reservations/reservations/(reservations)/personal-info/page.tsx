@@ -1,6 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function PersonalInfo() {
+	const [showConfirm, setShowConfirm] = useState(false);
+	const router = useRouter();
+
+	const handleContinue = () => {
+		// Redirect ke halaman booking details
+		router.push("/my-reservations/reservations/booking-details");
+	};
+
 	return (
 		<section className="my-10 mb-20">
 			<main className="w-11/12 mx-auto">
@@ -200,22 +212,54 @@ export default function PersonalInfo() {
 								</div>
 							</div>
 						</div>
-
 					</form>
 
-					{/* Submit */}
 					<div className="pt-10">
+						{/* Button Continue */}
 						<button
-							type="submit"
-							className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-[50%] sm:w-auto px-5 py-2.5 text-center 
-							mx-auto block lg:w-1/3"
+							type="button"
+							onClick={() => setShowConfirm(true)}
+							className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-[50%] sm:w-auto px-5 py-2.5 text-center mx-auto block lg:w-1/3"
 						>
 							Continue to Book
 						</button>
 
-						<button className="mt-4 text-gray-400 text-center w-1/3 lg:w-1/4  text-sm mx-auto block font-semibold border border-gray-200 hover:text-gray-500 hover:bg-gray-300 py-2 rounded-lg">
+						{/* Button Back */}
+						<button className="mt-4 text-gray-400 text-center w-1/3 lg:w-1/4 text-sm mx-auto block font-semibold border border-gray-200 hover:text-gray-500 hover:bg-gray-300 py-2 rounded-lg">
 							<Link href="/my-reservations">Back</Link>
 						</button>
+
+						{/* Modal Konfirmasi */}
+						{showConfirm && (
+							<div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+								<div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3">
+									<h2 className="text-lg font-semibold mb-4 text-gray-800">
+										Confirm Your Booking
+									</h2>
+									<p className="text-sm text-gray-600 mb-6">
+										Are you sure all the information is correct?
+									</p>
+
+									<div className="flex justify-end gap-4">
+										<button
+											className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg text-sm font-semibold"
+											onClick={() => setShowConfirm(false)}
+										>
+											Cancel
+										</button>
+										<button
+											className="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm font-semibold"
+											onClick={() => {
+												handleContinue();
+												setShowConfirm(false);
+											}}
+										>
+											Confirm
+										</button>
+									</div>
+								</div>
+							</div>
+						)}
 					</div>
 				</section>
 			</main>

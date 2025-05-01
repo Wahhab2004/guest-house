@@ -10,9 +10,7 @@ import { Timestamp } from "firebase/firestore";
 export default function GuestReservation() {
 	const [reservations, setReservations] = useState<Reservation[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
-
-	// Filtered untuk reservasi
-	const [searchQuery, setSearchQuery] = useState("");
+	
 	const [filteredReservations, setFilteredReservations] =
 		useState(reservations);
 	const itemsPerPage = 15;
@@ -97,7 +95,9 @@ export default function GuestReservation() {
 
 	// Mengubah status pembayaran
 	const handleStatusChange = (id: string, newStatus: string) => {
-		setFilteredReservations((prevReservations: any[]) =>
+
+		// Ini awal stts prevReserv: any
+		setFilteredReservations((prevReservations: Reservation[]) =>
 			prevReservations.map((reservation) =>
 				reservation.id === id
 					? { ...reservation, paymentStatus: newStatus }

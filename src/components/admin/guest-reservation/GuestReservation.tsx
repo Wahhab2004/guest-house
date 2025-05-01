@@ -130,7 +130,7 @@ export default function GuestReservationTable({
 												name={`${reservation.id}`}
 												value="checkin"
 												checked={reservation.checkStatus === "checked-in"}
-												onChange={(e) =>
+												onChange={() =>
 													handleCheckStatusChange(reservation.id, "checkin")
 												}
 											/>
@@ -143,7 +143,7 @@ export default function GuestReservationTable({
 												name={`${reservation.id}`}
 												value="checkout"
 												checked={reservation.checkStatus === "checked-out"}
-												onChange={(e) =>
+												onChange={() =>
 													handleCheckStatusChange(reservation.id, "checkout")
 												}
 											/>

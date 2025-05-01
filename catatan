@@ -16,6 +16,7 @@ To Do List
 5. Pertimbangkan apakah room perlu pakai API ? (Berhubung cuman 3 rooms aja)
 6. Fix design calendar
 7. Optimize searching guest by name in reservation, book, and history
+8. Menyambungkan data dari klien ke BE. Kek fungsional dari create.
 
 
 

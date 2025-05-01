@@ -23,8 +23,8 @@ const CheckInOut = () => {
 	}, []);
 
 	// Data CheckIn dan CheckOut
-	const checkInData = reservations.filter((item: any) => item.checkInDate);
-	const checkOutData = reservations.filter((item: any) => item.checkOutDate);
+	const checkInData = reservations.filter((item) => item.checkInDate);
+	const checkOutData = reservations.filter((item) => item.checkOutDate);
 
 	const getPaginatedData = (data: Reservation[], page: number) =>
 		data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
