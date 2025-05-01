@@ -81,8 +81,13 @@ export function Katalog() {
 
 export function Availibilty() {
 	return (
-		<div className="mt-10">
-			<h2 className="font-semibold text-lg">Check Availability</h2>
+		<div className="float-right ml-auto w-[30%]">
+			<div className="bg-white p-2 border border-solid border-gray-300 rounded-xl w-[90%] mx-auto">
+				<h2 className="font-semibold text-lg text-center">
+					Check Availability
+				</h2>
+			</div>
+			
 			<Calendar />
 		</div>
 	);
@@ -110,7 +115,7 @@ export function Description() {
 
 export function Facilities() {
 	return (
-		<div className="mt-10">
+		<div className="mt-10 w-[68%]">
 			<h2 className="font-semibold text-lg">Facilities</h2>
 
 			<div className="grid grid-cols-4 gap-4 mt-4">

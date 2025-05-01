@@ -1,11 +1,44 @@
 "use client";
+import { fetchReservations, Reservation } from "@/fetching";
 import React, { useState, useEffect } from "react";
+
+// type Reservation = {
+// 	checkInDate: { seconds: number; nanoseconds: number };
+// 	checkOutDate: { seconds: number; nanoseconds: number };
+// };
 
 const Calendar = () => {
 	const today = new Date();
 	const [currentMonthIndex, setCurrentMonthIndex] = useState(today.getMonth()); // Index bulan saat ini
 	const [currentYear] = useState(today.getFullYear()); // Tahun saat ini
 	const [selectedDate, setSelectedDate] = useState(null); // Menyimpan tanggal yang dipilih
+	const [reservations, setReservations] = useState<Reservation[]>([]);
+	const [tooltip, setTooltip] = useState<string | null>(null);
+
+	// Fething data
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const data = await fetchReservations();
+				setReservations(data);
+				console.log(data);
+			} catch (error) {
+				console.error("Error fetching data:", error);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	const isReserved = (day: number) => {
+		const dateToCheck = new Date(currentYear, currentMonthIndex, day).getTime();
+
+		return reservations.some(({ checkInDate, checkOutDate }) => {
+			const checkIn = new Date(checkInDate.seconds * 1000).getTime();
+			const checkOut = new Date(checkOutDate.seconds * 1000).getTime();
+			return dateToCheck >= checkIn && dateToCheck <= checkOut;
+		});
+	};
 
 	const months = [
 		"January",
@@ -69,13 +102,23 @@ const Calendar = () => {
 			daysCells.push(
 				<td key={index} className="pt-6">
 					<div
-						onClick={() => handleSelectDate(day)}
-						className={`px-2 py-2 cursor-pointer flex w-full justify-center rounded-full 
-              ${
-								isSelected
-									? "bg-blue-500 text-white"
-									: "text-gray-500 hover:bg-gray-200"
-							}`}
+						onClick={() => {
+							if (!isReserved(day)) handleSelectDate(day);
+						}}
+						title={
+							isReserved(day)
+								? "The date is already booked"
+								: "The room is still available"
+						}
+						className={`p-2 cursor-pointer flex w-full justify-center rounded-full 
+		${
+			isSelected
+				? "bg-blue-500 text-white"
+				: isReserved(day)
+				? "bg-red-400 text-black"
+				: "text-gray-500 hover:bg-gray-200"
+		}
+	`}
 					>
 						<p className="text-base font-medium">{day}</p>
 					</div>
@@ -93,89 +136,84 @@ const Calendar = () => {
 	};
 
 	return (
-		<div className="flex items-center justify-center lg:justify-start py-8 px-4">
-			<div className="max-w-full w-full lg:w-[40%] shadow-lg">
-				<div className="p-6 border bg-white rounded-t lg:w-full lg:mx-auto">
-					<div className="px-4 flex items-center justify-center">
-						<button
-							aria-label="Previous month"
-							className="focus:text-gray-400 hover:text-gray-400 text-gray-800 "
-							onClick={handlePrevMonth}
+		<div className="flex items-center justify-center mt-10">
+			<div className="w-full">
+				<div className="px-4 flex items-center justify-center">
+					<button
+						aria-label="Previous month"
+						className="focus:text-gray-400 hover:text-gray-400 text-gray-800 "
+						onClick={handlePrevMonth}
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="icon icon-tabler icon-tabler-chevron-left"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							strokeWidth="1.5"
+							stroke="currentColor"
+							fill="none"
+							strokeLinecap="round"
+							strokeLinejoin="round"
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="icon icon-tabler icon-tabler-chevron-left"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								strokeWidth="1.5"
-								stroke="currentColor"
-								fill="none"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-								<polyline points="15 6 9 12 15 18" />
-							</svg>
-						</button>
-						<span
-							aria-live="polite"
-							className="focus:outline-none text-xl font-bold"
-						>
-							{calendarData.monthName} {currentYear}
-						</span>
-						<button
-							aria-label="Next month"
-							className="focus:text-gray-400 hover:text-gray-400 text-gray-800 "
-							onClick={handleNextMonth}
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="icon icon-tabler icon-tabler-chevron-right"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								strokeWidth="1.5"
-								stroke="currentColor"
-								fill="none"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-								<polyline points="9 6 15 12 9 18" />
-							</svg>
-						</button>
-					</div>
+							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+							<polyline points="15 6 9 12 15 18" />
+						</svg>
+					</button>
+					<span
+						aria-live="polite"
+						className="focus:outline-none text-xl font-bold px-4"
+					>
+						{calendarData.monthName} {currentYear}
+					</span>
 
-					
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 lg:ml-12">
-						<div className="border rounded-md p-4 bg-white mx-auto lg:m">
-						
-							<table className="w-full table-auto mt-4 mx-auto">
-								<thead>
-									<tr>
-										{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
-											(day, index) => (
-												<th key={index}>
-													<div className="w-full flex justify-center">
-														<p className="text-base font-medium text-center ">
-															{day}
-														</p>
-													</div>
-												</th>
-											)
-										)}
-									</tr>
-								</thead>
-								<tbody>{renderDays()}</tbody>
-							</table>
-						</div>
+					<button
+						aria-label="Next month"
+						className="focus:text-gray-400 hover:text-gray-400 text-gray-800 "
+						onClick={handleNextMonth}
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="icon icon-tabler icon-tabler-chevron-right"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							strokeWidth="1.5"
+							stroke="currentColor"
+							fill="none"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+							<polyline points="9 6 15 12 9 18" />
+						</svg>
+					</button>
+				</div>
+
+				<div className="mt-6 w-[90%] mx-auto">
+					<div className="border rounded-md p-4 bg-white mx-auto lg:m">
+						<table className="w-full table-auto mt-4 mx-auto">
+							<thead>
+								<tr>
+									{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+										(day, index) => (
+											<th key={index}>
+												<div className="w-full flex justify-center">
+													<p className="text-base font-medium text-center ">
+														{day}
+													</p>
+												</div>
+											</th>
+										)
+									)}
+								</tr>
+							</thead>
+							<tbody>{renderDays()}</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
 		</div>
-
-
 	);
 };
 

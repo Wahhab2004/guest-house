@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import FeedbackForm from "@/components/FeedbackForm";
 import Review from "@/components/Review";
 import { useEffect, useState } from "react";
 import { fetchRoomById, Room } from "@/fetching";
@@ -48,10 +47,10 @@ export default function DetailProductPage() {
 			<main className=" w-11/12 mx-auto mt-28 mb-20 object-cover lg:w-[85%]">
 				<BookingForm room={room} />
 				<DetailRoom room={room} />
+				<Availibilty />
 				<Katalog />
 				<Facilities />
 				<Description />
-				<Availibilty />
 				<Location />
 				<RefundPolicy />
 				<Review />
