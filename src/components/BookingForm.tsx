@@ -1,18 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { format } from "date-fns";
+import { fetchReservations, Reservation, Room } from "@/fetching";
 
 const BookingForm = () => {
+	const [reservations, setReservations] = useState<Reservation[]>([]);
 	const [checkIn, setCheckIn] = useState("");
 	const [checkOut, setCheckOut] = useState("");
 	const [guests, setGuests] = useState(0);
-	const [results, setResults] = useState(null);
+	const [results, setResults] = useState<Reservation[]>([]);
 	const [isSearching, setIsSearching] = useState(false);
 
+	// Fething data
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const data = await fetchReservations();
+				setReservations(data);
+			} catch (error) {
+				console.error("Error fetching data:", error);
+			}
+		};
+
+		fetchData();
+	}, []);
+
 	const handleSearch = async () => {
-		// Validasi input
 		if (!checkIn || !checkOut || guests <= 0) {
 			alert("Please fill in all fields with valid data!");
 			return;
@@ -20,22 +35,35 @@ const BookingForm = () => {
 
 		setIsSearching(true);
 
+		const thisDay = new Date();
+		console.log(thisDay);
+
+
+
 		try {
-			// Fetch data berdasarkan input pengguna
-			const response = await fetch(
-				`/api/reservation?checkInDate=${checkIn}&checkOutDate=${checkOut}&guestId=${guests}`
+			// Konversi input user ke timestamp
+			const userCheckIn = new Date(checkIn).getTime();
+			const userCheckOut = new Date(checkOut).getTime();
+
+			// Ambil room ID yang *bentrok* dengan input user
+			const bookedRoomIds = reservations
+				.filter((res) => {
+					const resCheckIn = res.checkInDate.seconds * 1000;
+					const resCheckOut = res.checkOutDate.seconds * 1000;
+
+					const isOverlapping =
+						userCheckIn < resCheckOut && userCheckOut > resCheckIn;
+
+					return isOverlapping;
+				})
+				.map((res) => res.idRoom);
+
+			// Ambil reservasi yang TIDAK bentrok (berarti available)
+			const availableReservations = reservations.filter(
+				(res) => !bookedRoomIds.includes(res.idRoom)
 			);
-			const data = await response.json();
 
-			// Menampilkan hasil pencarian
-			console.log(data);
-
-			if (response.ok) {
-				setResults(data);
-			} else {
-				console.error("Error fetching rooms:", data.message);
-				setResults([]);
-			}
+			setResults(availableReservations);
 		} catch (error) {
 			console.error("Error during search:", error);
 			setResults([]);
@@ -138,9 +166,7 @@ const BookingForm = () => {
 					results.length > 0 ? (
 						<ul>
 							{results
-								.filter((room: any) => {
-
-									
+								.filter((room: Reservation) => {
 									// Konversi Firestore Timestamp ke Date
 									const roomCheckInDate = new Date(
 										room.checkInDate.seconds * 1000
@@ -149,11 +175,10 @@ const BookingForm = () => {
 										room.checkOutDate.seconds * 1000
 									);
 
-									const userCheckInDate = new Date(checkIn); // Input user
+									// Input user
+									const userCheckInDate = new Date(checkIn); 
 									const userCheckOutDate = new Date(checkOut);
 
-
-						
 									// Validasi konflik tanggal
 									const isDateConflict =
 										(userCheckInDate >= roomCheckInDate &&
@@ -165,7 +190,7 @@ const BookingForm = () => {
 
 									return !isDateConflict; // Tampilkan room yang tidak konflik
 								})
-								.map((room: any, index: number) => {
+								.map((room: Reservation, index: number) => {
 									// Konversi Firestore Timestamp ke Date untuk ditampilkan
 									const roomCheckIn = new Date(room.checkInDate.seconds * 1000);
 									const roomCheckOut = new Date(
@@ -175,7 +200,7 @@ const BookingForm = () => {
 									return (
 										<li key={index}>
 											<p>
-												{room.roomDetails.roomType}: Available from{" "}
+												{room.room.roomNumber}: Available from{" "}
 												{format(roomCheckIn, "yyyy-MM-dd")} to{" "}
 												{format(roomCheckOut, "yyyy-MM-dd")}
 											</p>
@@ -188,10 +213,6 @@ const BookingForm = () => {
 					)
 				) : null}
 			</div>
-
-
-
-			
 		</>
 	);
 };

@@ -7,13 +7,18 @@ import React, { useState, useEffect } from "react";
 // 	checkOutDate: { seconds: number; nanoseconds: number };
 // };
 
+type CalendarData = {
+	monthName: string;
+	days: number[];
+	firstDay: number;
+};
+
 const Calendar = () => {
 	const today = new Date();
 	const [currentMonthIndex, setCurrentMonthIndex] = useState(today.getMonth()); // Index bulan saat ini
 	const [currentYear] = useState(today.getFullYear()); // Tahun saat ini
-	const [selectedDate, setSelectedDate] = useState(null); // Menyimpan tanggal yang dipilih
+	const [selectedDate, setSelectedDate] = useState(0); // Menyimpan tanggal yang dipilih
 	const [reservations, setReservations] = useState<Reservation[]>([]);
-	const [tooltip, setTooltip] = useState<string | null>(null);
 
 	// Fething data
 	useEffect(() => {
@@ -40,21 +45,6 @@ const Calendar = () => {
 		});
 	};
 
-	const months = [
-		"January",
-		"February",
-		"March",
-		"April",
-		"May",
-		"June",
-		"July",
-		"August",
-		"September",
-		"October",
-		"November",
-		"December",
-	];
-
 	const handlePrevMonth = () => {
 		setCurrentMonthIndex((prevIndex) => (prevIndex === 0 ? 11 : prevIndex - 1));
 	};
@@ -63,11 +53,26 @@ const Calendar = () => {
 		setCurrentMonthIndex((prevIndex) => (prevIndex === 11 ? 0 : prevIndex + 1));
 	};
 
-	const handleSelectDate = (day: any) => {
+	const handleSelectDate = (day: number) => {
 		setSelectedDate(day);
 	};
 
 	useEffect(() => {
+		const months = [
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
+		];
+
 		// Setel bulan yang sesuai dengan tahun yang dipilih
 		const month = new Date(currentYear, currentMonthIndex, 1);
 		const firstDay = month.getDay(); // Hari pertama bulan tersebut
@@ -81,7 +86,7 @@ const Calendar = () => {
 		setCalendarData({ monthName: months[currentMonthIndex], days, firstDay });
 	}, [currentMonthIndex, currentYear]);
 
-	const [calendarData, setCalendarData] = useState({
+	const [calendarData, setCalendarData] = useState<CalendarData>({
 		monthName: "",
 		days: [],
 		firstDay: 0,

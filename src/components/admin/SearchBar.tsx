@@ -19,15 +19,23 @@ export default function SearchBar<T>({
 	const [searchQuery, setSearchQuery] = useState("");
 
 	// Utility untuk akses nested key, misal 'guest.name'
-	const getValueByPath = (obj: any, path: string): any => {
-		return path.split(".").reduce((acc, key) => acc?.[key], obj);
-	};
+
 
 	useEffect(() => {
 		if (!searchQuery) {
 			onSearchResult(data);
 			return;
 		}
+
+		const getValueByPath = (obj: T, path: string): unknown => {
+			return path.split(".").reduce<unknown>((acc, key) => {
+				if (typeof acc === "object" && acc !== null && key in acc) {
+					return (acc as Record<string, unknown>)[key];
+				}
+				return undefined;
+			}, obj);
+		};
+		
 
 		const result = data.filter((item) => {
 			const value = getValueByPath(item, searchField);
@@ -38,7 +46,7 @@ export default function SearchBar<T>({
 		});
 
 		onSearchResult(result);
-	}, [searchQuery, data]);
+	}, [searchQuery, data, searchField, onSearchResult]);
 
 	const handleClear = () => setSearchQuery("");
 
@@ -73,10 +81,12 @@ export default function SearchBar<T>({
 				{/* Loading or Clear Icon */}
 				{loading ? (
 					<Loader2 className="w-4 h-4 text-blue-500 animate-spin ml-2" />
-				) : searchQuery && (
-					<button onClick={handleClear}>
-						<X className="w-4 h-4 text-gray-400 hover:text-red-500 ml-2" />
-					</button>
+				) : (
+					searchQuery && (
+						<button onClick={handleClear}>
+							<X className="w-4 h-4 text-gray-400 hover:text-red-500 ml-2" />
+						</button>
+					)
 				)}
 			</div>
 		</div>

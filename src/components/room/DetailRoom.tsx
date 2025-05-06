@@ -1,6 +1,5 @@
 import { Room } from "@/fetching";
 import Image from "next/image";
-import Link from "next/link";
 import Calendar from "../Calendar";
 import FeedbackForm from "../FeedbackForm";
 import { useState } from "react";
@@ -8,8 +7,6 @@ import { useState } from "react";
 interface BookingFormProps {
 	room: Room | null;
 }
-
-const imageList = [];
 
 export default function DetailRoom({ room }: BookingFormProps) {
 	const fallbackImage = "/fallback-image.png";

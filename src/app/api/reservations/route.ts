@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
 			checkInDate: body.checkintDate || null,
 			checkOutDate: body.checkoutDate || null,
 			checkStatus: body.checkStatus || null,
-			numGuests: body.numGuests || 0,
+			numOfGuests: body.numOfGuests || 0,
 
 			confirmedCheckin: body.confirmedCheckin || null,
 			confirmedCheckout: body.confirmedCheckin || null,

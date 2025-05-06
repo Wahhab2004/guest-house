@@ -31,10 +31,11 @@ export default function RootLayout({
 		pathname.startsWith("/rooms/") ||
 		pathname.startsWith("/my-reservations/") ||
 		pathname.includes("/my-reservations") ||
+		pathname.includes("/login") ||
 		adminPage.some((path) => pathname.startsWith(path));
 
 
-    const hideFooter = adminPage.some((path) => pathname.startsWith(path));
+    const hideFooter = adminPage.some((path) => pathname.startsWith(path)) || pathname.includes("/login");
 
 	return (
 		<html lang="en">
