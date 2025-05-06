@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { format } from "date-fns";
-import { fetchReservations, Reservation, Room } from "@/fetching";
+import { fetchReservations, Reservation } from "@/fetching";
 
 const BookingForm = () => {
 	const [reservations, setReservations] = useState<Reservation[]>([]);

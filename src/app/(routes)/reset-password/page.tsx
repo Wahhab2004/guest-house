@@ -1,21 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function ResetPassword() {
-	const [showPassword, setShowPassword] = useState(false);
-	const [showConfirmPassword, setConfirmShowPassword] = useState(false);
-
-	const togglePasswordVisibility = () => {
-		setShowPassword((prev) => !prev);
-	};
-
-	const toggleConfirmPasswordVisibility = () => {
-		setConfirmShowPassword((prev) => !prev);
-	};
-
 	return (
 		<div className="min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-10">
 			<div className="w-full max-w-4xl flex flex-col md:flex-row border shadow-xl rounded-lg">

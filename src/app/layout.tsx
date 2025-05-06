@@ -25,13 +25,14 @@ export default function RootLayout({
 }) {
 	const pathname = usePathname();
 	const adminPage = ["/dasbor", "/checkin","/checkout", "/guest-reservation", "/room", "/guest-history", "/guest-book"];
+	const loginPage = ["/login", "/register", "/reset-password"];
 
 	// Hide Navbar on specific paths
 	const hideNavbar =
 		pathname.startsWith("/rooms/") ||
 		pathname.startsWith("/my-reservations/") ||
 		pathname.includes("/my-reservations") ||
-		pathname.includes("/login") ||
+		loginPage.some((path) => pathname.startsWith(path)) ||
 		adminPage.some((path) => pathname.startsWith(path));
 
 
