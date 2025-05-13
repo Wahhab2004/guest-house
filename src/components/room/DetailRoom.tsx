@@ -46,7 +46,7 @@ export default function DetailRoom({ room }: BookingFormProps) {
 						<div
 							key={index}
 							onClick={() => setMainImage(src)}
-							className={`cursor-pointer flex-shrink-0 rounded-xl overflow-hidden border-2 ${
+							className={`cursor-pointer flex-shrink-0 rounded-xl overflow-hidden border-2 h-[100px] object-center ${
 								mainImage === src ? "border-blue-500" : "border-transparent"
 							}`}
 						>
@@ -55,7 +55,7 @@ export default function DetailRoom({ room }: BookingFormProps) {
 								alt={`Room ${index + 1}`}
 								width={150}
 								height={100}
-								className="rounded-xl object-cover"
+								className="rounded-xl object-center"
 							/>
 						</div>
 					))}

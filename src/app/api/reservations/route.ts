@@ -1,5 +1,11 @@
 import { Account, Payments, Reservation, Room } from "@/fetching";
-import { deleteData, retrieveData, retrieveDataById, saveData, updateData } from "@/lib/service";
+import {
+	deleteData,
+	retrieveData,
+	retrieveDataById,
+	saveData,
+	updateData,
+} from "@/lib/service";
 import { NextRequest, NextResponse } from "next/server";
 
 // Mengambil data
@@ -115,7 +121,7 @@ export async function POST(request: NextRequest) {
 			},
 
 			guest: {
-				id: "",
+				id: body.idGuest,
 				name: "",
 				username: "",
 				gender: "",
@@ -153,7 +159,7 @@ export async function POST(request: NextRequest) {
 			paymentStatus: "",
 		};
 
-		await saveData("Reservations", newReservation); // kamu bisa sesuaikan dengan fungsimu
+		await saveData("Reservations", newReservation);
 
 		return NextResponse.json({
 			status: 201,
@@ -176,13 +182,21 @@ export async function PUT(request: NextRequest) {
 		const { searchParams } = new URL(request.url);
 		const id = searchParams.get("id");
 		if (!id) {
-			return NextResponse.json({ status: 400, message: "Missing ID", data: {} });
+			return NextResponse.json({
+				status: 400,
+				message: "Missing ID",
+				data: {},
+			});
 		}
 
 		const updates = await request.json();
 		const existing = await retrieveDataById<Reservation>("Reservations", id);
 		if (!existing) {
-			return NextResponse.json({ status: 404, message: "Reservation Not Found", data: {} });
+			return NextResponse.json({
+				status: 404,
+				message: "Reservation Not Found",
+				data: {},
+			});
 		}
 
 		const updatedReservation = { ...existing, ...updates };
@@ -211,12 +225,20 @@ export async function DELETE(request: NextRequest) {
 		const id = searchParams.get("id");
 
 		if (!id) {
-			return NextResponse.json({ status: 400, message: "Missing ID", data: {} });
+			return NextResponse.json({
+				status: 400,
+				message: "Missing ID",
+				data: {},
+			});
 		}
 
 		const existing = await retrieveDataById<Reservation>("Reservations", id);
 		if (!existing) {
-			return NextResponse.json({ status: 404, message: "Reservation Not Found", data: {} });
+			return NextResponse.json({
+				status: 404,
+				message: "Reservation Not Found",
+				data: {},
+			});
 		}
 
 		await deleteData("Reservations", id); // sesuaikan fungsi delete-mu

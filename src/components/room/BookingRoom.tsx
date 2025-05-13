@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Room } from "@/fetching";
 import Image from "next/image";
+import Link from "next/link";
 
 interface BookingFormProps {
 	room: Room | null;
@@ -33,6 +34,8 @@ export default function BookingForm({ room }: BookingFormProps) {
 		const { name, value } = e.target;
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
+
+	
 
 	return (
 		<div className="float-right p-6 rounded-lg border">
@@ -140,7 +143,7 @@ export default function BookingForm({ room }: BookingFormProps) {
 				</div>
 
 				<div className="flex items-center">
-					<label className="text-gray-600 text-lg w-full" >Total Guests</label>
+					<label className="text-gray-600 text-lg w-full">Total Guests</label>
 					<input
 						type="text"
 						value={totalGuests}
@@ -149,7 +152,7 @@ export default function BookingForm({ room }: BookingFormProps) {
 					/>
 				</div>
 
-                <div className="mt-10 bg-gray-400 w-full h-[1px]" />
+				<div className="mt-10 bg-gray-400 w-full h-[1px]" />
 
 				<div className="flex items-center">
 					<label className="text-gray-600 text-lg">Total Payment</label>
@@ -165,7 +168,7 @@ export default function BookingForm({ room }: BookingFormProps) {
 					type="submit"
 					className="w-full bg-blue-700 text-white px-4 py-2 font-semibold rounded hover:bg-blue-800 "
 				>
-					Book Now
+					<Link href="/my-reservations/reservations/personal-info">Book Now</Link>
 				</button>
 			</form>
 		</div>
