@@ -17,6 +17,7 @@ export default function MyReservations() {
 
 	return (
 		<section>
+
 			<div className="h-screen flex justify-center mt-28">
 				{!isLoggedIn ? (
 					<div className="text-center w-11/12 mx-auto">

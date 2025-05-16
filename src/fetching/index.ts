@@ -1,3 +1,4 @@
+
 // Room
 export interface Room {
 	pricePerNight: number;
@@ -34,9 +35,6 @@ export interface Review {
 export interface Reservation {
 	checkStatus: string;
 	numOfGuests: number;
-	// Nanti mungkin bisa diubah
-	confirmedCheckout: { seconds: number; nanoseconds: number };
-	confirmedCheckin: { seconds: number; nanoseconds: number };
 	dateReservation: { seconds: number; nanoseconds: number };
 	id: string;
 	idAccount: string;
@@ -45,11 +43,10 @@ export interface Reservation {
 	idRoom: string;
 	room: Room;
 	payment: Payments;
-	idGuest: string;
-	checkInDate: { seconds: number; nanoseconds: number };
-	checkOutDate: { seconds: number; nanoseconds: number };
-	paymentId: string;
+	checkInDate: string;
+	checkOutDate: string;
 	paymentStatus: string;
+	totalPayment: number; // Menambahkan totalPayment di sini
 }
 
 // Account
@@ -83,6 +80,21 @@ export const fetchReservations = async (): Promise<Reservation[]> => {
 	}
 };
 
+export const fetchReservationById = async (id: string): Promise<Reservation | null> => {
+	try {
+		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+		const response = await fetch(`${baseUrl}/reservations?id=${id}`, {
+			cache: "no-store",
+		});
+		const jsonData = await response.json();
+
+		return jsonData.data as Reservation;
+	} catch (error) {
+		console.error("Error fetching reservation by ID:", error);
+		return null;
+	}
+};
+
 export const fetchRooms = async (): Promise<Room[]> => {
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -112,3 +124,36 @@ export const fetchRoomById = async (id: string): Promise<Room | null> => {
 		return null;
 	}
 };
+
+export const fetchAccount = async (): Promise<Account[]> => {
+	try {
+		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+		const response = await fetch(`${baseUrl}/guests`, {
+			cache: "no-store",
+		});
+		const jsonData = await response.json();
+
+		return jsonData.data as Account[];
+	} catch (error) {
+		console.error("Error fetching reservations:", error);
+		return [];
+	}
+};
+
+
+
+export const fetchpPayments= async (): Promise<Payments[]> => {
+	try {
+		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+		const response = await fetch(`${baseUrl}/payments`, {
+			cache: "no-store",
+		});
+		const jsonData = await response.json();
+
+		return jsonData.data as Payments[];
+	} catch (error) {
+		console.error("Error fetching reservations:", error);
+		return [];
+	}
+};
+

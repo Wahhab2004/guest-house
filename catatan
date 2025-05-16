@@ -8,31 +8,39 @@ Completed ✔️✔️
 2. 
 
 
+All To Do List
+1. 
+
 To Do List May 4 - 11
-1. Bug fixing run build
-2. Frontend halaman login, reset password, send notification
+1. Bug fixing run build ✔️
+2. Frontend halaman login ✔️, reset password✔️, send notification 
 3. Operasi CRUD --> Menyimpan data reservasi, login, google
 4. Membenahi database --> Reservation ✔️
 5. Pertimbangkan apakah room perlu pakai API ? (Berhubung cuman 3 rooms aja) ✔️
 6. Fix design calendar ✔️ (perlu penyesuaian warna aja si.)
 7. Optimize searching guest by name in reservation, book, and history ✔️
-8. Menyambungkan data dari klien ke BE. Kek fungsional dari create.
-9. Middleware
-10. Buat akun pengguna
+8. Middleware
+9. Buat akun pengguna
 
 
+Important not Urgent
+1. Bug fixing run build ✔️
+2. Deploy to vercel ✔️
+3. Debugging Booking form on home pages 
+4. Perbaikan agar ketika masuk ke detail room, gambar otomatis terload
 
-Urgent & Important
-1. Frontend:  Login - Register -  Reset password - Send notification
-2. Connecting reservation to BE
+To Do List | May 14:
+1. Mengambil reservasi berdasarkan id ✔️
+2. Mengatur logika untuk guest atau akun:
+    2.1. Pengisian data pengguna itu berdasarkan banyak nya guests.
+3. Memastikan data reservasi terisi semua (personal-info, booking-details, payments)
+4. Booking info merge to personal-info (Detail Pemesanan)
 
-Importnt not Urgent
-1. Bug fixing run build
-2. Deploy to vercel
-3. Debugging Booking form on home pages
+## Debugging
+1. Tombol confirm di order detail tidak berfungsi dgn baik. Dia tidak ada tombol pengingat untuk mengisi data guest.
 
 
-To do list May 4 - 11
+##########################################
 
 
 ## ADMIN
@@ -68,3 +76,8 @@ To do list May 4 - 11
 
 ## Pertanyaan ke marsha
 1. Apa perbedaan see detail pada check in/out dengan reservation?
+2. Apa perbedaan Reservation[] dengan Reservations
+
+
+## Catatan
+1. Kalau semua udah selesai, mungkin fecthing data API bisa dipilah lagi. Jadi, tidak semua data diambil.

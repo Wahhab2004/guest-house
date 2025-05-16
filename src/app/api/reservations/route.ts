@@ -1,4 +1,4 @@
-import { Account, Payments, Reservation, Room } from "@/fetching";
+import { Account, fetchReservations, Payments, Reservation, Room } from "@/fetching";
 import {
 	deleteData,
 	retrieveData,
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
 		const body = await request.json();
 
 		// Validasi sederhana
-		if (!body.idPayment || !body.idRoom || !body.idAccount) {
+		if (!body.idRoom || !body.checkInDate || !body.checkOutDate || !body.numOfGuests || !body.idAccount) {
 			return NextResponse.json({
 				status: 400,
 				message: "Missing required fields",
@@ -103,61 +103,31 @@ export async function POST(request: NextRequest) {
 			});
 		}
 
+		const generateReservationId = async () : Promise<string> => {
+			const reservations = await fetchReservations();
+
+			const reservationIds = reservations
+			.map((res) => res.id)
+			.filter((id) => /^RE\d+$/.test(id));
+
+			const numericIds = reservationIds.map((id) =>
+			parseInt(id.replace("RE", ""), 10));
+
+			const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
+
+			const newIdNumber = maxId + 1;
+			const newId = `RE${newIdNumber.toString().padStart(4, "0")}`;
+
+			return newId;
+			
+		}
+
+		
+
 		const newReservation: Reservation = {
-			id: crypto.randomUUID(),
-			idPayment: body.idPayment,
-			idRoom: body.idRoom,
-			idAccount: body.idAccount,
-			checkInDate: body.checkintDate || null,
-			checkOutDate: body.checkoutDate || null,
-			checkStatus: body.checkStatus || null,
-			numOfGuests: body.numOfGuests || 0,
-
-			confirmedCheckin: body.confirmedCheckin || null,
-			confirmedCheckout: body.confirmedCheckin || null,
-			dateReservation: {
-				seconds: 0,
-				nanoseconds: 0,
-			},
-
-			guest: {
-				id: body.idGuest,
-				name: "",
-				username: "",
-				gender: "",
-				dataOfBirth: "",
-				phoneNumber: "",
-				photoProfile: "",
-				email: "",
-				password: "",
-				passport: "",
-				country: "",
-				role: "",
-			},
-
-			room: {
-				id: "",
-				pricePerNight: 0,
-				image: "",
-				rating: 0,
-				roomNumber: "",
-				roomStatus: "",
-			},
-
-			payment: {
-				id: "",
-				idReservation: "",
-				totalAmountPaid: 0,
-				paymentMethod: "",
-				paymentStatus: "",
-				proofOfPayment: "",
-				sender: "",
-			},
-
-			idGuest: "",
-			paymentId: "",
-			paymentStatus: "",
-		};
+			id: await generateReservationId(),
+			...body,
+		}
 
 		await saveData("Reservations", newReservation);
 

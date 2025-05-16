@@ -23,7 +23,7 @@ const NavbarReservation = () => {
 
 				<ul className="flex items-center md:mr-5 mr-0 text-gray-400 text-xs lg:text-sm">
 					<li className="md:mr-5">
-						<Link href="/my-reservations/reservations/personal-info">
+						<Link href="/my-reservations/reservations#personal-info">
 							<p
 								className={`mr-2 cursor-pointer text-gray-400 hover:text-gray-600 hover:font-semibold ${
 								 pathReservations
@@ -76,7 +76,6 @@ const NavbarReservation = () => {
 				</ul>
 			</div>
 
-			{/* Navigation Links */}
 		</nav>
 	);
 };

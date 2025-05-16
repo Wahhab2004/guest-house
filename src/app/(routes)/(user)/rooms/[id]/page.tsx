@@ -23,6 +23,7 @@ export default function DetailProductPage() {
 		const fetchRoomsId = async () => {
 			if (!id) return;
 			const data = await fetchRoomById(String(id));
+			console.log(data)
 			setRoom(data);
 		};
 		fetchRoomsId();
@@ -45,7 +46,7 @@ export default function DetailProductPage() {
 			</nav>
 
 			<main className=" w-11/12 mx-auto mt-28 mb-20 object-cover lg:w-[85%]">
-				<BookingForm room={room} />
+				<BookingForm room={room} id={id} />
 				<DetailRoom room={room} />
 				<Availibilty />
 				<Katalog />

@@ -64,7 +64,7 @@ const Navbar = () => {
 						</Link>
 					</li>
 					<li className="md:mr-5">
-						<Link href="/my-reservations/reservations/personal-info">
+						<Link href="/my-reservations/reservations#personal-info">
 							<p className={`py-2 px-4 cursor-pointer  hover:underline ${pathname === "/my-reservations" ? "underline" : ""}`}>
 								My Reservations
 							</p>

@@ -2,12 +2,11 @@ import Image from "next/image";
 
 export default function SummaryBooking() {
 	return (
-		<section className="h-full my-10 mb-40">
+		<section className="h-full my-10 mb-40" id="summary-booking">
 			<main className="w-11/12 mx-auto ">
-				<h1 className="text-xl font-bold text-center text-blue-900 w-2/3 mx-auto">
+				<h1 className="text-xl lg:text-3xl font-bold text-center mt-10 text-blue-900">
 					Payment Verification in Progress
 				</h1>
-
 				<Image
 					src="/svg/timer.svg"
 					height={64}
