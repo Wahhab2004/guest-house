@@ -36,7 +36,7 @@ export default function Home() {
 				</section>
 
 				{/* Booking Form */}
-				<BookingForm />
+				{/* <BookingForm /> */}
 
 				{/* Main Section */}
 				<div className="w-11/12 mx-auto">

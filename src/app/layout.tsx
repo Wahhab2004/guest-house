@@ -11,8 +11,6 @@ const geistSans = Geist({
 	subsets: ["latin"],
 });
 
-
-
 const geistMono = Geist_Mono({
 	variable: "--font-geist-mono",
 	subsets: ["latin"],
@@ -24,19 +22,25 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	const pathname = usePathname();
-	const adminPage = ["/dasbor", "/checkin","/checkout", "/guest-reservation", "/room", "/guest-history", "/guest-book"];
+	const adminPage = [
+		"/dasbor",
+		"/checkin",
+		"/checkout",
+		"/guest-reservation",
+		"/room/",
+		"/guest-history",
+		"/guest-book",
+	];
 	const loginPage = ["/login", "/register", "/reset-password"];
 
 	// Hide Navbar on specific paths
-	const hideNavbar =
-		pathname.startsWith("/rooms/") ||
-		pathname.startsWith("/my-reservations/") ||
-		pathname.includes("/my-reservations") ||
-		loginPage.some((path) => pathname.startsWith(path)) ||
-		adminPage.some((path) => pathname.startsWith(path));
+	const hideNavbar = [...adminPage, ...loginPage, "/my-reservations"].some(
+		(path) => pathname.startsWith(path)
+	);
 
-
-    const hideFooter = adminPage.some((path) => pathname.startsWith(path)) || pathname.includes("/login");
+	const hideFooter =
+		adminPage.some((path) => pathname.startsWith(path)) ||
+		pathname.includes("/login");
 
 	return (
 		<html lang="en">
@@ -45,11 +49,8 @@ export default function RootLayout({
 			>
 				{!hideNavbar && <Navbar />}
 
-
-
 				{children}
-        {!hideFooter && <Footer />}
-				
+				{!hideFooter && <Footer />}
 			</body>
 		</html>
 	);

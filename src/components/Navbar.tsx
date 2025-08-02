@@ -2,30 +2,28 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import {usePathname} from "next/navigation";
-import './styles/style.css';
+import { usePathname } from "next/navigation";
+import "./styles/style.css";
 
 const Navbar = () => {
 	const [isOpen, setIsOpen] = useState(false);
+	const pathname = usePathname();
+
 	const toggleMenu = () => setIsOpen(!isOpen);
 
-
-    const pathname = usePathname();
-
+	const isActive = (path: string) => pathname === path;
 
 	return (
-		<nav className="fixed top-0 left-0 right-0 z-50 w-full bg-gray-100 shadow">
-			<div className="flex items-center justify-between p-4 mx-10 lg:mx-2 ">
+		<nav className="fixed top-0 left-0 right-0 z-50 w-full shadow">
+			<div className="flex items-center justify-between py-4 px-6 shadow-lg bg-black/50">
 				{/* Logo */}
 				<Link href="/">
-					<p className="text-2xl font-bold hover:text-gray-200 cursor-pointer">
-						Guest House Ryosuke
-					</p>
+					<p className="text-xl font-bold text-white">Guest House Ryosuke</p>
 				</Link>
 
-				{/* Mobile menu button */}
+				{/* Mobile Menu Button */}
 				<button
-					className="md:hidden text-white focus:outline-none "
+					className="md:hidden text-white focus:outline-none"
 					onClick={toggleMenu}
 				>
 					<svg
@@ -43,48 +41,81 @@ const Navbar = () => {
 						/>
 					</svg>
 				</button>
-				{/* Navigation Links */}
+
+				{/* Navigation Menu */}
 				<ul
-					className={`md:flex md:items-center md:justify-between p-6 md:p-0 absolute md:relative w-full md:w-auto bg-gray-900 md:bg-transparent transition-all duration-500 ease-in-out ${
-						isOpen ? "top-16 left-0 right-0" : "hidden md:flex"
+					className={`md:flex md:items-center md:justify-between absolute md:relative bg-black/40 md:bg-transparent transition-all duration-500 ease-in-out text-white text-xs md:text-sm lg:text-base w-full md:w-auto ${
+						isOpen ? "top-[3.8rem] left-0 right-0 md:top-0" : "hidden md:flex"
 					}`}
 				>
-					<li className="md:mr-5">
+					<li>
 						<Link href="/">
-							<p className={`py-2 px-4 cursor-pointer  hover:underline ${pathname === "/" ? "underline" : ""}`}>
+							<p
+								className={`py-2 px-4 hover:scale-x-105 ${
+									isActive("/") ? "rounded-lg border border-2" : ""
+								}`}
+							>
 								Home
 							</p>
 						</Link>
 					</li>
-					<li className="md:mr-5 ">
-						<Link href="/rooms " className="">
-							<p className={`py-2 px-4 cursor-pointer  hover:underline ${pathname === "/rooms" ? "underline" : ""}`}>
+
+					<li>
+						<Link href="/rooms">
+							<p
+								className={`py-2 px-4 hover:scale-x-105 ${
+									isActive("/rooms") ? "rounded-lg border border-2" : ""
+								}`}
+							>
 								Rooms
 							</p>
 						</Link>
 					</li>
-					<li className="md:mr-5">
+
+					<li>
 						<Link href="/my-reservations/reservations#personal-info">
-							<p className={`py-2 px-4 cursor-pointer  hover:underline ${pathname === "/my-reservations" ? "underline" : ""}`}>
+							<p
+								className={`py-2 px-4 hover:scale-x-105 ${
+									isActive("/my-reservations") ? "rounded-lg border border-2" : ""
+								}`}
+							>
 								My Reservations
 							</p>
 						</Link>
 					</li>
-					<li className="md:mr-5 ml-4 mt-4 md:mt-0">
+
+					{/* Mobile Buttons */}
+					<li className="md:hidden mt-2">
 						<Link href="/sign-up">
-							<button className="block md:inline-block font-semibold border-2 border-black rounded-full py-2 px-6 hover:bg-white hover:text-black cursor-pointer w-[35%] lg:w-full">
-								Sign up
+							<button className="w-full border-2 border-white text-white font-bold rounded-full py-2 hover:bg-white hover:text-black">
+								Sign Up
 							</button>
 						</Link>
 					</li>
-					<li className="md:mr-5 ml-4 mt-4 md:mt-0">
+
+					<li className="md:hidden mt-2">
 						<Link href="/login">
-							<button className="block md:inline-block bg-black text-white text-black font-semibold rounded-full py-2 px-7 hover:bg-gray-400 hover:text-white cursor-pointer w-[35%] lg:w-full">
+							<button className="w-full bg-white text-black font-bold rounded-full py-2 hover:bg-transparent hover:border-2 hover:text-white">
 								Login
 							</button>
 						</Link>
 					</li>
 				</ul>
+
+				{/* Desktop Buttons */}
+				<div className="hidden md:flex gap-2 text-xs md:text-sm">
+					<Link href="/sign-up">
+						<button className="font-bold border-2 text-white border-white rounded-full py-2 w-[150px] hover:bg-white hover:text-black">
+							Sign Up
+						</button>
+					</Link>
+
+					<Link href="/login">
+						<button className="bg-white text-black font-bold rounded-full py-2 w-[150px] hover:border hover:bg-transparent hover:border-2 hover:text-white">
+							Login
+						</button>
+					</Link>
+				</div>
 			</div>
 		</nav>
 	);
