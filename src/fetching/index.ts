@@ -1,12 +1,11 @@
-
 // Room
 export interface Room {
-	pricePerNight: number;
-	image: string;
 	id: string;
-	rating: number;
-	roomNumber: string;
-	roomStatus: string;
+	name: string;
+	description: string;
+	price: number;
+	status: string;
+	photoUrl: string;
 }
 
 // Payment
@@ -48,7 +47,7 @@ export interface Reservation {
 	checkInDate: string;
 	checkOutDate: string;
 	paymentStatus: string;
-	totalPayment: number; 
+	totalPayment: number;
 }
 
 // Account
@@ -82,7 +81,9 @@ export const fetchReservations = async (): Promise<Reservation[]> => {
 	}
 };
 
-export const fetchReservationById = async (id: string): Promise<Reservation | null> => {
+export const fetchReservationById = async (
+	id: string
+): Promise<Reservation | null> => {
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 		const response = await fetch(`${baseUrl}/reservations?id=${id}`, {
@@ -100,7 +101,7 @@ export const fetchReservationById = async (id: string): Promise<Reservation | nu
 export const fetchRooms = async (): Promise<Room[]> => {
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-		const response = await fetch(`${baseUrl}/room`, {
+		const response = await fetch(`${baseUrl}/rooms`, {
 			cache: "no-store",
 		});
 		const jsonData = await response.json();
@@ -142,9 +143,7 @@ export const fetchAccount = async (): Promise<Account[]> => {
 	}
 };
 
-
-
-export const fetchPayments= async (): Promise<Payments[]> => {
+export const fetchPayments = async (): Promise<Payments[]> => {
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 		const response = await fetch(`${baseUrl}/payments`, {
@@ -158,4 +157,3 @@ export const fetchPayments= async (): Promise<Payments[]> => {
 		return [];
 	}
 };
-
