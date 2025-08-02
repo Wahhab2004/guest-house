@@ -1,6 +1,6 @@
 "use client";
 
-import ConvertDate from "@/components/ConvertDate";
+import formatDateIndo from "@/components/format-tanggal/formatTanggal";
 import { Reservation, fetchReservations } from "@/fetching";
 import React, { useEffect, useState } from "react";
 
@@ -84,7 +84,7 @@ const CheckInOut = () => {
 										<td className="px-4 py-2">{item.guest.name}</td>
 										<td className="px-4 py-2">{item.room.roomNumber}</td>
 										<td className="px-4 py-2">
-											{ConvertDate(item.checkInDate)}
+											{formatDateIndo(item.checkInDate)}
 										</td>
 										<td className="px-4 py-2">
 											¥{item.payment.totalAmountPaid}
@@ -169,7 +169,7 @@ const CheckInOut = () => {
 										<td className="px-4 py-2">{item.guest.name}</td>
 										<td className="px-4 py-2">{item.room.roomNumber}</td>
 										<td className="px-4 py-2">
-											{ConvertDate(item.checkOutDate)}
+											{formatDateIndo(item.checkOutDate)}
 										</td>
 										<td className="px-4 py-2">
 											¥{item.payment.totalAmountPaid}

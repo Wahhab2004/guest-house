@@ -5,8 +5,9 @@ import {
 	saveData,
 	updateData,
 	deleteData,
-} from "@/lib/service"; // pastikan path ini sesuai
-import { fetchpPayments, Payments } from "@/fetching";
+} from "@/lib/service"; 
+import { generatePaymentIds } from "@/components/generateId";
+import { Payments } from "@/fetching";
 
 // ✅ [GET] Ambil semua data atau detail pembayaran berdasarkan id
 export async function GET(request: NextRequest) {
@@ -50,25 +51,6 @@ export async function POST(request: NextRequest) {
 				data: {},
 			});
 		}
-
-		const generatePaymentIds = async (): Promise<string> => {
-			const payments = await fetchpPayments();
-
-			const paymentIds = payments
-				.map((res) => res.id)
-				.filter((id) => /^PAY\d+$/.test(id));
-
-			const numericIds = paymentIds.map((id) =>
-				parseInt(id.replace("PAY", ""), 10)
-			);
-
-			const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
-
-			const newIdNumber = maxId + 1;
-			const newId = `PAY${newIdNumber.toString().padStart(4, "0")}`;
-
-			return newId;
-		};
 
 		const newPayment: Payments = {
 			id: await generatePaymentIds(),

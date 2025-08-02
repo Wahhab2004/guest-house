@@ -1,4 +1,5 @@
-import { Account, fetchReservations, Payments, Reservation, Room } from "@/fetching";
+import generateReservationId from "@/components/generateId";
+import { Account, Payments, Reservation, Room } from "@/fetching";
 import {
 	deleteData,
 	retrieveData,
@@ -95,7 +96,12 @@ export async function POST(request: NextRequest) {
 		const body = await request.json();
 
 		// Validasi sederhana
-		if (!body.idRoom || !body.checkInDate || !body.checkOutDate || !body.numOfGuests || !body.idAccount) {
+		if (
+			!body.idRoom ||
+			!body.checkInDate ||
+			!body.checkOutDate ||
+			!body.numOfGuests 
+		) {
 			return NextResponse.json({
 				status: 400,
 				message: "Missing required fields",
@@ -103,31 +109,10 @@ export async function POST(request: NextRequest) {
 			});
 		}
 
-		const generateReservationId = async () : Promise<string> => {
-			const reservations = await fetchReservations();
-
-			const reservationIds = reservations
-			.map((res) => res.id)
-			.filter((id) => /^RE\d+$/.test(id));
-
-			const numericIds = reservationIds.map((id) =>
-			parseInt(id.replace("RE", ""), 10));
-
-			const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
-
-			const newIdNumber = maxId + 1;
-			const newId = `RE${newIdNumber.toString().padStart(4, "0")}`;
-
-			return newId;
-			
-		}
-
-		
-
 		const newReservation: Reservation = {
 			id: await generateReservationId(),
 			...body,
-		}
+		};
 
 		await saveData("Reservations", newReservation);
 

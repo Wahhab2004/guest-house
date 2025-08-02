@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Reservation } from "@/fetching";
+import { useRouter } from "next/navigation";
 
 interface NavbarReservationProps {
 	reservation: Reservation | null;
@@ -29,6 +29,7 @@ export default function NavbarReservation({
 	const [showConfirm, setShowConfirm] = useState(false);
 	const router = useRouter();
 
+
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 	) => {
@@ -40,27 +41,29 @@ export default function NavbarReservation({
 	};
 
 
-	const handleUpdateReservation = async () => {
+	const handleUpdateGuest = async () => {
 		try {
-			const response = await fetch(`/api/reservations?id=${reservation?.id}`, {
+			const response = await fetch(`/api/guests?id=${reservation?.idAccount}`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
 					...formData,
-					idAccount: "ACC10",
 				}),
 			});
 
 			const result = await response.json();
 
 			if (response.ok) {
-				alert("Reservasi berhasil diperbarui");
+				alert("Akun berhasil diperbarui");
 				console.log("Hasil update:", result.data);
 			} else {
 				alert(`Gagal update: ${result.message}`);
 			}
+			
+
+			router.push("/my-reservations/reservations#payment");
 		} catch (error) {
 			console.error("Error:", error);
 			alert("Terjadi kesalahan saat mengupdate");
@@ -86,7 +89,7 @@ export default function NavbarReservation({
 						</label>
 						<p className="ml-2 text-sm mb-1 lg:mb-0">Use My Profile Data</p>
 					</div>
-					<form onSubmit={handleUpdateReservation}>
+					<form >
 						<div className="lg:flex lg:justify-between mt-4 ">
 							{/* Left Side */}
 							<div className="lg:w-[45%]">
@@ -197,7 +200,10 @@ export default function NavbarReservation({
 						{showConfirm && (
 							<ConfirmModal
 								onCancel={() => setShowConfirm(false)}
-								onConfirm={() => handleNavigate("payment")}
+								onConfirm={() => {
+									handleUpdateGuest();
+									setShowConfirm(false);
+								}}
 							/>
 						)}
 					</form>

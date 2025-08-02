@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Reservation } from "@/fetching";
-import { FormatTanggalIndoUser } from "@/components/formatTanggalIndo";
+import { FormatTanggalIndoUser } from "@/components/format tanggal/formatTanggalIndo";
 
 interface BookingDetailsProps {
 	reservation: Reservation | null;
@@ -9,7 +9,6 @@ interface BookingDetailsProps {
 
 export default function BookingDetails({
 	reservation,
-	handleNavigate,
 }: BookingDetailsProps) {
 	
 

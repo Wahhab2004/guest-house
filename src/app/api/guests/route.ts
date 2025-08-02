@@ -6,7 +6,8 @@ import {
 	updateData,
 	deleteData,
 } from "@/lib/service"; // ganti sesuai path-mu
-import { Account, fetchAccount } from "@/fetching";
+import { Account } from "@/fetching";
+import { generateGuestId } from "@/components/generateId";
 
 // ✅ GET: Ambil semua data Account / satu data Account (jika ada id)
 export async function GET(request: NextRequest) {
@@ -44,32 +45,13 @@ export async function POST(request: NextRequest) {
 
         // Validasi input
         // Pastikan semua field yang diperlukan ada
-		if (!body.id || !body.name || !body.email) {
+		if (!body.name) {
 			return NextResponse.json({
 				status: 400,
 				message: "Missing required fields",
 				data: {},
 			});
 		}
-
-		const generateGuestId = async (): Promise<string> => {
-			const guests = await fetchAccount();
-
-			const guestsIds = guests
-				.map((res) => res.id)
-				.filter((id) => /^AC\d+$/.test(id));
-
-			const numericIds = guestsIds.map((id) =>
-				parseInt(id.replace("AC", ""), 10)
-			);
-
-			const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
-
-			const newIdNumber = maxId + 1;
-			const newId = `AC${newIdNumber.toString().padStart(4, "0")}`;
-
-			return newId;
-		};
 
 		const newAccount: Account = {
 			id: await generateGuestId(),

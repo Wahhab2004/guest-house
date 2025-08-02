@@ -10,7 +10,7 @@ import { Timestamp } from "firebase/firestore";
 export default function GuestReservation() {
 	const [reservations, setReservations] = useState<Reservation[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	
+
 	const [filteredReservations, setFilteredReservations] =
 		useState(reservations);
 	const itemsPerPage = 15;
@@ -93,17 +93,33 @@ export default function GuestReservation() {
 		}
 	};
 
-	// Mengubah status pembayaran
-	const handleStatusChange = (id: string, newStatus: string) => {
+	const handleStatusChange = async (id: string, newStatus: string) => {
+		try {
+			const res = await fetch(`/api/reservations?id=${id}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					paymentStatus: newStatus,
+				}),
+			});
 
-		// Ini awal stts prevReserv: any
-		setFilteredReservations((prevReservations: Reservation[]) =>
-			prevReservations.map((reservation) =>
-				reservation.id === id
-					? { ...reservation, paymentStatus: newStatus }
-					: reservation
-			)
-		);
+			if (!res.ok) throw new Error("Failed to update reservation.");
+			const updatedReservation = await res.json();
+
+		
+			// Optionally, you can also update the reservations state
+			setReservations((prevReservations) =>
+				prevReservations.map((reservation) =>
+					reservation.id === id
+						? { ...reservation, paymentStatus: newStatus }
+						: reservation
+				)
+			);
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
 	return (
@@ -119,7 +135,7 @@ export default function GuestReservation() {
 				onSearchResult={(results) => setFilteredReservations(results)}
 				placeholder="Search by guest name"
 			/>
-			
+
 			<GuestReservationTable
 				getPaginatedData={getPaginatedData}
 				handleCheckStatusChange={handleCheckStatusChange}

@@ -29,7 +29,7 @@ export default function Reservations() {
 			console.log(data);
 		};
 		getReservationByID();
-	}, []);
+	}, );
 
 	const handleNavigate = (section: string) => {
 		setActiveSection(section);
@@ -48,7 +48,7 @@ export default function Reservations() {
 			case "summary-booking":
 				return <SummaryBooking />;
 			case "payment":
-				return <PaymentForm handleNavigate={handleNavigate} />;
+				return <PaymentForm handleNavigate={handleNavigate} reservation={reservation}/>;
 			default:
 				return (
 					<OrderDetails

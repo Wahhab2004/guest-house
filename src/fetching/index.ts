@@ -33,9 +33,11 @@ export interface Review {
 
 // Reservation
 export interface Reservation {
+	confirmedCheckout: any;
+	confirmedCheckin: any;
 	checkStatus: string;
 	numOfGuests: number;
-	dateReservation: { seconds: number; nanoseconds: number };
+	dateReservation: string;
 	id: string;
 	idAccount: string;
 	idPayment: string;
@@ -46,7 +48,7 @@ export interface Reservation {
 	checkInDate: string;
 	checkOutDate: string;
 	paymentStatus: string;
-	totalPayment: number; // Menambahkan totalPayment di sini
+	totalPayment: number; 
 }
 
 // Account
@@ -142,7 +144,7 @@ export const fetchAccount = async (): Promise<Account[]> => {
 
 
 
-export const fetchpPayments= async (): Promise<Payments[]> => {
+export const fetchPayments= async (): Promise<Payments[]> => {
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 		const response = await fetch(`${baseUrl}/payments`, {

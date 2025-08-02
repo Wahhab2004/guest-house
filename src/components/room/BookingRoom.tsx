@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Room } from "@/fetching";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { generateGuestId, generatePaymentIds } from "../generateId";
 
 interface BookingFormProps {
 	room: Room | null;
@@ -11,14 +12,28 @@ interface BookingFormProps {
 export default function BookingForm({ room, id }: BookingFormProps) {
 	const [guests, setGuests] = useState({ male: 0, female: 0 });
 	const [formData, setFormData] = useState({
+		idAccount: "",
+		idPayment: "",
 		checkInDate: "",
 		checkOutDate: "",
-		idAccount: "ACC10",
-		idPayment: "PAY10",
 		idRoom: id,
 		numOfGuests: 0,
-		totalPayment: 0,
 	});
+
+	useEffect(() => {
+		const generateIds = async () => {
+			const newIdAccount = await generateGuestId();
+			const newIdPayment = await generatePaymentIds();
+
+			setFormData((prev) => ({
+				...prev,
+				idAccount: newIdAccount,
+				idPayment: newIdPayment,
+			}));
+		};
+
+		generateIds();
+	}, []);
 
 	const totalGuests = guests.male + guests.female;
 	const totalPayment = (room?.pricePerNight || 0) * totalGuests;
@@ -42,52 +57,76 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
 
-
 	const handleSubmitAPI = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if(!id) {
+		if (!id) {
 			alert("Room data not available");
 			return;
 		}
 
 		try {
-			const res = await fetch("/api/reservations", {
+			// 1. Buat akun tamu (guest) terlebih dahulu
+			const resAcc = await fetch("/api/guests", {
 				method: "POST",
-				headers: {"Content-Type": "application/json"},
+				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					...formData,
-					numOfGuests: totalGuests,
-					totalPayment: totalPayment,
-					checkStatus: "pending",
-					paymentStatus: "unpaid",
-					dateReservation: new Date().toISOString(),
+					id: formData.idAccount,
+					name: "random", // ganti dengan formData.name kalau tersedia
 				}),
 			});
 
-			
+			if (!resAcc.ok) throw new Error("Failed to create guest account");
+			const resultAcc = await resAcc.json();
+			console.log("Guest created:", resultAcc);
 
-			if(!res.ok) throw new Error("Failled to create reservation");
+			// 2. Buat data pembayaran
+			const resPay = await fetch("/api/payments", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					id: formData.idPayment,
+					paymentStatus: "unpaid",
+					totalAmountPaid: totalPayment,
+				}),
+			});
+
+			if (!resPay.ok) throw new Error("Failed to create payment");
+			const resultPay = await resPay.json();
+			console.log("Payment created:", resultPay);
+
+			// 3. Buat reservasi, gunakan ID akun dan ID payment sebagai foreign key
+			const res = await fetch("/api/reservations", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					...formData,
+					idRoom: id,
+					numOfGuests: totalGuests,
+					checkStatus: "pending",
+					dateReservation: new Date().toISOString(),
+					idAccount: formData.idAccount,
+					idPayment: formData.idPayment,
+				}),
+			});
+
+			if (!res.ok) throw new Error("Failed to create reservation");
 			const result = await res.json();
 			const idReservation = result.data?.id;
-			console.log(idReservation)
 
 			alert("Reservasi berhasil dibuat!");
 			router.push(`/my-reservations/reservations?id=${idReservation}`);
-
-			// Cari tahu apakah ini tidak perlu direturn?
-			return result;
-		}
-
-		catch(error) {
+		} catch (error) {
 			console.error("Booking error:", error);
-			alert("Gagal membuat reservasi")
+			alert("Gagal membuat reservasi");
 		}
-	}
+	};
 
 	return (
 		<div className="float-right p-6 rounded-lg border">
-			<h1 className="text-lg text-center font-semibold text-[#1C2B38]">Booking {id}</h1>
+			<h1 className="text-lg text-center font-semibold text-[#1C2B38]">
+				Booking {id}
+			</h1>
 			<h2 className="text-center text-4xl font-bold text-[#4C5C6B] mt-6">
 				¥{room?.pricePerNight ? room.pricePerNight : "0"} / Night
 			</h2>
@@ -95,7 +134,9 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 			<form onSubmit={handleSubmitAPI} className="space-y-4 mt-10">
 				{/* Check-In / Check-Out */}
 				<div>
-					<label className="block mb-1 text-gray-600 text-lg">Check-in Date</label>
+					<label className="block mb-1 text-gray-600 text-lg">
+						Check-in Date
+					</label>
 					<input
 						type="date"
 						name="checkInDate"
@@ -107,7 +148,9 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 				</div>
 
 				<div>
-					<label className="block mb-1 text-gray-600 text-lg">Check-out Date</label>
+					<label className="block mb-1 text-gray-600 text-lg">
+						Check-out Date
+					</label>
 					<input
 						type="date"
 						name="checkOutDate"
@@ -121,7 +164,12 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 				{/* Info */}
 				<div className="mt-10 bg-gray-400 w-full h-[1px]" />
 				<div className="flex p-3 text-sm bg-blue-100 rounded mt-4 justify-evenly items-center text-blue-800">
-					<Image src="/svg/icon-warn-blue.svg" alt="room-1" width={16} height={16} />
+					<Image
+						src="/svg/icon-warn-blue.svg"
+						alt="room-1"
+						width={16}
+						height={16}
+					/>
 					<p>children under 3 years stay for free</p>
 				</div>
 
@@ -132,17 +180,41 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 						{/* Male */}
 						<div className="flex items-center space-x-2">
 							<span>👨</span>
-							<button type="button" onClick={() => handleGuestChange("male", -1)} className="px-2 py-1 border rounded">-</button>
+							<button
+								type="button"
+								onClick={() => handleGuestChange("male", -1)}
+								className="px-2 py-1 border rounded"
+							>
+								-
+							</button>
 							<span>{guests.male}</span>
-							<button type="button" onClick={() => handleGuestChange("male", 1)} className="px-2 py-1 border rounded">+</button>
+							<button
+								type="button"
+								onClick={() => handleGuestChange("male", 1)}
+								className="px-2 py-1 border rounded"
+							>
+								+
+							</button>
 						</div>
 
 						{/* Female */}
 						<div className="flex items-center space-x-2">
 							<span>👩</span>
-							<button type="button" onClick={() => handleGuestChange("female", -1)} className="px-2 py-1 border rounded">-</button>
+							<button
+								type="button"
+								onClick={() => handleGuestChange("female", -1)}
+								className="px-2 py-1 border rounded"
+							>
+								-
+							</button>
 							<span>{guests.female}</span>
-							<button type="button" onClick={() => handleGuestChange("female", 1)} className="px-2 py-1 border rounded">+</button>
+							<button
+								type="button"
+								onClick={() => handleGuestChange("female", 1)}
+								className="px-2 py-1 border rounded"
+							>
+								+
+							</button>
 						</div>
 					</div>
 				</div>
@@ -150,7 +222,12 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 				{/* Total Guest */}
 				<div className="flex items-center">
 					<label className="text-gray-600 text-lg w-full">Total Guests</label>
-					<input type="text" value={totalGuests} disabled className="text-end text-xl" />
+					<input
+						type="text"
+						value={totalGuests}
+						disabled
+						className="text-end text-xl"
+					/>
 				</div>
 
 				<div className="mt-10 bg-gray-400 w-full h-[1px]" />
@@ -158,11 +235,19 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 				{/* Total Payment */}
 				<div className="flex items-center">
 					<label className="text-gray-600 text-lg">Total Payment</label>
-					<input type="text" value={`¥ ${totalPayment.toLocaleString()}`} disabled className="text-end text-xl" />
+					<input
+						type="text"
+						value={`¥ ${totalPayment.toLocaleString()}`}
+						disabled
+						className="text-end text-xl"
+					/>
 				</div>
 
 				{/* Submit */}
-				<button type="submit" className="w-full bg-blue-700 text-white px-4 py-2 font-semibold rounded hover:bg-blue-800">
+				<button
+					type="submit"
+					className="w-full bg-blue-700 text-white px-4 py-2 font-semibold rounded hover:bg-blue-800"
+				>
 					Book Now
 				</button>
 			</form>

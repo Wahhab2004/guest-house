@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchReservations, Reservation } from "@/fetching";
-import ConvertDate from "@/components/ConvertDate";
 import SearchBar from "@/components/admin/SearchBar";
+import { FormatTanggalIndoUser } from "@/components/format-tanggal/formatTanggal";
+
 
 export default function CheckInOutPage() {
 	const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -73,17 +74,17 @@ export default function CheckInOutPage() {
 					<thead>
 						<tr>
 							{[
-								"Reservation ID",
-								"Guest Name",
-								"Date/Time Check In",
-								"Date/Time Check Out",
-								"Room Type",
-								"Total Amount Paid",
-								"Payment Method",
-								"Number of Guests",
-								"Detail",
+								"RESERVATION ID",
+								"GUEST NAME",
+								"DATE/TIME CHECK IN",
+								"DATE/TIME CHECK OUT",
+								"ROOM NUMBER",
+								"TOTAL PAYMENT",
+								"PAYMENT METHOD",
+								"GUESTS",
+								"DETAIL",
 							].map((header, idx) => (
-								<th key={idx} className="text-[#5D6679] font-semibold text-sm">
+								<th key={idx} className="text-[#5D6679] text-[10px] pr-2">
 									{header}
 								</th>
 							))}
@@ -94,19 +95,19 @@ export default function CheckInOutPage() {
 							getPaginatedData().map((reservation) => (
 								<tr
 									key={reservation.id}
-									className="text-gray-400 text-sm border-b"
+									className="text-gray-700 text-sm border-b"
 								>
 									<td className="py-4">{reservation.id}</td>
 									<td className="py-4">{reservation.guest.name}</td>
 									<td className="py-4">
-										{ConvertDate(reservation.checkInDate)}
+										{FormatTanggalIndoUser(reservation.checkInDate)}
 									</td>
 									<td className="py-4">
-										{ConvertDate(reservation.checkOutDate)}
+										{FormatTanggalIndoUser(reservation.checkOutDate)}
 									</td>
 									<td className="py-4">{reservation.room.roomNumber}</td>
 									<td className="py-4">
-										{reservation.payment.totalAmountPaid}
+										¥{reservation.payment.totalAmountPaid}
 									</td>
 									<td className="py-4">{reservation.payment.paymentMethod}</td>
 									<td className="py-4">{reservation.numOfGuests}</td>

@@ -1,5 +1,24 @@
+const formatDateIndo = (isoDateStr: string): string => {
+	const date = new Date(isoDateStr);
+
+	const hari = date.toLocaleDateString("id-ID", { weekday: "long" });
+	const tanggal = date.toLocaleDateString("id-ID", {
+		day: "2-digit",
+		month: "long",
+		year: "numeric",
+	});
+	const jam = date.toLocaleTimeString("id-ID", {
+		hour: "2-digit",
+		minute: "2-digit",
+		hour12: false,
+	});
+
+	return `${hari}, ${tanggal}, pukul ${jam}`;
+};
+export default formatDateIndo;
+
 // Cara 1
-export default function FormatTanggalIndoAdmin(tanggal: string) {
+export  function FormatTanggalIndoAdmin(tanggal: string) {
     const options: Intl.DateTimeFormatOptions = {
         weekday: "long",
         day: "2-digit",
