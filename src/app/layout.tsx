@@ -34,7 +34,7 @@ export default function RootLayout({
 	const loginPage = ["/login", "/register", "/reset-password"];
 
 	// Hide Navbar on specific paths
-	const hideNavbar = [...adminPage, ...loginPage, "/my-reservations"].some(
+	const hideNavbar = [...adminPage, ...loginPage, "/my-reservations", "/rooms/"].some(
 		(path) => pathname.startsWith(path)
 	);
 

@@ -2,7 +2,7 @@ import { Room } from "@/fetching";
 import Image from "next/image";
 import Calendar from "../Calendar";
 import FeedbackForm from "../FeedbackForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface BookingFormProps {
 	room: Room | null;
@@ -23,24 +23,33 @@ export default function DetailRoom({ room }: BookingFormProps) {
 
 	// Buat daftar image dengan room.image di awal (tanpa duplikat)
 	const fullImageList = [
-		room?.image || fallbackImage,
-		...additionalImages.filter((img) => img !== room?.image),
+		room?.photoUrl || fallbackImage,
+		...additionalImages.filter((img) => img !== room?.photoUrl),
 	];
 
-	const [mainImage, setMainImage] = useState<string>(fullImageList[0]);
+	const [mainImage, setMainImage] = useState<string | null>(null);
+
+	useEffect(() => {
+		const fallbackImage = "/fallback-image.png";
+		const images = [
+			room?.photoUrl || fallbackImage,
+			...additionalImages.filter((img) => img !== room?.photoUrl),
+		];
+		setMainImage(images[0]);
+	}, [room]);
 
 	return (
-		<div className="font-bold text-xl shadow w-[68%]">
+		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 font-bold text-xl shadow">
 			<Image
-				className="rounded-xl lg:h-[600px] object-cover w-full"
-				src={mainImage}
-				alt={room?.roomNumber || "Product image"}
+				className="rounded-xl object-cover w-full sm:max-w-xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto h-[300px] md:h-[500px] lg:h-[600px] xl:h-[700px]"
+				src={mainImage ?? fallbackImage}
+				alt={room?.name || "Product image"}
 				width={1000}
-				height={270}
+				height={500}
 			/>
 
 			{/* Carousel Thumbnail */}
-			<div className="overflow-x-auto whitespace-nowrap py-4 px-2 rounded-lg mt-4">
+			<div className="overflow-x-auto whitespace-nowrap py-4 px-2 rounded-lg mt-4 sm:max-w-xl md:max-w-3xl mx-auto">
 				<div className="flex gap-4">
 					{fullImageList.map((src, index) => (
 						<div
@@ -67,7 +76,7 @@ export default function DetailRoom({ room }: BookingFormProps) {
 
 export function Katalog() {
 	return (
-		<div className="mt-10">
+		<div className="mt-10 max-w-7xl mx-auto px-4 w-11/12 xl:w-full">
 			<p className="text-gray-600">
 				Download our room catalogue{" "}
 				<span className="italic text-blue-600 underline">here</span>
@@ -84,38 +93,18 @@ export function Availibilty() {
 					Check Availability
 				</h2>
 			</div>
-			
+
 			<Calendar />
-		</div>
-	);
-}
-
-export function Description() {
-	return (
-		<div className="mt-10">
-			<h2 className="font-semibold text-lg">Description</h2>
-
-			<p className="w-11/12 mx-auto mt-4 ">
-				Enjoy the perfect summer escape in our guest house, equipped with all
-				the essentials to make your stay comfortable and convenient. Cook your
-				favorite summer dishes in the fully equipped kitchen, keep your clothes
-				fresh with the washing machine, and store chilled drinks in the shared
-				refrigerator. Relax in the bathtub, freshen up with the provided towels,
-				toothbrush, and shampoo, or take advantage of the microwave, iron, and
-				hairdryer to keep your summer vibes on point. Whether you’re cooling off
-				after a sunny day or preparing for your next adventure, our thoughtfully
-				curated amenities ensure a carefree and refreshing summer experience.
-			</p>
 		</div>
 	);
 }
 
 export function Facilities() {
 	return (
-		<div className="mt-10 w-[68%]">
+		<div className="container mt-10 w-11/12 mx-auto max-w-7xl px-4 xl:w-full">
 			<h2 className="font-semibold text-lg">Facilities</h2>
 
-			<div className="grid grid-cols-4 gap-4 mt-4">
+			<div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 justify-items-center md:justify-items-start md:max-w-xl mx-auto">
 				<Image
 					src="/svg/kitchen.svg"
 					alt="kitchen"
@@ -182,10 +171,29 @@ export function Facilities() {
 		</div>
 	);
 }
+export function Description() {
+	return (
+		<div className="max-w-7xl mx-auto px-4 w-11/12 xl:w-full mt-10">
+			<h2 className="font-semibold text-lg">Description</h2>
+
+			<p className="w-11/12 mx-auto mt-4 ">
+				Enjoy the perfect summer escape in our guest house, equipped with all
+				the essentials to make your stay comfortable and convenient. Cook your
+				favorite summer dishes in the fully equipped kitchen, keep your clothes
+				fresh with the washing machine, and store chilled drinks in the shared
+				refrigerator. Relax in the bathtub, freshen up with the provided towels,
+				toothbrush, and shampoo, or take advantage of the microwave, iron, and
+				hairdryer to keep your summer vibes on point. Whether you’re cooling off
+				after a sunny day or preparing for your next adventure, our thoughtfully
+				curated amenities ensure a carefree and refreshing summer experience.
+			</p>
+		</div>
+	);
+}
 
 export function Location() {
 	return (
-		<div className="mt-10">
+		<div className="max-w-7xl mx-auto px-4 w-11/12 xl:w-full mt-10">
 			<h2 className="font-semibold text-lg">
 				Nearby Attractions and Transportatin information
 			</h2>
@@ -235,7 +243,7 @@ export function Location() {
 
 export function RefundPolicy() {
 	return (
-		<div className="mt-10">
+		<div className="max-w-7xl mx-auto px-4 w-11/12 xl:w-full mt-10">
 			<h2 className="font-semibold text-lg">Cancellation & Refund Policy</h2>
 			<ul className="w-11/12 mx-auto mt-2 list-outside list-disc ml-6">
 				<li>
@@ -262,7 +270,7 @@ export function RefundPolicy() {
 
 export function Review() {
 	return (
-		<div className="mt-10">
+		<div className="max-w-7xl mx-auto px-4 w-11/12 xl:w-full mt-10">
 			<h2 className="font-semibold text-lg">Our Customer Reviews</h2>
 
 			{/* Rating */}
@@ -273,9 +281,6 @@ export function Review() {
 					<p>100 verified reviews</p>
 				</div>
 			</div>
-
-			<FeedbackForm />
-			<Review />
 		</div>
 	);
 }

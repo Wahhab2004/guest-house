@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export default function PesanOwner() {
 	return (
 		<div className="max-w-7xl mx-auto px-4 w-11/12 xl:w-full mt-20 sm:bg-white">
@@ -15,17 +13,11 @@ export default function PesanOwner() {
 				</svg>
 				<blockquote>
 					<p className="text-2xl italic font-medium text-gray-900">
-						&quot;Selamat datang di Ummu Guest House. Tempat menginap yang tenang, nyaman, dan penuh kehangatan—seperti rumah sendiri.&quot;
+						&quot;Selamat datang di Ummu Guest House. Tempat menginap yang
+						tenang, nyaman, dan penuh kehangatan—seperti rumah sendiri.&quot;
 					</p>
 				</blockquote>
 				<figcaption className="flex items-center justify-center mt-6 space-x-3 rtl:space-x-reverse">
-					{/* <Image
-						className="w-6 h-6 rounded-full"
-						src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gouch.png"
-						alt="profile picture"
-						width={24}
-						height={24}
-					/> */}
 					<div className="flex items-center divide-x-2 rtl:divide-x-reverse divide-gray-500 dark:divide-gray-700">
 						<cite className="pe-3 font-medium text-gray-900">
 							Ummu Ryosuke Watanabe

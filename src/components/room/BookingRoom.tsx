@@ -10,7 +10,7 @@ interface BookingFormProps {
 }
 
 export default function BookingForm({ room, id }: BookingFormProps) {
-	const [guests, setGuests] = useState({ male: 0, female: 0 });
+	const [guests, setGuests] = useState({ Male: 0, Female: 0 });
 	const [formData, setFormData] = useState({
 		idAccount: "",
 		idPayment: "",
@@ -20,30 +20,30 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 		numOfGuests: 0,
 	});
 
-	useEffect(() => {
-		const generateIds = async () => {
-			const newIdAccount = await generateGuestId();
-			const newIdPayment = await generatePaymentIds();
+	// useEffect(() => {
+	// 	const generateIds = async () => {
+	// 		const newIdAccount = await generateGuestId();
+	// 		const newIdPayment = await generatePaymentIds();
 
-			setFormData((prev) => ({
-				...prev,
-				idAccount: newIdAccount,
-				idPayment: newIdPayment,
-			}));
-		};
+	// 		setFormData((prev) => ({
+	// 			...prev,
+	// 			idAccount: newIdAccount,
+	// 			idPayment: newIdPayment,
+	// 		}));
+	// 	};
 
-		generateIds();
-	}, []);
+	// 	generateIds();
+	// }, []);
 
-	const totalGuests = guests.male + guests.female;
-	const totalPayment = (room?.pricePerNight || 0) * totalGuests;
+	const totalGuests = guests.Male + guests.Female;
+	const totalPayment = (room?.price || 0) * totalGuests;
 	const router = useRouter();
 
 	useEffect(() => {
 		// Jika ingin formData.guestCount disimpan, bisa pakai useEffect seperti ini
 	}, [totalGuests]);
 
-	const handleGuestChange = (gender: "male" | "female", delta: number) => {
+	const handleGuestChange = (gender: "Male" | "Female", delta: number) => {
 		setGuests((prev) => ({
 			...prev,
 			[gender]: Math.max(0, prev[gender] + delta),
@@ -123,12 +123,12 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 	};
 
 	return (
-		<div className="float-right p-6 rounded-lg border">
-			<h1 className="text-lg text-center font-semibold text-[#1C2B38]">
-				Booking {id}
+		<div className="mx-auto p-10 w-11/12 xl:w-full mt-20 rounded-lg border md:max-w-2xl">
+			<h1 className="text-lg text-center font-semibold text-[#1C2B38] bg-gray-200 p-4 rounded-lg w-[80%] mx-auto">
+				Booking {room?.name}
 			</h1>
 			<h2 className="text-center text-4xl font-bold text-[#4C5C6B] mt-6">
-				¥{room?.pricePerNight ? room.pricePerNight : "0"} / Night
+				¥{room?.price ? room.price : "0"} / Night
 			</h2>
 
 			<form onSubmit={handleSubmitAPI} className="space-y-4 mt-10">
@@ -182,15 +182,15 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 							<span>👨</span>
 							<button
 								type="button"
-								onClick={() => handleGuestChange("male", -1)}
+								onClick={() => handleGuestChange("Male", -1)}
 								className="px-2 py-1 border rounded"
 							>
 								-
 							</button>
-							<span>{guests.male}</span>
+							<span>{guests.Male}</span>
 							<button
 								type="button"
-								onClick={() => handleGuestChange("male", 1)}
+								onClick={() => handleGuestChange("Male", 1)}
 								className="px-2 py-1 border rounded"
 							>
 								+
@@ -202,15 +202,15 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 							<span>👩</span>
 							<button
 								type="button"
-								onClick={() => handleGuestChange("female", -1)}
+								onClick={() => handleGuestChange("Female", -1)}
 								className="px-2 py-1 border rounded"
 							>
 								-
 							</button>
-							<span>{guests.female}</span>
+							<span>{guests.Female}</span>
 							<button
 								type="button"
-								onClick={() => handleGuestChange("female", 1)}
+								onClick={() => handleGuestChange("Female", 1)}
 								className="px-2 py-1 border rounded"
 							>
 								+
@@ -220,26 +220,26 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 				</div>
 
 				{/* Total Guest */}
-				<div className="flex items-center">
-					<label className="text-gray-600 text-lg w-full">Total Guests</label>
+				<div className="md:flex items-center justify-between">
+					<label className="text-gray-600 text-lg">Total Guests</label>
 					<input
 						type="text"
 						value={totalGuests}
 						disabled
-						className="text-end text-xl"
+						className="text-xl md:text-end"
 					/>
 				</div>
 
 				<div className="mt-10 bg-gray-400 w-full h-[1px]" />
 
 				{/* Total Payment */}
-				<div className="flex items-center">
+				<div className="md:flex items-center justify-between">
 					<label className="text-gray-600 text-lg">Total Payment</label>
 					<input
 						type="text"
 						value={`¥ ${totalPayment.toLocaleString()}`}
 						disabled
-						className="text-end text-xl"
+						className="text-xl md:text-end"
 					/>
 				</div>
 

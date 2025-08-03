@@ -15,7 +15,7 @@ const FeedbackForm = () => {
   };
 
   return (
-    <div className="mx-auto lg:w-full lg:mt-4 px-6 py-4 mt-4 bg-white shadow-md rounded-md border">
+    <div className="mx-auto w-11/12 xl:w-full md:max-w-7xl lg:mt-4 px-6 py-4 mt-4 bg-white shadow-md rounded-md border">
       <div className="text-center mb-4">
         <h2 className="text-xl font-semibold">Submit Your Review</h2>
       

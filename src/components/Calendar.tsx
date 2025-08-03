@@ -35,15 +35,15 @@ const Calendar = () => {
 		fetchData();
 	}, []);
 
-	const isReserved = (day: number) => {
-		const dateToCheck = new Date(currentYear, currentMonthIndex, day).getTime();
+	// const isReserved = (day: number) => {
+	// 	const dateToCheck = new Date(currentYear, currentMonthIndex, day).getTime();
 
-		return reservations.some(({ checkInDate, checkOutDate }) => {
-			const checkIn = new Date(checkInDate.seconds * 1000).getTime();
-			const checkOut = new Date(checkOutDate.seconds * 1000).getTime();
-			return dateToCheck >= checkIn && dateToCheck <= checkOut;
-		});
-	};
+	// 	return reservations.some(({ checkInDate, checkOutDate }) => {
+	// 		const checkIn = new Date(checkInDate.seconds * 1000).getTime();
+	// 		const checkOut = new Date(checkOutDate.seconds * 1000).getTime();
+	// 		return dateToCheck >= checkIn && dateToCheck <= checkOut;
+	// 	});
+	// };
 
 	const handlePrevMonth = () => {
 		setCurrentMonthIndex((prevIndex) => (prevIndex === 0 ? 11 : prevIndex - 1));
@@ -92,53 +92,53 @@ const Calendar = () => {
 		firstDay: 0,
 	});
 
-	const renderDays = () => {
-		const { days, firstDay } = calendarData;
-		const daysCells = [];
+	// const renderDays = () => {
+	// 	const { days, firstDay } = calendarData;
+	// 	const daysCells = [];
 
-		// Tambahkan cell kosong untuk menyesuaikan hari pertama
-		for (let i = 0; i < firstDay; i++) {
-			daysCells.push(<td key={`empty-${i}`} className="pt-6"></td>);
-		}
+	// 	// Tambahkan cell kosong untuk menyesuaikan hari pertama
+	// 	for (let i = 0; i < firstDay; i++) {
+	// 		daysCells.push(<td key={`empty-${i}`} className="pt-6"></td>);
+	// 	}
 
-		// Tambahkan hari-hari bulan tersebut
-		days.forEach((day, index) => {
-			const isSelected = selectedDate === day;
-			daysCells.push(
-				<td key={index} className="pt-6">
-					<div
-						onClick={() => {
-							if (!isReserved(day)) handleSelectDate(day);
-						}}
-						title={
-							isReserved(day)
-								? "The date is already booked"
-								: "The room is still available"
-						}
-						className={`p-2 cursor-pointer flex w-full justify-center rounded-full 
-		${
-			isSelected
-				? "bg-blue-500 text-white"
-				: isReserved(day)
-				? "bg-red-400 text-black"
-				: "text-gray-500 hover:bg-gray-200"
-		}
-	`}
-					>
-						<p className="text-base font-medium">{day}</p>
-					</div>
-				</td>
-			);
-		});
+	// 	// Tambahkan hari-hari bulan tersebut
+	// 	days.forEach((day, index) => {
+	// 		const isSelected = selectedDate === day;
+	// 		daysCells.push(
+	// 			<td key={index} className="pt-6">
+	// 				<div
+	// 					onClick={() => {
+	// 						if (!isReserved(day)) handleSelectDate(day);
+	// 					}}
+	// 					title={
+	// 						isReserved(day)
+	// 							? "The date is already booked"
+	// 							: "The room is still available"
+	// 					}
+	// 					className={`p-2 cursor-pointer flex w-full justify-center rounded-full 
+	// 	${
+	// 		isSelected
+	// 			? "bg-blue-500 text-white"
+	// 			: isReserved(day)
+	// 			? "bg-red-400 text-black"
+	// 			: "text-gray-500 hover:bg-gray-200"
+	// 	}
+	// `}
+	// 				>
+	// 					<p className="text-base font-medium">{day}</p>
+	// 				</div>
+	// 			</td>
+	// 		);
+	// 	});
 
-		// Split ke dalam baris dengan 7 kolom
-		const rows = [];
-		for (let i = 0; i < daysCells.length; i += 7) {
-			rows.push(<tr key={`row-${i}`}>{daysCells.slice(i, i + 7)}</tr>);
-		}
+	// 	// Split ke dalam baris dengan 7 kolom
+	// 	const rows = [];
+	// 	for (let i = 0; i < daysCells.length; i += 7) {
+	// 		rows.push(<tr key={`row-${i}`}>{daysCells.slice(i, i + 7)}</tr>);
+	// 	}
 
-		return rows;
-	};
+	// 	return rows;
+	// };
 
 	return (
 		<div className="flex items-center justify-center mt-10">
@@ -213,7 +213,7 @@ const Calendar = () => {
 									)}
 								</tr>
 							</thead>
-							<tbody>{renderDays()}</tbody>
+							{/* <tbody>{renderDays()}</tbody> */}
 						</table>
 					</div>
 				</div>

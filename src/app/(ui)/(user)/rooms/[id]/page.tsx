@@ -14,6 +14,7 @@ import DetailRoom, {
 	Location,
 	RefundPolicy,
 } from "@/components/room/DetailRoom";
+import FeedbackForm from "@/components/FeedbackForm";
 
 export default function DetailProductPage() {
 	const [room, setRoom] = useState<Room | null>(null);
@@ -23,7 +24,7 @@ export default function DetailProductPage() {
 		const fetchRoomsId = async () => {
 			if (!id) return;
 			const data = await fetchRoomById(String(id));
-			console.log(data)
+			console.log(data);
 			setRoom(data);
 		};
 		fetchRoomsId();
@@ -38,22 +39,21 @@ export default function DetailProductPage() {
 					</p>
 				</Link>
 
-				<p className="text-gray-600 lg:font-semibold">
-					Detail Room {room?.roomNumber}
-				</p>
+				<p className="text-gray-600 lg:font-semibold">Detail Room</p>
 
 				<div className="hidden lg:block"></div>
 			</nav>
 
 			<main className=" w-11/12 mx-auto mt-28 mb-20 object-cover lg:w-[85%]">
-				<BookingForm room={room} id={id} />
 				<DetailRoom room={room} />
-				<Availibilty />
+				<BookingForm room={room} id={id} />
+				{/* <Availibilty /> */}
 				<Katalog />
 				<Facilities />
 				<Description />
 				<Location />
 				<RefundPolicy />
+				<FeedbackForm />
 				<Review />
 			</main>
 		</section>

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Reservation } from "@/fetching";
-import { FormatTanggalIndoUser } from "@/components/format tanggal/formatTanggalIndo";
+import { FormatTanggalIndoUser } from "@/components/format-tanggal/formatTanggal";
 
 interface BookingDetailsProps {
 	reservation: Reservation | null;
@@ -25,8 +25,8 @@ export default function BookingDetails({
 
 				<Image
 					src={
-						reservation?.room.image
-							? reservation.room.image
+						reservation?.room.photoUrl
+							? reservation.room.photoUrl
 							: "/images/rooms/room-2.png"
 					}
 					width={1000}
