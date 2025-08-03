@@ -2,7 +2,7 @@ import React from "react";
 
 const FeaturesSection = () => {
 	return (
-		<div className="max-w-4xl mx-auto px-5 mt-16">
+		<div className="w-11/12 xl:w-full max-w-7xl mx-auto mt-10 px-4">
 			<div className="text-center">
 				<h1 className="text-[2.5rem] font-semibold ">
 					Why Choose Ummu Guest House?

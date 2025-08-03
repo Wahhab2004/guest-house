@@ -1,6 +1,6 @@
 export default function Maps() {
 	return (
-		<div className="mt-20">
+		<div className="max-w-7xl mx-auto px-4 w-11/12 xl:w-full mt-20">
 			<section className="">
 				<div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-20 lg:px-8">
 					<div className="max-w-2xl lg:max-w-4xl mx-auto text-center">

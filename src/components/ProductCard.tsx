@@ -19,17 +19,15 @@ function ProductCard() {
 	}, []);
 
 	return (
-		<div>
-			{pathName === "/" ? (
-				<div className="w-11/12 mx-auto ">
-					<h1 className="text-[2.5rem] font-semibold ">Our Rooms</h1>
-					<p className="text-gray-500 ">
-						Make yourself at home at GuestHouse Ummu – where every stay feels
-						special.
-					</p>
-				</div>
-			) : null}
-
+		<div className="container max-w-7xl mx-auto px-4 py-8 my-10 md:w-11/12 xl:w-full">
+			<div>
+				<h1 className="text-[2.5rem] font-semibold ">Our Rooms</h1>
+				<p className="text-gray-500 ">
+					Make yourself at home at GuestHouse Ummu – where every stay feels
+					special.
+				</p>
+			</div>
+			
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-6 mt-2 mx-auto ">
 				{room.map((room) => (
 					<div

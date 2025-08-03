@@ -9,7 +9,7 @@ import Image from "next/image";
 
 const FacilitiesCarousel: React.FC = () => {
 	return (
-		<div className="w-11/12 relative mx-auto mt-28 h-screen">
+		<div className="container max-w-7xl w-11/12 xl:w-full relative mx-auto px-4">
 			<h1 className="text-[2.5rem] font-semibold">
 				We do our best facilities provide you
 			</h1>
@@ -51,7 +51,7 @@ const FacilitiesCarousel: React.FC = () => {
 								alt={`facility-${(index % 3) + 1}`}
 								width={375}
 								height={433}
-								className="rounded-2xl w-full h-auto"
+								className="rounded-2xl w-full "
 							/>
 						</div>
 					</SwiperSlide>

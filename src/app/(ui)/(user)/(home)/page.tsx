@@ -7,39 +7,18 @@ import React from "react";
 import ExclusiveOffers from "@/components/home/ExclusiveOffers";
 import PesanOwner from "@/components/home/PesanOwner";
 import Maps from "@/components/home/Maps";
+import HeroSection from "@/components/home/home";
 
 export default function Home() {
 	return (
 		<>
 			<div>
-				{/* Hero Section */}
-				<section>
-					<div
-						style={{
-							height: "100vh",
-							backgroundImage: "url(/images/bg-homepage.png)",
-							backgroundSize: "cover",
-							display: "flex",
-							justifyContent: "center",
-							alignItems: "center",
-							textAlign: "center",
-						}}
-						className="w-full h-screen text-center m-auto text-white"
-					>
-						<div>
-							<h1 className="text-[2.5rem]">
-								Your perfect retreat for comfort, serenity, and
-							</h1>
-							<h1 className="text-[2.5rem]">unforgettable experiences.</h1>
-						</div>
-					</div>
-				</section>
-
+				<HeroSection />
 				{/* Booking Form */}
 				{/* <BookingForm /> */}
 
 				{/* Main Section */}
-				<div className="w-11/12 mx-auto">
+				<div className="mt-4">
 					{/* Rooms */}
 					<ProductCard />
 					<FacilitiesCarousel />
