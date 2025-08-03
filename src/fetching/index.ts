@@ -11,12 +11,11 @@ export interface Room {
 // Payment
 export interface Payments {
 	id: string;
-	idReservation: string;
-	totalAmountPaid: number;
-	paymentMethod: string;
-	paymentStatus: string;
-	proofOfPayment: string;
-	sender: string;
+	reservationId: string;
+	method: string;
+	status: string;
+	amount: number;
+	proofUrl: string;
 }
 
 // Review
@@ -32,38 +31,33 @@ export interface Review {
 
 // Reservation
 export interface Reservation {
-	confirmedCheckout: any;
-	confirmedCheckin: any;
-	checkStatus: string;
-	numOfGuests: number;
-	dateReservation: string;
 	id: string;
-	idAccount: string;
-	idPayment: string;
-	guest: Account;
-	idRoom: string;
+	guestId: string;
+	roomId: string;
+	checkin: Date;
+	checkout: Date;
+	guestTotal: number;
+	totalPrice: number;
+	status: string;
+	guest: Guest;
 	room: Room;
-	payment: Payments;
-	checkInDate: string;
-	checkOutDate: string;
-	paymentStatus: string;
-	totalPayment: number;
+	Payments: Payments;
+	createdAt: Date;
 }
 
 // Account
-export interface Account {
+export interface Guest {
 	id: string;
 	name: string;
 	username: string;
-	gender: string;
-	dataOfBirth: string;
-	phoneNumber: string;
-	photoProfile: string;
 	email: string;
+	phone: string;
 	password: string;
 	passport: string;
+	dateOfBirth: Date;
 	country: string;
-	role: string;
+	gender: string;
+
 }
 
 export const fetchReservations = async (): Promise<Reservation[]> => {
@@ -128,7 +122,7 @@ export const fetchRoomById = async (id: string): Promise<Room | null> => {
 	}
 };
 
-export const fetchAccount = async (): Promise<Account[]> => {
+export const fetchAccount = async (): Promise<Guest[]> => {
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 		const response = await fetch(`${baseUrl}/guests`, {
@@ -136,7 +130,7 @@ export const fetchAccount = async (): Promise<Account[]> => {
 		});
 		const jsonData = await response.json();
 
-		return jsonData.data as Account[];
+		return jsonData.data as Guest[];
 	} catch (error) {
 		console.error("Error fetching reservations:", error);
 		return [];

@@ -3,9 +3,49 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
 export default function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false);
+
+	const [username, setUsername] = useState("");
+	const [password, setPassword] = useState("");
+
+	const handleLogin = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		if (!username || !password) {
+			alert("Username dan password wajib diisi.");
+			return;
+		}
+
+		try {
+			const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+			const res = await fetch(`${baseUrl}/login`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ username, password }),
+			});
+
+			const result = await res.json();
+
+			if (!res.ok) {
+				throw new Error(result.message || "Login gagal.");
+			}
+
+			// Simpan token dan user ke cookie
+			Cookies.set("token", result.token, { expires: 1 }); // 1 hari
+			Cookies.set("user", JSON.stringify(result.user), { expires: 1 });
+
+			alert("Login berhasil!");
+			window.location.href = "/";
+		} catch (error: any) {
+			console.error("Login error:", error);
+			alert(error.message || "Terjadi kesalahan saat login.");
+		}
+	};
 
 	const togglePasswordVisibility = () => {
 		setShowPassword((prev) => !prev);
@@ -20,14 +60,17 @@ export default function LoginPage() {
 						<h1 className="text-3xl font-bold mb-2">Login</h1>
 						<p className="text-gray-500 mb-6">Welcome to Ryosuke Guesthouse</p>
 
-						<form>
+						<form onSubmit={handleLogin} className="space-y-4">
 							<label className="block text-sm font-medium mb-1">Email </label>
 							<div className="mb-4 flex items-center border border-gray-300 rounded-full px-3 transition duration-150 focus-within:ring-2 focus-within:ring-indigo-400">
 								<input
-									type="email"
-									placeholder="harsh@pagedone.com"
+									type="username"
+									value={username}
+									onChange={(e) => setUsername(e.target.value)}
+									placeholder="whb123"
 									className="w-full py-2 outline-none bg-transparent"
 								/>
+
 								<Image
 									width={25}
 									height={25}
@@ -41,9 +84,12 @@ export default function LoginPage() {
 							<div className="mb-4 flex items-center border border-gray-300 rounded-full px-3 transition duration-150 focus-within:ring-2 focus-within:ring-indigo-400">
 								<input
 									type={showPassword ? "text" : "password"}
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
 									placeholder="XXXXXXXX"
 									className="w-full py-2 outline-none bg-transparent"
 								/>
+
 								<button
 									type="button"
 									onClick={togglePasswordVisibility}
