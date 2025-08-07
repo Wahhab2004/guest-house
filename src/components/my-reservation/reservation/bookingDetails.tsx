@@ -41,16 +41,16 @@ export default function BookingDetails({
 						<div>
 							<h3 className="font-medium text-gray-600">Check-in date</h3>
 							<p className="text-medium mb-2">
-								{reservation?.checkInDate
-									? FormatTanggalIndoUser(reservation.checkInDate)
+								{reservation?.checkIn
+									? FormatTanggalIndoUser(reservation.checkIn)
 									: "-"}
 							</p>
 						</div>
 						<div>
 							<h3 className="font-medium text-gray-600">Check-out date</h3>
 							<p className="text-medium mb-2">
-								{reservation?.checkOutDate
-									? FormatTanggalIndoUser(reservation.checkOutDate)
+								{reservation?.checkOut
+									? FormatTanggalIndoUser(reservation.checkOut)
 									: "-"}
 							</p>
 						</div>
@@ -58,15 +58,15 @@ export default function BookingDetails({
 						<div>
 							<h3 className="font-medium text-gray-600">Type of Room</h3>
 							<p className="text-medium mb-2">
-								{reservation?.idRoom ? reservation.idRoom : "-"}
+								{reservation?.roomId ? reservation.roomId : "-"}
 							</p>
 						</div>
 						<div>
 							<h3 className="font-medium text-gray-600">Number of Guest</h3>
 							<p className="text-medium mb-2">
-								{reservation?.numOfGuests}
-								{reservation?.numOfGuests
-									? reservation?.numOfGuests > 0
+								{reservation?.guestTotal}
+								{reservation?.guestTotal
+									? reservation?.guestTotal > 0
 										? " Guests"
 										: " Guest"
 									: "-"}
@@ -76,7 +76,7 @@ export default function BookingDetails({
 						<div className="h-[1px] w-full bg-black"></div>
 						<div className="flex justify-between mt-4">
 							<h3 className="font-medium text-gray-600">Total Payment</h3>
-							<p className="font-bold">¥{reservation?.totalPayment}</p>
+							<p className="font-bold">¥{reservation?.totalPrice}</p>
 						</div>
 					</div>
 

@@ -1,5 +1,5 @@
 "use client";
-import { fetchReservations, Reservation } from "@/fetching";
+import { fetchReservations } from "@/fetching";
 import React, { useState, useEffect } from "react";
 
 // type Reservation = {
@@ -17,15 +17,13 @@ const Calendar = () => {
 	const today = new Date();
 	const [currentMonthIndex, setCurrentMonthIndex] = useState(today.getMonth()); // Index bulan saat ini
 	const [currentYear] = useState(today.getFullYear()); // Tahun saat ini
-	const [selectedDate, setSelectedDate] = useState(0); // Menyimpan tanggal yang dipilih
-	const [reservations, setReservations] = useState<Reservation[]>([]);
 
 	// Fething data
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const data = await fetchReservations();
-				setReservations(data);
+			
 				console.log(data);
 			} catch (error) {
 				console.error("Error fetching data:", error);
@@ -51,10 +49,6 @@ const Calendar = () => {
 
 	const handleNextMonth = () => {
 		setCurrentMonthIndex((prevIndex) => (prevIndex === 11 ? 0 : prevIndex + 1));
-	};
-
-	const handleSelectDate = (day: number) => {
-		setSelectedDate(day);
 	};
 
 	useEffect(() => {
@@ -115,7 +109,7 @@ const Calendar = () => {
 	// 							? "The date is already booked"
 	// 							: "The room is still available"
 	// 					}
-	// 					className={`p-2 cursor-pointer flex w-full justify-center rounded-full 
+	// 					className={`p-2 cursor-pointer flex w-full justify-center rounded-full
 	// 	${
 	// 		isSelected
 	// 			? "bg-blue-500 text-white"

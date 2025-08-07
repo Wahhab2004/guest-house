@@ -25,11 +25,11 @@ export default function RoomInformation() {
 	let totalRoomsOvernight = 0;
 
 	rooms.forEach((room) => {
-		if (room.roomStatus === "available") {
+		if (room.status === "AVAILABLE") {
 			totalRoomsAvailable++;
-		} else if (room.roomStatus === "booked") {
+		} else if (room.status === "BOOKED") {
 			totalRoomsBooked++;
-		} else if (room.roomStatus === "overnight") {
+		} else if (room.status === "MAINTENANCE") {
 			totalRoomsOvernight++;
 		}
 	});

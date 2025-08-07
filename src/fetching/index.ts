@@ -34,15 +34,15 @@ export interface Reservation {
 	id: string;
 	guestId: string;
 	roomId: string;
-	checkin: Date;
-	checkout: Date;
+	checkIn: string;
+	checkOut: string;
 	guestTotal: number;
 	totalPrice: number;
 	status: string;
 	guest: Guest;
 	room: Room;
-	Payments: Payments;
-	createdAt: Date;
+	Payment: Payments;
+	createdAt: string;
 }
 
 // Account
@@ -54,11 +54,35 @@ export interface Guest {
 	phone: string;
 	password: string;
 	passport: string;
-	dateOfBirth: Date;
+	dateOfBirth: string;
 	country: string;
 	gender: string;
 
 }
+
+export interface FetchParams {
+	search?: string;
+	status?: string;
+	sort_by?: string;
+	order?: string;
+}
+
+
+export const fetchFilteredReservations = async (): Promise<Reservation[]> => {
+	const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+	const res = await fetch(`${baseUrl}/reservations`, {
+		cache: "no-store",
+		headers: {
+		
+		},
+	});
+
+	if (!res.ok) throw new Error("Failed to fetch reservations");
+
+	const json = await res.json();
+	return json.data;
+};
 
 export const fetchReservations = async (): Promise<Reservation[]> => {
 	try {

@@ -1,8 +1,7 @@
 import { Room } from "@/fetching";
 import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import Calendar from "../Calendar";
-import FeedbackForm from "../FeedbackForm";
-import { useEffect, useState } from "react";
 
 interface BookingFormProps {
 	room: Room | null;
@@ -11,32 +10,29 @@ interface BookingFormProps {
 export default function DetailRoom({ room }: BookingFormProps) {
 	const fallbackImage = "/fallback-image.png";
 
-	// Daftar gambar tambahan (ubah sesuai folder /public)
-	const additionalImages = [
+// Daftar gambar tambahan (dibuat hanya sekali)
+	const additionalImages = useMemo(() => [
 		"/images/facilities/facility-01.png",
 		"/images/facilities/facility-02.png",
 		"/images/facilities/facility-03.png",
 		"/images/facilities/facility-01.png",
 		"/images/facilities/facility-02.png",
 		"/images/facilities/facility-03.png",
-	];
+	], []);
 
-	// Buat daftar image dengan room.image di awal (tanpa duplikat)
-	const fullImageList = [
-		room?.photoUrl || fallbackImage,
-		...additionalImages.filter((img) => img !== room?.photoUrl),
-	];
+	// Daftar image utama + tambahan (tanpa duplikat)
+	const fullImageList = useMemo(() => {
+		const main = room?.photoUrl || fallbackImage;
+		const filtered = additionalImages.filter((img) => img !== room?.photoUrl);
+		return [main, ...filtered];
+	}, [room?.photoUrl, additionalImages]);
 
 	const [mainImage, setMainImage] = useState<string | null>(null);
 
+	// Set mainImage saat room berubah
 	useEffect(() => {
-		const fallbackImage = "/fallback-image.png";
-		const images = [
-			room?.photoUrl || fallbackImage,
-			...additionalImages.filter((img) => img !== room?.photoUrl),
-		];
-		setMainImage(images[0]);
-	}, [room]);
+		setMainImage(fullImageList[0]);
+	}, [fullImageList]);
 
 	return (
 		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 font-bold text-xl shadow">

@@ -5,9 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Cookies from "js-cookie";
 
-export default function LoginPage() {
+export default function AdminLoginPage() {
 	const [showPassword, setShowPassword] = useState(false);
-
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
@@ -21,7 +20,7 @@ export default function LoginPage() {
 
 		try {
 			const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-			const res = await fetch(`${baseUrl}/login`, {
+			const res = await fetch(`${baseUrl}/login-admin`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -39,18 +38,17 @@ export default function LoginPage() {
 			Cookies.set("token", result.token, { expires: 1 }); // 1 hari
 			Cookies.set("user", JSON.stringify(result.user), { expires: 1 });
 
-			alert("Login berhasil!");
-			window.location.href = "/";
+			alert("Login admin berhasil!");
+			window.location.href = "/dasbor";
 		} catch (error: unknown) {
-	if (error instanceof Error) {
-		console.error("Login error:", error);
-		alert(error.message);
-	} else {
-		console.error("Login error:", error);
-		alert("Terjadi kesalahan saat login.");
-	}
-}
-
+			if (error instanceof Error) {
+				console.error("Login error:", error);
+				alert(error.message);
+			} else {
+				console.error("Login error:", error);
+				alert("Terjadi kesalahan saat login.");
+			}
+		}
 	};
 
 	const togglePasswordVisibility = () => {
@@ -63,17 +61,17 @@ export default function LoginPage() {
 				{/* Left Section - Form */}
 				<div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white animate-fade-in">
 					<div className="w-full max-w-md">
-						<h1 className="text-3xl font-bold mb-2">Login</h1>
-						<p className="text-gray-500 mb-6">Welcome to Ryosuke Guesthouse</p>
+						<h1 className="text-3xl font-bold mb-2">Admin Login</h1>
+						<p className="text-gray-500 mb-6">Login sebagai administrator</p>
 
 						<form onSubmit={handleLogin} className="space-y-4">
-							<label className="block text-sm font-medium mb-1">Email </label>
+							<label className="block text-sm font-medium mb-1">Username</label>
 							<div className="mb-4 flex items-center border border-gray-300 rounded-full px-3 transition duration-150 focus-within:ring-2 focus-within:ring-indigo-400">
 								<input
-									type="username"
+									type="text"
 									value={username}
 									onChange={(e) => setUsername(e.target.value)}
-									placeholder="whb123"
+									placeholder="admin123"
 									className="w-full py-2 outline-none bg-transparent"
 								/>
 
@@ -81,8 +79,8 @@ export default function LoginPage() {
 									width={25}
 									height={25}
 									src="/svg/person.svg"
-									alt="Google"
-									className="h-5 w-5 "
+									alt="User Icon"
+									className="h-5 w-5"
 								/>
 							</div>
 
@@ -92,7 +90,7 @@ export default function LoginPage() {
 									type={showPassword ? "text" : "password"}
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
-									placeholder="XXXXXXXX"
+									placeholder="••••••••"
 									className="w-full py-2 outline-none bg-transparent"
 								/>
 
@@ -111,50 +109,15 @@ export default function LoginPage() {
 								</button>
 							</div>
 
-							<div className="text-right text-sm text-blue-600 mb-4 cursor-pointer hover:underline">
-								<Link href="/reset-password">Forgot password?</Link>
-							</div>
-
 							<button className="w-full py-2 bg-indigo-600 text-white rounded-md font-semibold mb-4 transition-colors duration-200 hover:bg-indigo-700 active:scale-95">
-								Login
+								Login as Admin
 							</button>
 						</form>
 
-						<div className="flex items-center justify-center mb-4 mt-4">
-							<span className="border-b w-1/5 lg:w-1/4"></span>
-							<span className="text-xs text-center text-gray-500 mx-2">OR</span>
-							<span className="border-b w-1/5 lg:w-1/4"></span>
-						</div>
-
-						<div className="flex space-x-4 mb-4">
-							<button className="w-1/2 flex items-center justify-center py-2  bg-gray-100 rounded-full transition-all duration-200 hover:bg-gray-100 active:scale-95">
-								<Image
-									width={25}
-									height={25}
-									src="https://www.svgrepo.com/show/475656/google-color.svg"
-									alt="Google"
-									className="h-5 w-5 mr-2"
-								/>
-								Google
-							</button>
-
-							<button className="w-1/2 flex items-center justify-center py-2  bg-gray-100 rounded-full transition-all duration-200 hover:bg-gray-100 active:scale-95">
-								<Image
-									width={25}
-									height={25}
-									src="https://www.svgrepo.com/show/452196/facebook-1.svg"
-									alt="Facebook"
-									className="h-5 w-5 mr-2"
-								/>
-								Facebook
-							</button>
-						</div>
-
-						<div className="text-center text-sm">
-							Don’t have an account?{" "}
-							<Link href="/register">
+						<div className="text-center text-sm mt-2">
+							<Link href="/">
 								<span className="text-blue-600 cursor-pointer hover:underline">
-									Sign Up
+									Kembali ke beranda
 								</span>
 							</Link>
 						</div>

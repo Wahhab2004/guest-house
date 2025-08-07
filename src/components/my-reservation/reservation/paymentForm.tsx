@@ -17,7 +17,7 @@ const initialFormData = {
     createdAt: new Date(),
 };
 
-const PaymentForm = ({ handleNavigate, reservation }: BookingDetailsProps) => {
+const PaymentForm = ({  reservation }: BookingDetailsProps) => {
     const [formData, setFormData] = useState(initialFormData);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
     const router = useRouter();
@@ -44,7 +44,7 @@ const PaymentForm = ({ handleNavigate, reservation }: BookingDetailsProps) => {
         e.preventDefault();
         try {
             const response = await fetch(
-                `/api/payments?id=${reservation?.idPayment}`,
+                `/api/payments?id=${reservation?.Payment.id}`,
                 {
                     method: "PUT",
                     headers: {
@@ -148,7 +148,7 @@ const PaymentForm = ({ handleNavigate, reservation }: BookingDetailsProps) => {
             <p className="text-center text-gray-400">
                 Please fill up the blank fields below
             </p>
-            <p>there is nothing: {reservation?.idPayment}</p>
+            <p>there is nothing: {reservation?.Payment.id}</p>
             <form className="space-y-5 my-10" onSubmit={handleUpdatePayment}>
                 <div>
                     <label

@@ -68,34 +68,37 @@ const GuestReservation = () => {
 										{(currentPage - 1) * itemsPerPage + index + 1}
 									</td>
 									<td className="py-4">{item.guest.name}</td>
-									<td className="py-4">{item.room.roomNumber}</td>
+									<td className="py-4">{item.room.name}</td>
 									<td className="py-4">
-										{formatDateIndo(item.dateReservation)}
+										{formatDateIndo(item.createdAt)}
+
+									
+									</td> 
+									<td className="py-4">
+										{FormatTanggalIndoUser(item.checkIn)}
 									</td>
 									<td className="py-4">
-										{FormatTanggalIndoUser(item.checkInDate)}
-									</td>
-									<td className="py-4">
-										{FormatTanggalIndoUser(item.checkOutDate)}
+										{FormatTanggalIndoUser(item.checkOut)}
 									</td>
 									{/* Bisa payment indo, bisa juga japan atau japan */}
-									<td className="py-4">¥{item.payment.totalAmountPaid}</td>
+									<td className="py-4">¥{item.totalPrice}</td>
+					
 									<td className="py-4 text-xs">
-										{item.payment.paymentStatus === "paid" ? (
+										{item.Payment?.status === "PAID" ? (
 											<span className="text-green-900 bg-green-100 p-1 border-green-200 border rounded-lg px-2">
-												{item.payment.paymentStatus}
+												{item.Payment?.status}
 											</span>
-										) : item.payment.paymentStatus === "unpaid" ? (
+										) : item.Payment?.status === "HALF PAID" ? (
 											<span className="text-orange-900 bg-orange-100 p-1 border-orange-200 border rounded-lg px-2">
-												{item.payment.paymentStatus}
+												{item.Payment?.status}
 											</span>
-										) : item.payment.paymentStatus ===
-										  "pending verification" ? (
+										) : item.Payment?.status ===
+										  "UNPAID" ? (
 											<span className="text-red-900 bg-red-100 p-1 border-red-200  border rounded-lg px-2">
-												{item.payment.paymentStatus}
+												{item.Payment?.status}
 											</span>
 										) : (
-											<span>{item.payment.paymentStatus}</span>
+											<span>{item.Payment?.status}</span>
 										)}
 									</td>
 								</tr>

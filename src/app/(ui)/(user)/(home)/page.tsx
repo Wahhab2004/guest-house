@@ -1,4 +1,3 @@
-import BookingForm from "@/components/BookingForm";
 import FacilitiesCarousel from "@/components/home/FacilitiesCarousel";
 import FeaturesSelection from "@/components/home/FeaturesSelection";
 import ProductCard from "@/components/ProductCard";

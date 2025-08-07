@@ -4,11 +4,9 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Room, fetchRooms } from "@/fetching";
-import { usePathname } from "next/navigation";
 
 function ProductCard() {
 	const [room, setRooms] = useState<Room[]>([]);
-	const pathName = usePathname();
 
 	useEffect(() => {
 		const getRoom = async () => {

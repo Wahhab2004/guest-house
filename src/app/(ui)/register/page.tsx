@@ -123,8 +123,14 @@ export default function Register() {
 					router.push("/login");
 				}, 2000);
 			}
-		} catch (err) {
-			setError("Terjadi kesalahan saat mengirim data.");
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				console.error("Login error:", error);
+				alert(error.message);
+			} else {
+				console.error("Login error:", error);
+				alert("Terjadi kesalahan saat login.");
+			}
 		} finally {
 			setLoading(false);
 		}

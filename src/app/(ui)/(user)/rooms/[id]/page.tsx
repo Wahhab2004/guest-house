@@ -7,7 +7,6 @@ import { fetchRoomById, Room } from "@/fetching";
 import { useParams } from "next/navigation";
 import BookingForm from "@/components/room/BookingRoom";
 import DetailRoom, {
-	Availibilty,
 	Description,
 	Facilities,
 	Katalog,

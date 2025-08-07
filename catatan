@@ -81,3 +81,8 @@ To Do List | May 14:
 
 ## Catatan
 1. Kalau semua udah selesai, mungkin fecthing data API bisa dipilah lagi. Jadi, tidak semua data diambil.
+
+
+## CATATAN 1
+1. Perbaikan bagian room available, booked, dan maintenance.
+2. Ketika user sudah melakukan reservasi, maka kamar tersebut tidak bisa di booking lagi.

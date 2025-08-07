@@ -71,9 +71,14 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 			const idReservation = result.data?.id;
 			alert(result.message || "Reservasi berhasil dibuat!");
 			router.push(`/my-reservations/reservations?id=${idReservation}`);
-		} catch (error: any) {
-			console.error("Booking error:", error);
-			alert(error.message || "Terjadi kesalahan saat membuat reservasi");
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				console.error("Login error:", error);
+				alert(error.message);
+			} else {
+				console.error("Login error:", error);
+				alert("Terjadi kesalahan saat login.");
+			}
 		}
 	};
 

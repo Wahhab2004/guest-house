@@ -22,7 +22,6 @@ const initialFormData = {
 };
 
 export default function NavbarReservation({
-	handleNavigate,
 	reservation,
 }: NavbarReservationProps) {
 	const [formData, setFormData] = useState(initialFormData);
@@ -43,7 +42,7 @@ export default function NavbarReservation({
 
 	const handleUpdateGuest = async () => {
 		try {
-			const response = await fetch(`/api/guests?id=${reservation?.idAccount}`, {
+			const response = await fetch(`/api/guests?id=${reservation?.guestId}`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",

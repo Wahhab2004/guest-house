@@ -5,10 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
 import "./styles/style.css";
+import { Guest } from "@/fetching";
 
 const Navbar = () => {
 	const [isOpen, setIsOpen] = useState(false);
-	const [user, setUser] = useState<any>(null);
+	const [user, setUser] = useState<Guest | null>(null);
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 
 	const pathname = usePathname();

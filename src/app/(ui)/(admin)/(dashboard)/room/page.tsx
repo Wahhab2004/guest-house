@@ -46,19 +46,19 @@ export default function Rooms() {
 							<tr key={room.id} className="text-gray-400 text-sm border-b">
 								<td className="py-4 text-[#5D6679] text-sm">{room.id}</td>
 								<td className="py-4 text-[#5D6679] text-sm">
-									{room.roomNumber}
+									{room.name}
 								</td>
 								<td className="py-4 text-[#5D6679] text-sm">
-									¥{room.pricePerNight}
+									¥{room.price}
 								</td>
 								<td className="py-4 text-[#5D6679] text-sm">
-									{room.roomStatus === "available" ? (
+									{room.status === "available" ? (
 										<span className="bg-blue-100 text-blue-600 py-1 px-2 rounded">
-											{room.roomStatus}
+											{room.status}
 										</span>
 									) : (
 										<span className="bg-red-100 text-red-600 py-1 px-2 rounded">
-											{room.roomStatus}
+											{room.status}
 										</span>
 									)}
 								</td>

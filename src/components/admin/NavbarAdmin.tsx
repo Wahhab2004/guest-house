@@ -1,8 +1,26 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { Guest } from "@/fetching";
 
 export default function NavbarAdmin() {
 	const pathname = usePathname();
+	const [user, setUser] = useState<Guest | null>(null);
+
+	useEffect(() => {
+		const storedUser = Cookies.get("user");
+		if (storedUser) {
+			setUser(JSON.parse(storedUser));
+		}
+	}, []);
+
+	const handleLogout = () => {
+		Cookies.remove("user");
+		Cookies.remove("token");
+		setUser(null);
+		window.location.href = "/login-admin";
+	};
 
 	return (
 		<>
@@ -10,10 +28,10 @@ export default function NavbarAdmin() {
 			<div className="p-4 shadow flex justify-between items-center">
 				<h1 className="text-3xl font-bold text-gray-600">Guesthouse Ryosuke</h1>
 
-				<p className="text-gray-600">Admin 1</p>
+				<p className="text-gray-600">Selamat datang, {user?.name} 💫</p>
 			</div>
 
-            {/* Sidebar */}
+			{/* Sidebar */}
 			<nav className="float-left border h-[120vh]">
 				<div className="p-4 w-full leading-10">
 					<ul>
@@ -53,43 +71,6 @@ export default function NavbarAdmin() {
 							</li>
 						</Link>
 
-						{/* Checkin-out */}
-						<Link
-							href="/checkin-out"
-							className={`flex items-center p-2 rounded mb-2 hover:bg-blue-100 group ${
-								pathname === "/checkin-out" ? "bg-blue-100" : ""
-							}`} // Tambahkan "group"
-						>
-							<svg
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									d="M16.862 4.48725L18.549 2.79925C18.9007 2.44757 19.3777 2.25 19.875 2.25C20.3723 2.25 20.8493 2.44757 21.201 2.79925C21.5527 3.15092 21.7502 3.6279 21.7502 4.12525C21.7502 4.62259 21.5527 5.09957 21.201 5.45125L10.582 16.0702C10.0533 16.5986 9.40137 16.987 8.685 17.2002L6 18.0002L6.8 15.3152C7.01328 14.5989 7.40163 13.9469 7.93 13.4182L16.862 4.48725ZM16.862 4.48725L19.5 7.12525M18 14.0002V18.7502C18 19.347 17.7629 19.9193 17.341 20.3412C16.919 20.7632 16.3467 21.0002 15.75 21.0002H5.25C4.65326 21.0002 4.08097 20.7632 3.65901 20.3412C3.23705 19.9193 3 19.347 3 18.7502V8.25025C3 7.65351 3.23705 7.08121 3.65901 6.65926C4.08097 6.2373 4.65326 6.00025 5.25 6.00025H10"
-									stroke="#5D6679"
-									strokeWidth="1.5"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									className={`group-hover:stroke-[#1366D9] group-hover:stroke-2 ${
-										pathname === "/checkin-out"
-											? "stroke-[#1366D9] stroke-2"
-											: ""
-									}`}
-								/>
-							</svg>
-
-							<li
-								className={`ml-2 font-medium group-hover:text-[#1366D9] text-sm ${
-									pathname === "/checkin-out" ? "text-[#1366D9]" : "text-gray-600"
-								}`} // Hover berdasarkan parent
-							>
-								Check in/ Out
-							</li>
-						</Link>
-
 						{/* Guests Reservation */}
 						<Link
 							href="/guest-reservation"
@@ -120,7 +101,9 @@ export default function NavbarAdmin() {
 
 							<li
 								className={`ml-2 font-medium group-hover:text-[#1366D9] text-sm ${
-									pathname === "/guest-reservation" ? "text-[#1366D9]" : "text-gray-600 "
+									pathname === "/guest-reservation"
+										? "text-[#1366D9]"
+										: "text-gray-600 "
 								}`} // Hover berdasarkan parent
 							>
 								Guest Reservation
@@ -154,7 +137,9 @@ export default function NavbarAdmin() {
 
 							<li
 								className={`ml-2 font-medium group-hover:text-[#1366D9] text-sm ${
-									pathname === "/guest-book" ? "text-[#1366D9]" : "text-gray-600"
+									pathname === "/guest-book"
+										? "text-[#1366D9]"
+										: "text-gray-600"
 								}`} // Hover berdasarkan parent
 							>
 								Guest Book
@@ -188,7 +173,9 @@ export default function NavbarAdmin() {
 
 							<li
 								className={`ml-2 text-sm font-medium group-hover:text-[#1366D9] ${
-									pathname === "/guest-history" ? "text-[#1366D9]" : "text-gray-600"
+									pathname === "/guest-history"
+										? "text-[#1366D9]"
+										: "text-gray-600"
 								}`} // Hover berdasarkan parent
 							>
 								Guest History
@@ -213,7 +200,9 @@ export default function NavbarAdmin() {
 									d="M7 13C7.59334 13 8.17336 12.8241 8.66671 12.4944C9.16006 12.1648 9.54458 11.6962 9.77164 11.1481C9.9987 10.5999 10.0581 9.99667 9.94236 9.41473C9.8266 8.83279 9.54088 8.29824 9.12132 7.87868C8.70176 7.45912 8.16721 7.1734 7.58527 7.05764C7.00333 6.94189 6.40013 7.0013 5.85195 7.22836C5.30377 7.45542 4.83524 7.83994 4.50559 8.33329C4.17595 8.82664 4 9.40666 4 10C4 10.7956 4.31607 11.5587 4.87868 12.1213C5.44129 12.6839 6.20435 13 7 13ZM7 9C7.19778 9 7.39112 9.05865 7.55557 9.16853C7.72002 9.27841 7.84819 9.43459 7.92388 9.61732C7.99957 9.80004 8.01937 10.0011 7.98079 10.1951C7.9422 10.3891 7.84696 10.5673 7.70711 10.7071C7.56725 10.847 7.38907 10.9422 7.19509 10.9808C7.00111 11.0194 6.80004 10.9996 6.61732 10.9239C6.43459 10.8482 6.27841 10.72 6.16853 10.5556C6.05865 10.3911 6 10.1978 6 10C6 9.73478 6.10536 9.48043 6.29289 9.29289C6.48043 9.10536 6.73478 9 7 9ZM20 7H12C11.7348 7 11.4804 7.10536 11.2929 7.29289C11.1054 7.48043 11 7.73478 11 8V14H3V6C3 5.73478 2.89464 5.48043 2.70711 5.29289C2.51957 5.10536 2.26522 5 2 5C1.73478 5 1.48043 5.10536 1.29289 5.29289C1.10536 5.48043 1 5.73478 1 6V19C1 19.2652 1.10536 19.5196 1.29289 19.7071C1.48043 19.8946 1.73478 20 2 20C2.26522 20 2.51957 19.8946 2.70711 19.7071C2.89464 19.5196 3 19.2652 3 19V16H21V19C21 19.2652 21.1054 19.5196 21.2929 19.7071C21.4804 19.8946 21.7348 20 22 20C22.2652 20 22.5196 19.8946 22.7071 19.7071C22.8946 19.5196 23 19.2652 23 19V10C23 9.20435 22.6839 8.44129 22.1213 7.87868C21.5587 7.31607 20.7956 7 20 7ZM21 14H13V9H20C20.2652 9 20.5196 9.10536 20.7071 9.29289C20.8946 9.48043 21 9.73478 21 10V14Z"
 									fill="#5D6679"
 									className={`group-hover:stroke-[#1366D9]  group-hover:fill-[#1366D9] stroke-[0.5px] ${
-										pathname === "/room" ? "stroke-[#1366D9] stroke-[0.5px] fill-[#1366D9]" : ""
+										pathname === "/room"
+											? "stroke-[#1366D9] stroke-[0.5px] fill-[#1366D9]"
+											: ""
 									}`}
 								/>
 							</svg>
@@ -227,8 +216,23 @@ export default function NavbarAdmin() {
 							</li>
 						</Link>
 					</ul>
+
+					
 				</div>
+
+					<div className="mt-2 bg-red-500 text-white rounded shadow w-40 ml-5">
+						<button
+							onClick={handleLogout}
+							className="w-full text-left px-4 py-2 hover:bg-red-600 transition-colors duration-200 rounded"
+						>
+							Logout
+						</button>
+					</div>
+
+				
 			</nav>
+
+		
 		</>
 	);
 }
