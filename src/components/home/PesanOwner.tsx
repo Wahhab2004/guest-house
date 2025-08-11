@@ -13,8 +13,7 @@ export default function PesanOwner() {
 				</svg>
 				<blockquote>
 					<p className="text-2xl italic font-medium text-gray-900">
-						&quot;Selamat datang di Ummu Guest House. Tempat menginap yang
-						tenang, nyaman, dan penuh kehangatan—seperti rumah sendiri.&quot;
+						&quot;Welcome to Ummu Guest House. A quiet, comfortable, and warm place to stay—just like home.&quot;
 					</p>
 				</blockquote>
 				<figcaption className="flex items-center justify-center mt-6 space-x-3 rtl:space-x-reverse">

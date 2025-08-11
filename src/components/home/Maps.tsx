@@ -15,12 +15,11 @@ export default function Maps() {
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 							<div className="rounded-lg overflow-hidden">
 								<iframe
-									src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11672.945750644447!2d-122.42107853750231!3d37.7730507907087!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80858070cc2fbd55%3A0xa71491d736f62d5c!2sGolden%20Gate%20Bridge!5e0!3m2!1sen!2sus!4v1619524992238!5m2!1sen!2sus"
-									width="100%"
-									height="480"
-									style={{ border: 0 }}
-									// allowFullScreen=""
+									src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3239.9069652362773!2d139.85969927578873!3d35.70390697257987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzXCsDQyJzE0LjEiTiAxMznCsDUxJzQ0LjIiRQ!5e0!3m2!1sid!2sid!4v1754885927446!5m2!1sid!2sid"
+									className="w-full h-96"
+									allowFullScreen= {true}
 									loading="lazy"
+									referrerPolicy="no-referrer-when-downgrade"
 								></iframe>
 							</div>
 							<div>
@@ -38,7 +37,6 @@ export default function Maps() {
 										<p className="mt-1 text-gray-600">
 											Monday - Sunday: 24 hours
 										</p>
-										
 									</div>
 									<div className="border-t border-gray-200 px-6 py-4">
 										<h3 className="text-lg font-medium text-gray-900">
@@ -47,7 +45,9 @@ export default function Maps() {
 										<p className="mt-1 text-gray-600">
 											Email: imaswatanabe@me.com
 										</p>
-										<p className="mt-1 text-gray-600">Phone: +81 80-3242-3077</p>
+										<p className="mt-1 text-gray-600">
+											Phone: +81 80-3242-3077
+										</p>
 									</div>
 								</div>
 							</div>
