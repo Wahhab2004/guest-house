@@ -208,7 +208,8 @@ const EditReservation: React.FC<EditReservationProps> = ({
 					>
 						<option value="PENDING">PENDING</option>
 						<option value="CONFIRMED">CONFIRMED</option>
-						<option value="CANCELLED">CANCELLED</option>
+						<option value="CANCELED">CANCELLED</option>
+						<option value="CHECKED_OUT">CHECKED_OUT</option>
 					</select>
 				</div>
 

@@ -166,7 +166,7 @@ export default function LoginPage() {
 					<Image
 						width={1000}
 						height={1000}
-						src="/images/japanese-home.jpg"
+						src="/images/house.jpg"
 						alt="Login Visual"
 						className="w-full h-full object-cover animate-slide-in-left rounded-r-lg"
 					/>

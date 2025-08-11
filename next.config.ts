@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
 			"pagedone.io",
 			"flowbite.s3.amazonaws.com",
 			"pict.sindonews.net", 
+			"localhost",
 		],
 	},
 	

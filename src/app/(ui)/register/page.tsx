@@ -324,7 +324,7 @@ export default function Register() {
 					<Image
 						width={1000}
 						height={1000}
-						src="/images/japanese-home.jpg"
+						src="/images/house.jpg"
 						alt="Login Visual"
 						className="w-full h-full object-cover rounded-r-lg"
 					/>

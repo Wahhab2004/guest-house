@@ -1,11 +1,13 @@
 // pages/UserPage.tsx
 import { useCallback, useEffect, useState } from "react";
-import PaginationControl from "../guest-reservation/PaginationControl";
-import { fetchFilteredReservations, type Reservation } from "@/fetching";
+import { type Reservation } from "@/fetching";
 import formatDateIndo from "../../format-tanggal/formatTanggal";
 import EditReservation from "./editReservasi";
 import AddReservation from "./addReservasi";
 import Cookies from "js-cookie";
+import PaginationControl from "@/components/admin/reservasi/PaginationControl";
+import Badge from "@/components/Badge";
+import ActionButton from "@/components/ActionButton";
 
 export default function Reservasi() {
 	const [token, setToken] = useState<string | null>(null);
@@ -25,10 +27,16 @@ export default function Reservasi() {
 	const [status, setStatus] = useState("");
 	const [sortBy, setSortBy] = useState("");
 	const [order, setOrder] = useState("desc");
+	const [paymentStatus, setPaymentStatus] = useState("");
+	const [startDate, setStartDate] = useState("");
+	const [endDate, setEndDate] = useState("");
+	const [searchType, setSearchType] = useState("guestName");
+	const [showFilter, setShowFilter] = useState(false);
 
 	const [isAddOpen, setIsAddOpen] = useState(false);
 	const [isEditOpen, setIsEditOpen] = useState(false);
 	const [isDetailOpen, setIsDetailOpen] = useState(false);
+
 	const [selectedReservationId, setSelectedReservationId] = useState<
 		string | null
 	>(null);
@@ -38,20 +46,40 @@ export default function Reservasi() {
 			const cookies = document.cookie.split("; ");
 			const tokenCookie = cookies.find((row) => row.startsWith("token="));
 			const tokenValue = tokenCookie?.split("=")[1] || null;
-
 			setToken(tokenValue);
 
-			const data = await fetchFilteredReservations(
-				
-				
+			const params = new URLSearchParams({
+				status,
+				paymentStatus,
+				startDate,
+				endDate,
+				guestName: searchType === "guestName" ? search : "", // search digunakan untuk guestName
+				roomName: searchType === "roomName" ? search : "",
+				order,
+				sortBy,
+			});
+
+			const res = await fetch(
+				`${
+					process.env.NEXT_PUBLIC_API_BASE_URL
+				}/reservations?${params.toString()}`,
+				{
+					headers: {
+						Authorization: tokenValue ? `Bearer ${tokenValue}` : "",
+					},
+					cache: "no-store",
+				}
 			);
 
-			setReservation(data);
-			setFilteredReservation(data);
+			if (!res.ok) throw new Error("Failed to fetch reservations");
+			const json = await res.json();
+
+			setReservation(json.data);
+			setFilteredReservation(json.data);
 		} catch (error) {
 			console.error("Error fetching reservations:", error);
 		}
-	}, [search, status, sortBy, order]);
+	}, [status, paymentStatus, startDate, endDate, search, order, sortBy, searchType]);
 
 	useEffect(() => {
 		fetchReservations();
@@ -151,69 +179,165 @@ export default function Reservasi() {
 			console.error("Error deleting reservation:", error);
 		}
 	};
-
+	const resetFilters = () => {
+		setSearch("");
+		setStatus("");
+		setPaymentStatus("");
+		setSortBy("createdAt");
+		setOrder("desc");
+		setItemsPerPage(5);
+		setStartDate("");
+		setEndDate("");
+	};
 	return (
-		<div className="overflow-y-auto w-[80%] xl:w-[85%]">
-			<div className="flex justify-between items-center px-8 xl:px-0 2xl:px-7 mb-4 py-2">
-				{/* Filter & Search, Sort, Order, Atur Halaman */}
-				<div className="flex items-center">
-					<div className="flex flex-wrap gap-2 xl:gap-4 xl:px-5 text-[10px] xl:text-sm">
-						<input
-							type="text"
-							placeholder="Cari reservasi..."
-							value={search}
-							onChange={(e) => setSearch(e.target.value)}
-							className="border px-3 py-2 rounded"
-						/>
-
-						<select
-							value={status}
-							onChange={(e) => setStatus(e.target.value)}
-							className="border px-3 py-2 rounded"
-						>
-							<option value="">Semua Status</option>
-							<option value="accepted">Disetujui</option>
-							<option value="pending">Pending</option>
-							<option value="rejected">Rejected</option>
-						</select>
-
-						<select
-							value={sortBy}
-							onChange={(e) => setSortBy(e.target.value)}
-							className="border px-3 py-2 rounded"
-						>
-							<option value="created_at">Waktu Booking</option>
-							<option value="event_date">Tanggal Acara</option>
-						</select>
-
-						<select
-							value={order}
-							onChange={(e) => setOrder(e.target.value)}
-							className="border px-3 py-2 rounded"
-						>
-							<option value="" disabled>
-								Pilih Urutan
-							</option>
-							<option value="desc">Terbaru</option>
-							<option value="asc">Terdahulu</option>
-						</select>
+		<div className="px-6">
+			<div className="flex justify-between items-center xl:px-0 2xl:px-7 mb-4 py-2">
+				<div className="w-full bg-white rounded-xl shadow p-6 flex flex-col gap-6">
+					{/* Header */}
+					<div className="flex justify-between items-center">
+						<h2 className="text-lg font-bold text-gray-700">Reservasi</h2>
+						<div className="flex gap-2">
+							<button
+								onClick={() => setShowFilter((prev) => !prev)}
+								className="px-4 py-2 rounded-lg bg-blue-500 text-white text-sm hover:bg-blue-600 transition"
+							>
+								{showFilter ? "Tutup Filter" : "Filter"}
+							</button>
+							{showFilter && (
+								<button
+									onClick={resetFilters}
+									className="text-xs px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition text-gray-600"
+								>
+									Reset
+								</button>
+							)}
+						</div>
 					</div>
-					{/* Pagination */}
-					<div className="flex items-center">
-						<select
-							value={itemsPerPage.toString()}
-							onChange={(e) => setItemsPerPage(Number(e.target.value))}
-							className="border px-3 py-1.5 rounded w-16"
-						>
-							<option value="" disabled>
-								Pilih Tampilan
-							</option>
-							<option value="5">5</option>
-							<option value="10">10</option>
-							<option value="15">15</option>
-							<option value="30">30</option>
-						</select>
-					</div>
+
+					{/* Filter Section */}
+					{showFilter && (
+						<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 text-sm transition-all duration-300">
+							{/* Search Type */}
+							<select
+								value={searchType}
+								onChange={(e) => setSearchType(e.target.value)}
+								className="border rounded px-2 py-2"
+							>
+								<option value="guestName">Nama Tamu</option>
+								<option value="roomName">Nama Kamar</option>
+							</select>
+
+							{/* Search Input */}
+							<input
+								type="text"
+								placeholder={`Cari berdasarkan ${
+									searchType === "guestName" ? "Nama Tamu" : "Nama Kamar"
+								}...`}
+								value={search}
+								onChange={(e) => setSearch(e.target.value)}
+								className="border rounded px-3 py-2"
+							/>
+
+							{/* Status Reservasi */}
+							<div className="flex flex-col">
+								<label className="text-gray-600 text-xs font-semibold mb-1">
+									Status Reservasi
+								</label>
+								<select
+									value={status}
+									onChange={(e) => setStatus(e.target.value)}
+									className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+								>
+									<option value="">Semua Status</option>
+									<option value="CONFIRMED">✅ Disetujui</option>
+									<option value="PENDING">⏳ Pending</option>
+									<option value="CANCELED">❌ Dibatalkan</option>
+									<option value="CHECKED_OUT">🏁 Selesai</option>
+								</select>
+							</div>
+
+							{/* Status Pembayaran */}
+							<div className="flex flex-col">
+								<label className="text-gray-600 text-xs font-semibold mb-1">
+									Status Pembayaran
+								</label>
+								<select
+									value={paymentStatus}
+									onChange={(e) => setPaymentStatus(e.target.value)}
+									className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+								>
+									<option value="">Semua</option>
+									<option value="PAID">💰 Lunas</option>
+									<option value="UNPAID">💸 Belum Lunas</option>
+									<option value="REFUND">🔄 Refund</option>
+								</select>
+							</div>
+
+							{/* Tanggal Booking */}
+							<div className="flex flex-col">
+								<label className="text-gray-600 text-xs font-semibold mb-1">
+									Tanggal Booking
+								</label>
+								<div className="flex gap-1">
+									<input
+										type="date"
+										value={startDate}
+										onChange={(e) => setStartDate(e.target.value)}
+										className="border px-2 py-2 rounded-lg w-full"
+									/>
+									<span className="text-gray-500 self-center">-</span>
+									<input
+										type="date"
+										value={endDate}
+										onChange={(e) => setEndDate(e.target.value)}
+										className="border px-2 py-2 rounded-lg w-full"
+									/>
+								</div>
+							</div>
+
+							{/* Urutkan */}
+							<div className="flex flex-col">
+								<label className="text-gray-600 text-xs font-semibold mb-1">
+									Urutkan
+								</label>
+								<div className="flex gap-1">
+									<select
+										value={sortBy}
+										onChange={(e) => setSortBy(e.target.value)}
+										className="border px-2 py-2 rounded-l-lg"
+									>
+										<option value="createdAt">📅 Waktu Booking</option>
+										<option value="checkIn">🏨 Tanggal Check-In</option>
+									</select>
+									<select
+										value={order}
+										onChange={(e) => setOrder(e.target.value)}
+										className="border px-2 py-2 rounded-r-lg"
+									>
+										<option value="desc">⬆ Terbaru</option>
+										<option value="asc">⬇ Terdahulu</option>
+									</select>
+								</div>
+							</div>
+
+							{/* Items Per Page */}
+							<div className="flex flex-col">
+								<label className="text-gray-600 text-xs font-semibold mb-1">
+									Tampilkan
+								</label>
+								<select
+									value={itemsPerPage.toString()}
+									onChange={(e) => setItemsPerPage(Number(e.target.value))}
+									className="border px-3 py-2 rounded-lg"
+								>
+									<option value="5">5</option>
+									<option value="10">10</option>
+									<option value="15">15</option>
+									<option value="30">30</option>
+								</select>
+							</div>
+						</div>
+					)}
 				</div>
 
 				<div className="flex gap-2">
@@ -279,169 +403,103 @@ function ReservasiTable({
 	onDetail,
 }: ReservasiTableProps) {
 	return (
-		<div className="ml-5 max-w-[1800px] border shadow rounded-lg p-4 ">
-			<table className="w-full text-left mt-2 tracking-wide">
-				<thead>
-					<tr>
-						{[
-							"#",
-							"NAMA TAMU",
-							"NAMA KAMAR",
-							"TANGGAL RESERVASI",
-							"WAKTU/LAMA RESERVASI",
-							"JUMLAH TAMU",
-							"METODE PEMBAYARAN",
-
-							"STATUS",
-							"PEMBAYARAN",
-							"HARGA",
-							"AKSI",
-						].map((header, idx) => (
-							<th
-								key={idx}
-								className="text-[#5D6679] text-[8px] xl:text-[10px] pr-2"
-							>
-								{header}
-							</th>
-						))}
-					</tr>
-				</thead>
-				<tbody>
-					{reservations?.length > 0 ? (
-						reservations.map((res, index) => (
-							<tr
-								key={res.id}
-								className="text-gray-700 text-[14px] xs:text-[12px] border-b"
-							>
-								<td className="py-4">{index + 1}</td>
-								<td className="py-4">{res.guest?.name}</td>
-								<td className="py-4">{res.room?.name}</td>
-								<td className="py-4">{formatDateIndo(res.createdAt)}</td>
-								<td className="py-4">
-									{formatDateIndo(res.checkIn)} - {formatDateIndo(res.checkOut)}
-								</td>
-
-								<td className="py-4">{res.guestTotal}</td>
-
-								<td className="py-4 text-xs">
-									{res.Payment?.method === "TRANSFER" ? (
-										<span className="text-yellow-900 bg-yellow-100 p-1 border border-yellow-200 rounded-lg px-2">
+		<div className="w-full ">
+			<h1 className="text-xl font-bold mb-3 ">Reservasi</h1>
+			<div className="border shadow-md rounded-xl bg-white overflow-x-auto">
+				<table className="w-full text-left text-sm">
+					<thead className="bg-gray-100 uppercase">
+						<tr>
+							{[
+								"#",
+								"Nama Tamu",
+								"Nama Kamar",
+								"Tgl Reservasi",
+								"Waktu / Lama",
+								"Jml Tamu",
+								"Metode Bayar",
+								"Status",
+								"Pembayaran",
+								"Harga",
+								"Aksi",
+							].map((header, idx) => (
+								<th key={idx} className="px-4 py-3 whitespace-nowrap">
+									{header}
+								</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{reservations?.length > 0 ? (
+							reservations.map((res, index) => (
+								<tr
+									key={res.id}
+									className="border-b hover:bg-gray-50 transition"
+								>
+									<td className="px-4 py-3">{index + 1}</td>
+									<td className="px-4 py-3">{res.guest?.name}</td>
+									<td className="px-4 py-3">{res.room?.name}</td>
+									<td className="px-4 py-3">{formatDateIndo(res.createdAt)}</td>
+									<td className="px-4 py-3">
+										{formatDateIndo(res.checkIn)} -{" "}
+										{formatDateIndo(res.checkOut)}
+									</td>
+									<td className="px-4 py-3">{res.guestTotal}</td>
+									<td className="px-4 py-3">
+										<Badge type={res.Payment?.method}>
 											{res.Payment?.method}
-										</span>
-									) : res.Payment?.method === "CASH" ? (
-										<span className="text-green-900 bg-green-100 p-1 border border-green-200 rounded-lg px-2">
-											{res.Payment?.method}
-										</span>
-									) : (
-										<span className="text-pink-900 bg-red-100 p-1 border border-red-200 rounded-lg px-2">
-											{res.Payment?.method}
-										</span>
-									)}
-								</td>
-
-								<td className="py-4 text-xs">
-									{res.status === "PENDING" ? (
-										<span className="text-yellow-900 bg-yellow-100 p-1 border border-yellow-200 rounded-lg px-2">
-											{res.status}
-										</span>
-									) : res.status === "CONFIRMED" ? (
-										<span className="text-green-900 bg-green-100 p-1 border border-green-200 rounded-lg px-2">
-											{res.status}
-										</span>
-									) : res.status === "CANCELLED" ? (
-										<span className="text-red-900 bg-red-100 p-1 border border-red-200 rounded-lg px-2">
-											{res.status}
-										</span>
-									) : (
-										<span>{res.status}</span>
-									)}
-								</td>
-								<td className="py-4 text-xs">
-									{res.Payment?.status === "PAID" ? (
-										<span className="text-green-900 bg-green-100 p-1 border-green-200 border rounded-lg px-2">
+										</Badge>
+									</td>
+									<td className="px-4 py-3">
+										<Badge type={res.status}>{res.status}</Badge>
+									</td>
+									<td className="px-4 py-3">
+										<Badge type={res.Payment?.status}>
 											{res.Payment?.status}
-										</span>
-									) : res.Payment?.status === "HALF_PAID" ? (
-										<span className="text-orange-900 bg-orange-100 p-1 border-orange-200 border rounded-lg px-2">
-											{res.Payment?.status}
-										</span>
-									) : res.Payment?.status === "UNPAID" ? (
-										<span className="text-red-900 bg-red-100 border border-yellow-200 rounded-lg p-1  px-2">
-											{res.Payment?.status}
-										</span>
-									) : (
-										<span>{res.Payment?.status}</span>
-									)}
-								</td>
-
-								<td className="py-4">
-									{res.totalPrice.toLocaleString("id-ID", {
-										style: "currency",
-										currency: "IDR",
-									})}
-								</td>
-
-								<td className="flex gap-1 py-4 text-[12px]">
-									<button
-										onClick={() => onDetail(res.id)}
-										className="bg-blue-500 text-white p-1 rounded"
-									>
-										Detail
-									</button>
-									<button
-										onClick={() => onEdit(res.id)}
-										className="bg-yellow-500 text-white p-1 rounded"
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-											strokeWidth={1.5}
-											stroke="currentColor"
-											className="size-6 w-4 h-4"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+										</Badge>
+									</td>
+									<td className="px-4 py-3 whitespace-nowrap">
+										{res.totalPrice.toLocaleString("jp-JP", {
+											style: "currency",
+											currency: "JPY",
+										})}
+									</td>
+									<td className="px-4 py-3">
+										<div className="flex gap-2">
+											<ActionButton
+												color="blue"
+												label="Detail"
+												onClick={() => onDetail(res.id)}
+												icon="👁️"
 											/>
-										</svg>
-									</button>
-
-									<button
-										onClick={() => onDelete(res.id)}
-										className="bg-red-500 text-white p-1 rounded"
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-											strokeWidth={1.5}
-											stroke="currentColor"
-											className="size-6 w-4 h-4"
-										>
-											<path
-												fill="none"
-												stroke="currentColor"
-												strokeWidth="1.5"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												d="M6 7h12M9 7v10m6-10v10M4 7h16l-1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 7zM10 3h4a1 1 0 0 1 1 1v1H9V4a1 1 0 0 1 1-1z"
+											<ActionButton
+												color="amber"
+												label="Edit"
+												onClick={() => onEdit(res.id)}
+												icon="✏️"
 											/>
-										</svg>
-									</button>
+											<ActionButton
+												color="red"
+												label="Hapus"
+												onClick={() => onDelete(res.id)}
+												icon="🗑️"
+											/>
+										</div>
+									</td>
+								</tr>
+							))
+						) : (
+							<tr>
+								<td
+									colSpan={12}
+									className="text-center text-gray-500 py-6 text-sm"
+								>
+									Tidak ada data reservasi.
 								</td>
 							</tr>
-						))
-					) : (
-						<tr>
-							<td colSpan={12} className="p-4 text-center text-gray-500">
-								Tidak ada data reservasi.
-							</td>
-						</tr>
-					)}
-				</tbody>
-			</table>
+						)}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	);
 }
@@ -562,10 +620,12 @@ export function DetailReservation({
 
 					<div>
 						<p className="text-gray-500">Total</p>
-						<p className="font-medium">{reservation.totalPrice.toLocaleString("id-ID", {
-										style: "currency",
-										currency: "IDR",
-									})}</p>
+						<p className="font-medium">
+							{reservation.totalPrice.toLocaleString("id-ID", {
+								style: "currency",
+								currency: "IDR",
+							})}
+						</p>
 					</div>
 				</div>
 

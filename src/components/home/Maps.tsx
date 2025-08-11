@@ -30,25 +30,24 @@ export default function Maps() {
 											Our Address
 										</h3>
 										<p className="mt-1 text-gray-600">
-											123 Main St, San Francisco, CA 94105
+											WATANABE HOUSE 1-8-14 MATSUSHIMA EDOGAWA KU TOKYO 132-0031
 										</p>
 									</div>
 									<div className="border-t border-gray-200 px-6 py-4">
 										<h3 className="text-lg font-medium text-gray-900">Hours</h3>
 										<p className="mt-1 text-gray-600">
-											Monday - Friday: 9am - 5pm
+											Monday - Sunday: 24 hours
 										</p>
-										<p className="mt-1 text-gray-600">Saturday: 10am - 4pm</p>
-										<p className="mt-1 text-gray-600">Sunday: Closed</p>
+										
 									</div>
 									<div className="border-t border-gray-200 px-6 py-4">
 										<h3 className="text-lg font-medium text-gray-900">
 											Contact
 										</h3>
 										<p className="mt-1 text-gray-600">
-											Email: info@example.com
+											Email: imaswatanabe@me.com
 										</p>
-										<p className="mt-1 text-gray-600">Phone: +1 23494 34993</p>
+										<p className="mt-1 text-gray-600">Phone: +81 80-3242-3077</p>
 									</div>
 								</div>
 							</div>

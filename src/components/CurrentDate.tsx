@@ -9,7 +9,7 @@ const CurrentDate = () => {
   };
 
   return (
-    <p className="text-[#5D6679] float-right mr-6 text-sm font-semibold">
+    <p className="text-[#5D6679] float-right mr-6 text-sm font-semibold mt-1">
       {getCurrentDate()}
     </p>
   );

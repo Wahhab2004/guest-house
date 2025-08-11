@@ -3,6 +3,7 @@
 import { Guest, Reservation, Room } from "@/fetching";
 import { useEffect, useState } from "react";
 import { validateReservationForm } from "./validateReservationform";
+import Cookies from "js-cookie";
 
 interface AddReservationProps {
 	isOpen: boolean;
@@ -62,44 +63,60 @@ const AddReservation: React.FC<AddReservationProps> = ({
 	const [guests, setGuests] = useState<Guest[]>([]);
 	const [rooms, setRooms] = useState<Room[]>([]);
 
+	const [token, setToken] = useState<string | null>(null);
+
 	useEffect(() => {
-	if (!isOpen) return;
+		const storedToken = Cookies.get("token");
 
-	const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
-
-	// Fetch guest data
-	const fetchGuests = async () => {
-		try {
-			const res = await fetch(`${baseUrl}/guests`);
-			const data = await res.json();
-			setGuests(data.data || []);
-		} catch (err) {
-			console.error("Gagal mengambil data tamu:", err);
+		if (storedToken) {
+			setToken(storedToken);
 		}
-	};
+	}, []);
 
-	// Fetch room data dengan filter tanggal check-in & check-out
-	const fetchRooms = async () => {
-		try {
-			if (!formData.checkIn || !formData.checkOut) return;
+	useEffect(() => {
+		if (!isOpen) return;
 
-			const searchParams = new URLSearchParams();
-			searchParams.append("checkIn", new Date(formData.checkIn).toISOString());
-			searchParams.append("checkOut", new Date(formData.checkOut).toISOString());
+		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
-			const res = await fetch(`${baseUrl}/rooms/available?${searchParams.toString()}`);
-			const data = await res.json();
-			setRooms(data.data || []);
-		} catch (err) {
-			console.error("Gagal mengambil data kamar:", err);
-		}
-	};
+		// Fetch guest data
+		const fetchGuests = async () => {
+			try {
+				const res = await fetch(`${baseUrl}/guests`);
+				const data = await res.json();
+				setGuests(data.data || []);
+			} catch (err) {
+				console.error("Gagal mengambil data tamu:", err);
+			}
+		};
 
-	fetchGuests();
-	fetchRooms();
+		// Fetch room data dengan filter tanggal check-in & check-out
+		const fetchRooms = async () => {
+			try {
+				if (!formData.checkIn || !formData.checkOut) return;
 
-}, [isOpen, formData.checkIn, formData.checkOut]); // 👈 Tambahkan dependency agar filter jalan otomatis
+				const searchParams = new URLSearchParams();
+				searchParams.append(
+					"checkIn",
+					new Date(formData.checkIn).toISOString()
+				);
+				searchParams.append(
+					"checkOut",
+					new Date(formData.checkOut).toISOString()
+				);
 
+				const res = await fetch(
+					`${baseUrl}/rooms/available?${searchParams.toString()}`
+				);
+				const data = await res.json();
+				setRooms(data.data || []);
+			} catch (err) {
+				console.error("Gagal mengambil data kamar:", err);
+			}
+		};
+
+		fetchGuests();
+		fetchRooms();
+	}, [isOpen, formData.checkIn, formData.checkOut]); // 👈 Tambahkan dependency agar filter jalan otomatis
 
 	const handleSave = async () => {
 		const validationErrors = validateReservationForm(formData);
@@ -118,6 +135,7 @@ const AddReservation: React.FC<AddReservationProps> = ({
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`, // <- Tambahkan ini
 					},
 					body: JSON.stringify({
 						guestId: formData.guestId,
@@ -133,7 +151,6 @@ const AddReservation: React.FC<AddReservationProps> = ({
 
 			if (!response.ok) {
 				console.error("Gagal:", result.message);
-				// Tambahkan penanganan error dari server
 				return;
 			}
 

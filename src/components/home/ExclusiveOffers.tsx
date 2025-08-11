@@ -10,7 +10,7 @@ const ExclusiveOffers = () => {
 				<div className="lg:col-span-5 lg:mt-0">
 					<Link href="/rooms">
 						<Image
-							src="/images/rooms/room-2.png"
+							src="/images/exclusive.jpg"
 							alt="room image"
 							width={600}
 							height={300}
@@ -40,7 +40,7 @@ const ExclusiveOffers = () => {
 				<div className="lg:col-span-5 lg:mt-0 lg:hidden">
 					<Link href="#">
 						<Image
-							src="/images/rooms/room-2.png"
+							src="/images/exclusive.jpg"
 							alt="room image"
 							width={600}
 							height={300}
@@ -72,7 +72,7 @@ const ExclusiveOffers = () => {
 				<div className="lg:col-span-5 lg:mt-0 lg:block hidden">
 					<a href="#">
 						<Image
-							src="/images/rooms/room-2.png"
+							src="/images/exclusive.jpg"
 							alt="room image"
 							width={600}
 							height={300}
