@@ -104,7 +104,7 @@ export const fetchReservationById = async (
 ): Promise<Reservation | null> => {
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-		const response = await fetch(`${baseUrl}/reservations?id=${id}`, {
+		const response = await fetch(`${baseUrl}/reservations/${id}`, {
 			cache: "no-store",
 		});
 		const jsonData = await response.json();

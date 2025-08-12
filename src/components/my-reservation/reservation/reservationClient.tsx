@@ -73,7 +73,6 @@ export default function ReservationsClient() {
 				renderSection={renderSection}
 				activeSection={activeSection}
 			/>
-			test : {reservation?.id}
 		</div>
 	);
 }

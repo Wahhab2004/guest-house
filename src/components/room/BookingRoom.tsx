@@ -1,217 +1,269 @@
-import { useState, useEffect } from "react";
-import { Room } from "@/fetching";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+"use client";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { Guest, Room } from "@/fetching";
+
+type Gender = "Male" | "Female" | "Other" | "";
 
 interface BookingFormProps {
 	room: Room | null;
-	id: string | string[] | undefined;
+	id: string | undefined | string[];
 }
 
 export default function BookingForm({ room, id }: BookingFormProps) {
-	const [guests, setGuests] = useState({ Male: 0, Female: 0 });
-	const [formData, setFormData] = useState({
-		checkin: "",
-		checkout: "",
-		guestTotal: 0,
-		totalPrice: 0,
-	});
+	const [user, setUser] = useState<Guest | null>(null);
+	const [dewasa, setDewasa] = useState(1);
+	const [hasChildren, setHasChildren] = useState(false);
+	const [anakDetails, setAnakDetails] = useState<
+		Array<{
+			name: string;
+			passport?: string;
+			dateOfBirth: string;
+			gender: Gender;
+		}>
+	>([
+		{ name: "", passport: "", dateOfBirth: "", gender: "" },
+		{ name: "", passport: "", dateOfBirth: "", gender: "" },
+	]); // max 2 anak
 
-	const totalGuests = guests.Male + guests.Female;
-	const totalPayment = (room?.price || 0) * totalGuests;
-	const router = useRouter();
+	const [checkIn, setCheckIn] = useState("");
+	const [checkOut, setCheckOut] = useState("");
+	const [loading, setLoading] = useState(false);
+
+
+
+	const handleAnakChange = (
+		index: number,
+		field: keyof (typeof anakDetails)[0],
+		value: string
+	) => {
+		const updated = [...anakDetails];
+		updated[index] = {
+			...updated[index],
+			[field]: value,
+		};
+		setAnakDetails(updated);
+	};
+
+	// Reset anakDetails jika hasChildren di-uncheck
+	useEffect(() => {
+		if (!hasChildren) {
+			setAnakDetails([
+				{ name: "", passport: "", dateOfBirth: "", gender: "" },
+				{ name: "", passport: "", dateOfBirth: "", gender: "" },
+			]);
+		}
+	}, [hasChildren]);
 
 	useEffect(() => {
-		// Jika ingin formData.guestCount disimpan, bisa pakai useEffect seperti ini
-	}, [totalGuests]);
-
-	const handleGuestChange = (gender: "Male" | "Female", delta: number) => {
-		setGuests((prev) => ({
-			...prev,
-			[gender]: Math.max(0, prev[gender] + delta),
-		}));
-	};
-
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-	) => {
-		const { name, value } = e.target;
-		setFormData((prev) => ({ ...prev, [name]: value }));
-	};
-
-	const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-
-		if (!id) {
-			alert("Room data not available");
-			return;
+		const storedUser = Cookies.get("user");
+		if (storedUser) {
+			setUser(JSON.parse(storedUser));
 		}
+	}, []);
 
-		try {
-			const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-			const res = await fetch(`${baseUrl}/reservations`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					roomId: id,
-					guestId: "97954af1-b403-4114-9f9d-49d36bb2ffa5",
-					numOfGuests: totalGuests,
-					checkInDate: formData.checkin,
-					checkOutDate: formData.checkout,
-					dateReservation: new Date().toISOString(),
-				}),
-			});
 
-			const result = await res.json();
+  // Message not dynamic yet
+	const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
 
-			if (!res.ok) {
-				throw new Error(result.message || "Gagal membuat reservasi");
-			}
+  const validAdditionalGuests = hasChildren
+    ? anakDetails.filter(
+        (a) => a.name.trim() !== "" && a.dateOfBirth.trim() !== ""
+      )
+    : [];
 
-			const idReservation = result.data?.id;
-			alert(result.message || "Reservasi berhasil dibuat!");
-			router.push(`/my-reservations/reservations?id=${idReservation}`);
-		} catch (error: unknown) {
-			if (error instanceof Error) {
-				console.error("Login error:", error);
-				alert(error.message);
-			} else {
-				console.error("Login error:", error);
-				alert("Terjadi kesalahan saat login.");
-			}
-		}
-	};
+  // Validasi jumlah dewasa
+  if (dewasa < 1 || dewasa > 3) {
+    alert("Adults must be between 1 and 3.");
+    setLoading(false);
+    return;
+  }
+
+  // Validasi jumlah anak
+  if (validAdditionalGuests.length > 2) {
+    alert("Max 2 children allowed.");
+    setLoading(false);
+    return;
+  }
+
+  // Validasi tanggal
+  if (!checkIn || !checkOut) {
+    alert("Please fill check-in and check-out dates.");
+    setLoading(false);
+    return;
+  }
+
+  const bookingData = {
+    guestId: user?.id, // pastikan user sudah login
+    roomId: id,
+    checkIn: new Date(checkIn).toISOString(),
+    checkOut: new Date(checkOut).toISOString(),
+    adultCount: dewasa,
+    childCount: validAdditionalGuests.length,
+    additionalGuests: validAdditionalGuests.map((a) => ({
+      name: a.name,
+      passport: a.passport || null,
+      dateOfBirth: new Date(a.dateOfBirth).toISOString(),
+      gender: a.gender || null,
+    })),
+  };
+
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const res = await fetch(`${baseUrl}/reservations`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookingData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      // Jika backend memberikan message error, tampilkan
+      alert(data.message || "Failed to create reservation");
+      setLoading(false);
+      return;
+    }
+
+    alert(data.message || "Reservation created successfully!");
+
+    // reset form setelah sukses
+    setDewasa(1);
+    setHasChildren(false);
+    setCheckIn("");
+    setCheckOut("");
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred while creating the reservation");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
 	return (
-		<div className="mx-auto p-10 w-11/12 xl:w-full mt-20 rounded-lg border md:max-w-2xl">
-			<h1 className="text-lg text-center font-semibold text-[#1C2B38] bg-gray-200 p-4 rounded-lg w-[80%] mx-auto">
-				Booking {room?.name}
-			</h1>
-			<h2 className="text-center text-4xl font-bold text-[#4C5C6B] mt-6">
-				¥{room?.price ? room.price : "0"} / Night
-			</h2>
+		<form
+			onSubmit={handleSubmit}
+			className="p-6 bg-white shadow-lg rounded-lg space-y-6 max-w-lg mx-auto"
+		>
+			<h2 className="text-2xl font-bold mb-4">Reservation Form</h2>
+      <h3 className="text-lg font-semibold">{room?.name}</h3>
 
-			<form className="space-y-4 mt-10" onSubmit={handleSave}>
-				{/* Check-In" */}
-				<div>
-					<label className="block mb-1 text-gray-600 text-lg">
-						Check-in Date
+			{/* Adults */}
+			<div>
+				<label className="block font-medium mb-1">Adults (Max 3)</label>
+				<input
+					type="number"
+					min={1}
+					max={3}
+					value={dewasa}
+					onChange={(e) => setDewasa(Number(e.target.value))}
+					className="border rounded px-3 py-2 w-full"
+				/>
+			</div>
+
+			{/* Checkbox Anak */}
+			<div className="flex items-center space-x-2">
+				<input
+					type="checkbox"
+					id="hasChildren"
+					checked={hasChildren}
+					onChange={(e) => setHasChildren(e.target.checked)}
+					className="w-4 h-4"
+				/>
+				<label htmlFor="hasChildren" className="select-none font-medium">
+					Is there a child in the group?
+				</label>
+			</div>
+
+			{/* Children Details */}
+			{hasChildren && (
+				<div className="border rounded p-4 bg-gray-50 space-y-4">
+					<label className="block font-semibold text-gray-700 mb-2">
+						Children Details (Max 2)
 					</label>
-					<input
-						type="date"
-						name="checkin"
-						value={formData.checkin}
-						onChange={handleChange}
-						className="w-full border px-3 py-2 rounded"
-						required
-					/>
-				</div>
-
-				{/* Check-Out */}
-				<div>
-					<label className="block mb-1 text-gray-600 text-lg">
-						Check-out Date
-					</label>
-					<input
-						type="date"
-						name="checkout"
-						value={formData.checkout}
-						onChange={handleChange}
-						className="w-full border px-3 py-2 rounded"
-						required
-					/>
-				</div>
-
-				{/* Info */}
-				<div className="mt-10 bg-gray-400 w-full h-[1px]" />
-				<div className="flex p-3 text-sm bg-blue-100 rounded mt-4 justify-evenly items-center text-blue-800">
-					<Image
-						src="/svg/icon-warn-blue.svg"
-						alt="room-1"
-						width={16}
-						height={16}
-					/>
-					<p>children under 3 years stay for free</p>
-				</div>
-
-				{/* Guests */}
-				<div>
-					<label className="block mb-2 text-gray-600 text-lg">Guests</label>
-					<div className="flex items-center space-x-4">
-						{/* Male */}
-						<div className="flex items-center space-x-2">
-							<span>👨</span>
-							<button
-								type="button"
-								onClick={() => handleGuestChange("Male", -1)}
-								className="px-2 py-1 border rounded"
+					{anakDetails.map((anak, i) => (
+						<div
+							key={i}
+							className="space-y-2 border p-3 rounded bg-white shadow-sm"
+						>
+							<input
+								type="text"
+								placeholder="Name"
+								value={anak.name}
+								onChange={(e) => handleAnakChange(i, "name", e.target.value)}
+								className="border rounded px-3 py-2 w-full"
+							/>
+							<input
+								type="date"
+								placeholder="Date of Birth"
+								value={anak.dateOfBirth}
+								onChange={(e) =>
+									handleAnakChange(i, "dateOfBirth", e.target.value)
+								}
+								className="border rounded px-3 py-2 w-full"
+							/>
+							<input
+								type="text"
+								placeholder="Passport (optional)"
+								value={anak.passport}
+								onChange={(e) =>
+									handleAnakChange(i, "passport", e.target.value)
+								}
+								className="border rounded px-3 py-2 w-full"
+							/>
+							<select
+								value={anak.gender}
+								onChange={(e) =>
+									handleAnakChange(i, "gender", e.target.value as Gender)
+								}
+								className="border rounded px-3 py-2 w-full"
 							>
-								-
-							</button>
-							<span>{guests.Male}</span>
-							<button
-								type="button"
-								onClick={() => handleGuestChange("Male", 1)}
-								className="px-2 py-1 border rounded"
-							>
-								+
-							</button>
+								<option value="">Select Gender</option>
+								<option value="Female">Female</option>
+								<option value="Male">Male</option>
+								<option value="Other">Other</option>
+							</select>
 						</div>
-
-						{/* Female */}
-						<div className="flex items-center space-x-2">
-							<span>👩</span>
-							<button
-								type="button"
-								onClick={() => handleGuestChange("Female", -1)}
-								className="px-2 py-1 border rounded"
-							>
-								-
-							</button>
-							<span>{guests.Female}</span>
-							<button
-								type="button"
-								onClick={() => handleGuestChange("Female", 1)}
-								className="px-2 py-1 border rounded"
-							>
-								+
-							</button>
-						</div>
-					</div>
+					))}
+					<p className="text-xs text-gray-500 mt-2">
+						Children aged ≤ 5: Free • Children aged 6–10: Half price
+					</p>
 				</div>
+			)}
 
-				{/* Total Guest */}
-				<div className="md:flex items-center justify-between">
-					<label className="text-gray-600 text-lg">Total Guests</label>
-					<input
-						type="text"
-						value={totalGuests}
-						disabled
-						className="text-xl md:text-end"
-					/>
-				</div>
+			{/* Check-in Date */}
+			<div>
+				<label className="block font-medium mb-1">Check-in Date</label>
+				<input
+					type="date"
+					value={checkIn}
+					onChange={(e) => setCheckIn(e.target.value)}
+					className="border rounded px-3 py-2 w-full"
+				/>
+			</div>
 
-				<div className="mt-10 bg-gray-400 w-full h-[1px]" />
+			{/* Check-out Date */}
+			<div>
+				<label className="block font-medium mb-1">Check-out Date</label>
+				<input
+					type="date"
+					value={checkOut}
+					onChange={(e) => setCheckOut(e.target.value)}
+					className="border rounded px-3 py-2 w-full"
+				/>
+			</div>
 
-				{/* Total Payment */}
-				<div className="md:flex items-center justify-between">
-					<label className="text-gray-600 text-lg">Total Payment</label>
-					<input
-						type="text"
-						value={`¥ ${totalPayment.toLocaleString()}`}
-						disabled
-						className="text-xl md:text-end"
-					/>
-				</div>
-
-				{/* Submit */}
-				<button
-					type="submit"
-					className="w-full bg-blue-700 text-white px-4 py-2 font-semibold rounded hover:bg-blue-800"
-				>
-					Book Now
-				</button>
-			</form>
-		</div>
+			{/* Submit Button */}
+			<button
+				type="submit"
+				disabled={loading}
+				className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+			>
+				{loading ? "Processing..." : "Book Now"}
+			</button>
+		</form>
 	);
 }

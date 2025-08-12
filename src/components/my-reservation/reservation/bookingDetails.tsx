@@ -25,8 +25,8 @@ export default function BookingDetails({
 
 				<Image
 					src={
-						reservation?.room.photoUrl
-							? reservation.room.photoUrl
+						reservation?.room?.photoUrl
+							? reservation.room?.photoUrl
 							: "/images/rooms/room-2.png"
 					}
 					width={1000}
@@ -58,7 +58,7 @@ export default function BookingDetails({
 						<div>
 							<h3 className="font-medium text-gray-600">Type of Room</h3>
 							<p className="text-medium mb-2">
-								{reservation?.roomId ? reservation.roomId : "-"}
+								{reservation?.roomId ? reservation.room?.name : "-"}
 							</p>
 						</div>
 						<div>

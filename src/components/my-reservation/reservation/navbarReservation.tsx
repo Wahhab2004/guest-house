@@ -1,7 +1,7 @@
 import { usePathname } from "next/navigation";
 import { JSX } from "react";
 
-interface NaaavbarReservationProps {
+interface NavbarReservationProps {
 	handleNavigate: (section: string) => void;
 	renderSection: () => JSX.Element;
 	activeSection: string;
@@ -11,7 +11,7 @@ export default function NavbarReservation({
 	handleNavigate,
 	renderSection,
 	activeSection,
-}: NaaavbarReservationProps) {
+}: NavbarReservationProps) {
 	const pathName = usePathname();
 
 	return (

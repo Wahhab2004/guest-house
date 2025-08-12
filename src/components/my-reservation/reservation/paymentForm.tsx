@@ -148,12 +148,12 @@ const PaymentForm = ({  reservation }: BookingDetailsProps) => {
             <p className="text-center text-gray-400">
                 Please fill up the blank fields below
             </p>
-            <p>there is nothing: {reservation?.Payment.id}</p>
+            <p>there is nothing: {reservation?.Payment?.id}</p>
             <form className="space-y-5 my-10" onSubmit={handleUpdatePayment}>
                 <div>
                     <label
                         htmlFor="payment-method"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        className="block mb-2 text-sm font-medium"
                     >
                         Select Payment Method
                     </label>
