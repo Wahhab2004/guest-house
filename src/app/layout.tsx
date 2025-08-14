@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -34,13 +35,21 @@ export default function RootLayout({
 	const loginPage = ["/login", "/register", "/reset-password"];
 
 	// Hide Navbar on specific paths
-	const hideNavbar = [...adminPage, ...loginPage, "/my-reservations", "/rooms/"].some(
-		(path) => pathname.startsWith(path)
-	);
+	const hideNavbar = [
+		...adminPage,
+		...loginPage,
+		"/my-reservations",
+		"/rooms/",
+	].some((path) => pathname.startsWith(path));
 
-	const hideFooter =
-		adminPage.some((path) => pathname.startsWith(path)) ||
-		pathname.includes("/login");
+
+	const hideFooter = [
+		...adminPage,
+		...loginPage,
+		"/my-reservations",
+		"/rooms/",
+	]
+
 
 	return (
 		<html lang="en">
@@ -48,6 +57,8 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
 				{!hideNavbar && <Navbar />}
+
+				<Toaster position="top-center" reverseOrder={false} />
 
 				{children}
 				{!hideFooter && <Footer />}

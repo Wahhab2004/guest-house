@@ -1,75 +1,129 @@
 "use client";
-import Image from "next/image";
+
+import ReservationDetailModal from "@/components/my-reservation/myReservationDetailModal";
+import ReservationCard from "@/components/my-reservation/myReservtionCard";
+import { Guest, Reservation } from "@/fetching";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
+const tabs: ("ACTIVE" | "PAST" | "CANCELLED")[] = [
+  "ACTIVE",
+  "PAST",
+  "CANCELLED",
+];
 
-export default function MyReservations() {
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
+const ReservationTabs = () => {
+  const [user, setUser] = useState<Guest | null>(null);
+  const [activeTab, setActiveTab] = useState<"ACTIVE" | "PAST" | "CANCELLED">(
+    "ACTIVE"
+  );
+  const [selectedReservation, setSelectedReservation] =
+    useState<Reservation | null>(null);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const storedUser = Cookies.get("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
-	useEffect(() => {
-		// Check login status, e.g., from localStorage or session
-		const paymentStatus = localStorage.getItem("isLoggedIn");
-		if (paymentStatus === "true") {
-			setIsLoggedIn(true);
-		}
-	}, []);
+  useEffect(() => {
+    const fetchReservations = async () => {
+      if (!user) return;
 
-	return (
-		<section>
+      setLoading(true);
+      setError(null);
 
-			<div className="h-screen flex justify-center mt-28">
-				{!isLoggedIn ? (
-					<div className="text-center w-11/12 mx-auto">
-						<p className="text-xl mb-4 text-blue-900 font-bold">
-							Payment Pending Verification
-						</p>
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const res = await axios.get(`${baseUrl}/reservations`, {
+          params: { bookerId: user.id },
+        });
+        setReservations(res.data.data);
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          setError(err.response?.data?.message || "Failed to fetch reservations");
+        } else {
+          setError("Failed to fetch reservations");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
 
-						<Image
-							src="/svg/pending.svg"
-							height={64}
-							width={64}
-							alt="timer"
-							className="mx-auto mt-10"
-						/>
+    fetchReservations();
+  }, [user]);
 
-						<p className="mt-10 text-gray-400 w-11/12 lg:w-1/2 mx-auto">
-							Your payment for this reservation is still under verification.
-							Please allow up to 1x24 hours for the process to complete. Once
-							verified, your reservation details will appear here.
-						</p>
+  // Filter sesuai tab
+  const filteredReservations = reservations.filter((r) => {
+    if (activeTab === "ACTIVE")
+      return r.status === "ACTIVE" || r.status === "CONFIRMED";
+    if (activeTab === "PAST") return r.status === "CHECKED_OUT";
+    if (activeTab === "CANCELLED") return r.status === "CANCELED";
+    return false;
+  });
 
-						
-							<button
-								onClick={() => setIsLoggedIn(true)}
-								className="block hover:bg-green-600  cursor-pointer text-white font-semibold text-center bg-[#77D57D] flex mt-10 w-fit px-4 mx-auto justify-center items-center rounded-lg py-2"
-							>
-								Refresh
-								<Image
-								src="/svg/refresh.svg"
-								height={36}
-								width={36}
-								alt="timer"
-								className=""
-							/>
-							</button>
+  return (
+    <div className="w-11/12 mx-auto my-[100px]">
+      {/* Tabs */}
+      <div className="flex justify-center space-x-4 mb-6">
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            className={`px-4 py-2 rounded-lg font-semibold ${
+              activeTab === tab
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab === "ACTIVE"
+              ? "Active Bookings"
+              : tab === "PAST"
+              ? "Past Bookings"
+              : "Cancelled Bookings"}
+          </button>
+        ))}
+      </div>
 
-							
-						
-					</div>
-				) : (
-					<div className="w-11/12 mx-auto">
-						<h1 className="text-xl text-blue-900 font-bold text-center">
-							See Detail My Reservations
-						</h1>
+      {/* Loading/Error */}
+      {loading && (
+        <p className="text-center text-gray-500">Loading reservations...</p>
+      )}
+      {error && <p className="text-center text-red-500">{error}</p>}
 
-						<p className="text-center text-gray-400">
-							Here are the details of your reservation
-						</p>
+      {/* Reservations List */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {!loading &&
+          !error &&
+          (filteredReservations.length ? (
+            filteredReservations.map((reservation) => (
+              <ReservationCard
+                key={reservation.id}
+                reservation={reservation}
+                onViewDetail={() => setSelectedReservation(reservation)}
+              />
+            ))
+          ) : (
+            <p className="text-center text-gray-400 col-span-full">
+              No reservations found.
+            </p>
+          ))}
+      </div>
 
-					</div>
-				)}
-			</div>
-		</section>
-	);
-}
+      {/* Detail Modal */}
+      {selectedReservation && (
+        <ReservationDetailModal
+          reservation={selectedReservation}
+          onClose={() => setSelectedReservation(null)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default ReservationTabs;

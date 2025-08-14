@@ -9,13 +9,14 @@ export interface Room {
 }
 
 // Payment
-export interface Payments {
+export interface Payment {
 	id: string;
 	reservationId: string;
 	method: string;
 	status: string;
 	amount: number;
 	proofUrl: string;
+	sender: string;
 }
 
 // Review
@@ -32,17 +33,32 @@ export interface Review {
 // Reservation
 export interface Reservation {
 	id: string;
-	guestId: string;
+	bookerId: string;
+	guestId: string | null;
 	roomId: string;
 	checkIn: string;
 	checkOut: string;
 	guestTotal: number;
+	adultCount: number;
+	childCount: number;
 	totalPrice: number;
 	status: string;
 	guest: Guest;
 	room: Room;
-	Payment: Payments;
+	payment: Payment | null;
 	createdAt: string;
+	additionalGuests: AdditionalGuests[];
+}
+
+export interface AdditionalGuests {
+	id: string;
+	reservationId: string;
+	name: string;
+	passport: string | null;
+	dateOfBirth: string;
+	gender: string;
+	priceCategory: string;
+	
 }
 
 // Account
@@ -161,7 +177,7 @@ export const fetchAccount = async (): Promise<Guest[]> => {
 	}
 };
 
-export const fetchPayments = async (): Promise<Payments[]> => {
+export const fetchPayments = async (): Promise<Payment[]> => {
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 		const response = await fetch(`${baseUrl}/payments`, {
@@ -169,7 +185,7 @@ export const fetchPayments = async (): Promise<Payments[]> => {
 		});
 		const jsonData = await response.json();
 
-		return jsonData.data as Payments[];
+		return jsonData.data as Payment[];
 	} catch (error) {
 		console.error("Error fetching reservations:", error);
 		return [];

@@ -161,6 +161,7 @@ export default function Register() {
 									type="email"
 									name="email"
 									value={form.email}
+									placeholder="masitoh@gmail.com"
 									onChange={handleChange}
 									required
 									className="w-full py-2 outline-none bg-transparent"
@@ -179,6 +180,7 @@ export default function Register() {
 								type="text"
 								name="name"
 								value={form.name}
+								placeholder="Masitoh"
 								onChange={handleChange}
 								required
 								className="mb-3 w-full border border-gray-300 rounded-full py-2 px-4"
@@ -189,8 +191,10 @@ export default function Register() {
 							<input
 								type="text"
 								name="username"
+								placeholder="masitoh"
 								value={form.username}
 								onChange={handleChange}
+								required
 								className="mb-3 w-full border border-gray-300 rounded-full py-2 px-4"
 							/>
 
@@ -200,6 +204,7 @@ export default function Register() {
 								<input
 									type={showPassword ? "text" : "password"}
 									name="password"
+									placeholder="********"
 									value={form.password}
 									onChange={handleChange}
 									required
@@ -224,6 +229,7 @@ export default function Register() {
 									type={showConfirmPassword ? "text" : "password"}
 									name="confirmPassword"
 									value={form.confirmPassword}
+									placeholder="********"
 									onChange={handleChange}
 									required
 									className="w-full py-2 outline-none bg-transparent"
@@ -248,6 +254,8 @@ export default function Register() {
 								type="text"
 								name="phone"
 								value={form.phone}
+								placeholder="+6281234567890"
+								required
 								onChange={handleChange}
 								className="mb-3 w-full border border-gray-300 rounded-full py-2 px-4"
 							/>
@@ -258,6 +266,8 @@ export default function Register() {
 								type="text"
 								name="passport"
 								value={form.passport}
+								placeholder="A12345678"
+								required
 								onChange={handleChange}
 								className="mb-3 w-full border border-gray-300 rounded-full py-2 px-4"
 							/>
@@ -270,6 +280,7 @@ export default function Register() {
 								type="date"
 								name="dateOfBirth"
 								value={form.dateOfBirth}
+								required
 								onChange={handleChange}
 								className="mb-3 w-full border border-gray-300 rounded-full py-2 px-4"
 							/>
@@ -295,6 +306,8 @@ export default function Register() {
 							<input
 								type="text"
 								name="country"
+								required
+								placeholder="Indonesia"
 								value={form.country}
 								onChange={handleChange}
 								className="mb-4 w-full border border-gray-300 rounded-full py-2 px-4"

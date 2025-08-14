@@ -22,7 +22,7 @@ const EditReservation: React.FC<EditReservationProps> = ({
 	const [guests, setGuests] = useState<Guest[]>([]);
 	const [rooms, setRooms] = useState<Room[]>([]);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [proofFile, setProofFile] = useState<File | null>(null);
+	const [proofFile] = useState<File | null>(null);
 
 	useEffect(() => {
 		if (!isOpen || !reservation) return;
@@ -57,14 +57,14 @@ const EditReservation: React.FC<EditReservationProps> = ({
 
 			const form = new FormData();
 
-			form.append("guestId", formData.guestId);
+			form.append("guestId", formData.guestId || "");
 			form.append("roomId", formData.roomId);
 			form.append("checkIn", formData.checkIn);
 			form.append("checkOut", formData.checkOut);
 			form.append("guestTotal", String(formData.guestTotal));
 			form.append("status", formData.status);
-			form.append("paymentMethod", formData.Payment.method);
-			form.append("paymentStatus", formData.Payment.status);
+			form.append("paymentMethod", formData.payment?.method || "");
+			form.append("paymentStatus", formData.payment?.status || "UNPAID");
 
 			// Tambahkan file jika ada
 			if (proofFile) {
@@ -125,7 +125,7 @@ const EditReservation: React.FC<EditReservationProps> = ({
 				<div className="mb-4">
 					<label className="block text-sm font-medium mb-1">Tamu</label>
 					<select
-						value={formData.guestId}
+						value={formData.guestId || ""}
 						onChange={(e) =>
 							setFormData({ ...formData, guestId: e.target.value })
 						}
@@ -214,16 +214,16 @@ const EditReservation: React.FC<EditReservationProps> = ({
 				</div>
 
 				{/* Status Pembayaran */}
-				<div className="mb-4">
+				{/* <div className="mb-4">
 					<label className="block text-sm font-medium mb-1">
 						Status Pembayaran
 					</label>
 					<select
-						value={formData.Payment.status}
+						value={formData.payment?.status}
 						onChange={(e) =>
 							setFormData({
 								...formData,
-								Payment: { ...formData.Payment, status: e.target.value },
+								payment: { ...formData.payment?.status, status: e.target.value },
 							})
 						}
 						className={inputStyle}
@@ -231,19 +231,19 @@ const EditReservation: React.FC<EditReservationProps> = ({
 						<option value="UNPAID">UNPAID</option>
 						<option value="PAID">PAID</option>
 					</select>
-				</div>
+				</div> */}
 
 				{/* Metode Pembayaran */}
-				<div className="mb-4">
+				{/* <div className="mb-4">
 					<label className="block text-sm font-medium mb-1">
 						Metode Pembayaran
 					</label>
 					<select
-						value={formData.Payment.method}
+						value={formData.payment.method}
 						onChange={(e) =>
 							setFormData({
 								...formData,
-								Payment: { ...formData.Payment, method: e.target.value },
+								payment: { ...formData.payment., method: e.target.value },
 							})
 						}
 						className={inputStyle}
@@ -251,11 +251,11 @@ const EditReservation: React.FC<EditReservationProps> = ({
 						<option value="TRANSFER">TRANSFER</option>
 						<option value="CASH">CASH</option>
 					</select>
-				</div>
+				</div> */}
 
 				{/* Bukti Pembayaran */}
 
-				<div className="mb-4">
+				{/* <div className="mb-4">
 					<label className="block text-sm font-medium mb-1">
 						Bukti Pembayaran (Upload)
 					</label>
@@ -269,7 +269,7 @@ const EditReservation: React.FC<EditReservationProps> = ({
 						}}
 						className={inputStyle}
 					/>
-				</div>
+				</div> */}
 
 				{/* Tombol aksi */}
 				<div className="flex justify-end gap-3">

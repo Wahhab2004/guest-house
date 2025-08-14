@@ -88,3 +88,11 @@ To Do List | May 14:
 2. Ketika user sudah melakukan reservasi, maka kamar tersebut tidak bisa di booking lagi.
 3. 12 thn ke bwh set yen
 4. Pembayaran bisa pakai paypal atau paypai
+
+
+## Catatan 2
+1. Pastikan alert sudah sesuai dengan BE. Buatkan alert yang sesuai juga.
+2. Kasih alert untuk fitur yang masih dalam tahap pengembangan.
+3. ALERT
+   - Register ✓
+   - Login ✓

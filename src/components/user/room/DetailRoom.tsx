@@ -1,7 +1,7 @@
 import { Room } from "@/fetching";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import Calendar from "../Calendar";
+import Calendar from "../../Calendar";
 
 interface BookingFormProps {
 	room: Room | null;

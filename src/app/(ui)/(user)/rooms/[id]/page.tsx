@@ -5,14 +5,14 @@ import Review from "@/components/Review";
 import { useEffect, useState } from "react";
 import { fetchRoomById, Room } from "@/fetching";
 import { useParams } from "next/navigation";
-import BookingForm from "@/components/room/BookingRoom";
+import BookingForm from "@/components/user/room/BookingRoom";
 import DetailRoom, {
 	Description,
 	Facilities,
 	Katalog,
 	Location,
 	RefundPolicy,
-} from "@/components/room/DetailRoom";
+} from "@/components/user/room/DetailRoom";
 import FeedbackForm from "@/components/FeedbackForm";
 
 export default function DetailProductPage() {

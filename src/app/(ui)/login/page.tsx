@@ -4,10 +4,10 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Cookies from "js-cookie";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false);
-
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
@@ -15,7 +15,7 @@ export default function LoginPage() {
 		e.preventDefault();
 
 		if (!username || !password) {
-			alert("Username dan password wajib diisi.");
+			toast.error("Username dan password wajib diisi.");
 			return;
 		}
 
@@ -36,29 +36,37 @@ export default function LoginPage() {
 			}
 
 			// Simpan token dan user ke cookie
-			Cookies.set("token", result.token, { expires: 1 }); // 1 hari
-			Cookies.set("user", JSON.stringify(result.user), { expires: 1 });
+			Cookies.set("token", result.token, { expires: 3 });
+			Cookies.set("user", JSON.stringify(result.user), { expires: 3 });
 
-			alert("Login berhasil!");
-			window.location.href = "/";
+			toast.success("Login berhasil!");
+			setTimeout(() => {
+				window.location.href = "/";
+			}, 1500);
 		} catch (error: unknown) {
-	if (error instanceof Error) {
-		console.error("Login error:", error);
-		alert(error.message);
-	} else {
-		console.error("Login error:", error);
-		alert("Terjadi kesalahan saat login.");
-	}
-}
-
+			if (error instanceof Error) {
+				toast.error(error.message);
+			} else {
+				console.error("Login error:", error);
+				toast.error("Terjadi kesalahan saat login.");
+			}
+		}
 	};
 
 	const togglePasswordVisibility = () => {
 		setShowPassword((prev) => !prev);
 	};
 
+	// Tambahkan fungsi untuk handle click login sosial
+	const handleSocialLogin = (platform: string) => {
+		toast.error(`Sorry, login via ${platform} is not available yet.`);
+	};
+
 	return (
 		<div className="min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-10">
+			{/* Toast container */}
+			<Toaster position="top-center" reverseOrder={false} />
+
 			<div className="w-full max-w-4xl flex flex-col md:flex-row border shadow-xl rounded-lg">
 				{/* Left Section - Form */}
 				<div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white animate-fade-in">
@@ -67,7 +75,7 @@ export default function LoginPage() {
 						<p className="text-gray-500 mb-6">Welcome to Ryosuke Guesthouse</p>
 
 						<form onSubmit={handleLogin} className="space-y-4">
-							<label className="block text-sm font-medium mb-1">Email </label>
+							<label className="block text-sm font-medium mb-1">Email</label>
 							<div className="mb-4 flex items-center border border-gray-300 rounded-full px-3 transition duration-150 focus-within:ring-2 focus-within:ring-indigo-400">
 								<input
 									type="username"
@@ -76,13 +84,12 @@ export default function LoginPage() {
 									placeholder="whb123"
 									className="w-full py-2 outline-none bg-transparent"
 								/>
-
 								<Image
 									width={25}
 									height={25}
 									src="/svg/person.svg"
 									alt="Google"
-									className="h-5 w-5 "
+									className="h-5 w-5"
 								/>
 							</div>
 
@@ -92,10 +99,9 @@ export default function LoginPage() {
 									type={showPassword ? "text" : "password"}
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
-									placeholder="XXXXXXXX"
+									placeholder="********"
 									className="w-full py-2 outline-none bg-transparent"
 								/>
-
 								<button
 									type="button"
 									onClick={togglePasswordVisibility}
@@ -127,7 +133,11 @@ export default function LoginPage() {
 						</div>
 
 						<div className="flex space-x-4 mb-4">
-							<button className="w-1/2 flex items-center justify-center py-2  bg-gray-100 rounded-full transition-all duration-200 hover:bg-gray-100 active:scale-95">
+							<button
+								type="button"
+								onClick={() => handleSocialLogin("Google")}
+								className="w-1/2 flex items-center justify-center py-2 bg-gray-100 rounded-full transition-all duration-200 hover:bg-gray-100 active:scale-95"
+							>
 								<Image
 									width={25}
 									height={25}
@@ -138,7 +148,11 @@ export default function LoginPage() {
 								Google
 							</button>
 
-							<button className="w-1/2 flex items-center justify-center py-2  bg-gray-100 rounded-full transition-all duration-200 hover:bg-gray-100 active:scale-95">
+							<button
+								type="button"
+								onClick={() => handleSocialLogin("Facebook")}
+								className="w-1/2 flex items-center justify-center py-2 bg-gray-100 rounded-full transition-all duration-200 hover:bg-gray-100 active:scale-95"
+							>
 								<Image
 									width={25}
 									height={25}

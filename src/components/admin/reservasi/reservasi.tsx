@@ -445,16 +445,16 @@ function ReservasiTable({
 									</td>
 									<td className="px-4 py-3">{res.guestTotal}</td>
 									<td className="px-4 py-3">
-										<Badge type={res.Payment?.method}>
-											{res.Payment?.method}
+										<Badge type={res.payment?.method}>
+											{res.payment?.method}
 										</Badge>
 									</td>
 									<td className="px-4 py-3">
 										<Badge type={res.status}>{res.status}</Badge>
 									</td>
 									<td className="px-4 py-3">
-										<Badge type={res.Payment?.status}>
-											{res.Payment?.status}
+										<Badge type={res.payment?.status}>
+											{res.payment?.status}
 										</Badge>
 									</td>
 									<td className="px-4 py-3 whitespace-nowrap">
@@ -570,19 +570,19 @@ export function DetailReservation({
 
 					<div>
 						<p className="text-gray-500">Metode Pembayaran</p>
-						<p className="font-medium">{reservation.Payment?.method}</p>
+						<p className="font-medium">{reservation.payment?.method}</p>
 					</div>
 
 					<div>
 						<p className="text-gray-500">Status Pembayaran</p>
 						<span
 							className={`px-2 py-1 text-xs rounded-full font-semibold ${
-								reservation.Payment?.status === "paid"
+								reservation.payment?.status === "paid"
 									? "bg-green-100 text-green-700"
 									: "bg-red-100 text-red-700"
 							}`}
 						>
-							{reservation.Payment?.status === "paid" ? "Lunas" : "Belum Lunas"}
+							{reservation.payment?.status === "paid" ? "Lunas" : "Belum Lunas"}
 						</span>
 					</div>
 
@@ -604,9 +604,9 @@ export function DetailReservation({
 					<div>
 						<p className="text-gray-500 mb-1">Bukti Pembayaran</p>
 
-						{reservation.Payment?.proofUrl ? (
+						{reservation.payment?.proofUrl ? (
 							<a
-								href={"http://localhost:5000" + reservation.Payment?.proofUrl}
+								href={"http://localhost:5000" + reservation.payment?.proofUrl}
 								target="_blank"
 								rel="noopener noreferrer"
 								className="text-blue-600 underline"

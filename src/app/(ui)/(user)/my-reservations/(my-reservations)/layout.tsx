@@ -7,14 +7,14 @@ export default function RootLayout({
 	children,
 }: {
 	children: React.ReactNode;
-
 }) {
-
-
 	const pathName = usePathname();
 	// const hidePath = pathName.startsWith("/my-reservations/will-come/");
-	const hidePath = ["/my-reservations/will-come/detail", "/my-reservations/finished/detail", "/my-reservations/cancelled/detail"].some((path) => pathName.startsWith(path));
-
+	const hidePath = [
+		"/my-reservations/will-come/detail",
+		"/my-reservations/finished/detail",
+		"/my-reservations/cancelled/detail",
+	].some((path) => pathName.startsWith(path));
 
 	return (
 		<>
@@ -27,14 +27,9 @@ export default function RootLayout({
 					Here are the details of your reservation
 				</p>
 
-
-
 				{!hidePath && <NavbarMyReservation />}
-
-				
-				
 			</div>
-    
+
 			{children}
 		</>
 	);

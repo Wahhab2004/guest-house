@@ -20,10 +20,13 @@ const AddReservation: React.FC<AddReservationProps> = ({
 	const [formData, setFormData] = useState<Reservation>({
 		id: "",
 		guestId: "",
+		bookerId: "",
 		roomId: "",
 		checkIn: "",
 		checkOut: "",
 		guestTotal: 0,
+		adultCount: 0,
+		childCount: 0,
 		totalPrice: 0,
 		status: "",
 		createdAt: "",
@@ -47,14 +50,16 @@ const AddReservation: React.FC<AddReservationProps> = ({
 			status: "",
 			photoUrl: "",
 		},
-		Payment: {
+		payment: {
 			id: "",
 			reservationId: "",
 			method: "",
 			status: "",
 			amount: 0,
 			proofUrl: "",
+			sender: "",
 		},
+		additionalGuests: [], // <--- tambahkan ini
 	});
 
 	const [error, setError] = useState<{ [key: string]: string }>({});
@@ -195,7 +200,7 @@ const AddReservation: React.FC<AddReservationProps> = ({
 				<div className="mb-4">
 					<label className="block text-sm font-medium mb-1">Pilih Guest</label>
 					<select
-						value={formData.guestId}
+						value={formData.guestId || ""}
 						onChange={(e) =>
 							setFormData({ ...formData, guestId: e.target.value })
 						}
