@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
 			"flowbite.s3.amazonaws.com",
 			"pict.sindonews.net", 
 			"localhost",
+			"be-guesthouse.vercel.app"
 		],
 	},
 	

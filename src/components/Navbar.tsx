@@ -93,7 +93,7 @@ const Navbar = () => {
 					</li>
 
 					<li>
-						<Link href="/my-reservations/will-come">
+						<Link href="/my-reservations">
 							<p
 								className={`py-2 px-4 hover:scale-x-105 ${
 									isActive("/my-reservations")

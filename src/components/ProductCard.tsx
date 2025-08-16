@@ -34,7 +34,7 @@ function ProductCard() {
 					>
 						<Link href="#">
 							<Image
-								className="p-4 rounded-t-lg w-full h-[18rem]"
+								className="p-4 rounded-t-lg w-full h-[18rem] object-cover"
 								src={
 									room.photoUrl
 										? `${room.photoUrl}`
@@ -49,7 +49,7 @@ function ProductCard() {
 
 						<div className="px-5 pb-5">
 							<h5 className="text-lg font-semibold tracking-tight text-black">
-								Room {room.name}
+								{room.name}
 							</h5>
 
 							<div className="flex items-center mt-2.5 mb-5">
