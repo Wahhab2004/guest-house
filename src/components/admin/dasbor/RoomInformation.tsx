@@ -1,119 +1,93 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { fetchRooms, Room } from "@/fetching";
 
 export default function RoomInformation() {
-	const [rooms, setRoom] = useState<Room[]>([]);
+	const [rooms, setRooms] = useState<Room[]>([]);
 
 	useEffect(() => {
-		const fecthData = async () => {
+		const fetchData = async () => {
 			try {
 				const data = await fetchRooms();
-				setRoom(data);
+				setRooms(data);
 			} catch (error) {
-				console.error("Error fetching: ", error);
+				console.error("Gagal mengambil data kamar:", error);
 			}
 		};
 
-		fecthData();
+		fetchData();
 	}, []);
 
-	let totalRoomsAvailable = 0;
-	let totalRoomsBooked = 0;
-	// Nanti atur logic dari be nyaa
-	let totalRoomsOvernight = 0;
+	let tersedia = 0;
+	let terpakai = 0;
+	let menginap = 0;
 
 	rooms.forEach((room) => {
-		if (room.status === "AVAILABLE") {
-			totalRoomsAvailable++;
-		} else if (room.status === "BOOKED") {
-			totalRoomsBooked++;
-		} else if (room.status === "OVERNIGHT") {
-			totalRoomsOvernight++;
-		}
+		if (room.status === "AVAILABLE") tersedia++;
+		if (room.status === "BOOKED") terpakai++;
+		if (room.status === "OVERNIGHT") menginap++;
 	});
 
 	return (
-		<div className=" md:flex justify-between items-center lg:ml-[250px] p-6">
-			{/* Rooms Available */}
-			<div className="leading-10 flex justify-between items-center p-4 md:w-1/3 shadow border border-gray-200 rounded-lg mr-4 hover:bg-gray-100 mb-3">
-				<div>
-					<h3 className="text-[#5D6679] text-sm font-semibold">
-						Rooms Available
-					</h3>
+		<div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+			<InfoCard
+				title="Kamar Tersedia"
+				value={tersedia}
+				icon="/svg/room-available.svg"
+				href="/room"
+			/>
 
-					<p className="text-[#5D6679] text-3xl font-bold">
-						{totalRoomsAvailable}
+			<InfoCard
+				title="Kamar Terpakai"
+				value={terpakai}
+				icon="/svg/used-room.svg"
+				href="/room"
+			/>
+
+			<InfoCard
+				title="Tamu Menginap"
+				value={menginap}
+				icon="/svg/guest-overnight.svg"
+				href="/room"
+			/>
+		</div>
+	);
+}
+
+function InfoCard({
+	title,
+	value,
+	icon,
+	href,
+}: {
+	title: string;
+	value: number;
+	icon: string;
+	href: string;
+}) {
+	return (
+		<div className="bg-white border border-slate-200 rounded-[32px] p-6 shadow-sm hover:border-blue-300 transition-all group">
+			<div className="flex items-center justify-between">
+				<div>
+					<p className="text-sm font-semibold text-slate-500">{title}</p>
+					<p className="text-4xl font-bold text-slate-900 mt-2">
+						{value}
 					</p>
 
-					<Link href="/room">
-						<p className="text-[#00B69B] font-semibold text-sm">
-							See More Detail
-						</p>
+					<Link
+						href={href}
+						className="inline-block mt-4 text-sm font-bold text-[#FFB22C] hover:underline"
+					>
+						Lihat detail →
 					</Link>
 				</div>
 
-				<Image
-					src="/svg/room-available.svg"
-					height={48}
-					width={54}
-					alt="room-available"
-					className=""
-				/>
-			</div>
-
-			{/* Used Room */}
-			<div className="leading-10 flex justify-between items-center p-4 md:w-1/3 shadow border border-gray-200 rounded-lg mr-4 hover:bg-gray-100 mb-3">
-				<div>
-					<h3 className="text-[#5D6679] text-sm font-semibold">Used Room</h3>
-
-					<p className="text-[#5D6679] text-3xl font-bold">
-						{totalRoomsBooked}
-					</p>
-
-					<Link href="/room">
-						<p className="text-[#00B69B] font-semibold text-sm">
-							See More Detail
-						</p>
-					</Link>
+				<div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 group-hover:scale-110 transition-transform duration-300">
+					<Image src={icon} alt={title} width={48} height={48} />
 				</div>
-
-				<Image
-					src="/svg/used-room.svg"
-					height={48}
-					width={54}
-					alt="used-room"
-					className=""
-				/>
-			</div>
-
-			{/* Guest Overnight */}
-			<div className="leading-10 flex justify-between items-center p-4 md:w-1/3 shadow border border-gray-200 rounded-lg hover:bg-gray-100 mb-3">
-				<div>
-					<h3 className="text-[#5D6679] text-sm font-semibold">
-						Guest Overnight
-					</h3>
-
-					<p className="text-[#5D6679] text-3xl font-bold">
-						{totalRoomsOvernight}
-					</p>
-
-					<Link href="/room">
-						<p className="text-[#00B69B] font-semibold text-sm">
-							See More Detail
-						</p>
-					</Link>
-				</div>
-
-				<Image
-					src="/svg/guest-overnight.svg"
-					height={48}
-					width={54}
-					alt="guest-overnight"
-					className=""
-				/>
 			</div>
 		</div>
 	);

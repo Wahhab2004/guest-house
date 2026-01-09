@@ -5,7 +5,7 @@ import GuestReservation from "@/components/admin/dasbor/GuestReservation";
 export default function DashboardPage() {
 	return (
 		<main >
-			<div className="flex flex-col px-6">
+			<div className="flex flex-col px-6 mt-20">
 				{/* Title */}
 				<h1 className=" text-xl font-bold mt-6 ">
 					Dashboard

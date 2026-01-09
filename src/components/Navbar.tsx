@@ -35,10 +35,10 @@ const Navbar = () => {
 
 	return (
 		<nav className="fixed top-0 left-0 right-0 z-50 w-full shadow">
-			<div className="flex items-center justify-between py-4 px-6 shadow-lg bg-black/50">
+			<div className="flex items-center justify-between py-4 px-6 shadow-lg bg-white/50 text-black backdrop-blur-md">
 				{/* Logo */}
 				<Link href="/">
-					<p className="text-xl font-bold text-white">Guest House Ryosuke</p>
+					<p className="text-xl font-bold">Guest House Ryosuke</p>
 				</Link>
 
 				{/* Mobile Menu Button */}
@@ -64,7 +64,7 @@ const Navbar = () => {
 
 				{/* Navigation Menu */}
 				<ul
-					className={`md:flex md:items-center md:justify-between absolute md:relative bg-black/40 md:bg-transparent transition-all duration-500 ease-in-out text-white text-xs md:text-sm lg:text-base w-full md:w-auto ${
+					className={`md:flex md:items-center md:justify-between absolute md:relative bg-black/40 md:bg-transparent transition-all duration-500 ease-in-out  text-xs md:text-sm lg:text-base w-full md:w-auto ${
 						isOpen ? "top-[3.8rem] left-0 right-0 md:top-0" : "hidden md:flex"
 					}`}
 				>
@@ -110,7 +110,9 @@ const Navbar = () => {
 					{user ? (
 						<li className="md:hidden mt-2 px-4">
 							<div className="flex items-center justify-between rounded-xl  py-3 shadow-md">
-								<span className="font-semibold text-base italic ">{user.name}</span>
+								<span className="font-semibold text-base italic ">
+									{user.name}
+								</span>
 								<button
 									onClick={handleLogout}
 									className="text-sm px-3 py-1 rounded-full bg-red-100 hover:bg-red-200 text-red-600 font-medium transition duration-150"

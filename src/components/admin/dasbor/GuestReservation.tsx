@@ -1,13 +1,15 @@
 "use client";
+
 import Badge from "@/components/Badge";
 import formatDateIndo from "@/components/format-tanggal/formatTanggal";
 import { Reservation, fetchReservations } from "@/fetching";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 const GuestReservation = () => {
 	const [reservations, setReservations] = useState<Reservation[]>([]);
-	const [currentPage, setcurrentPage] = useState(1);
+	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 5;
 
 	useEffect(() => {
@@ -16,136 +18,116 @@ const GuestReservation = () => {
 				const data = await fetchReservations();
 				setReservations(data);
 			} catch (error) {
-				console.error("Error fetching data:", error);
+				console.error("Gagal mengambil data reservasi:", error);
 			}
 		};
 
 		fetchData();
 	}, []);
 
-	// Mengatur halaman
-	const getPaginatedData = (data: Reservation[], page: number) =>
-		data?.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+	const totalPages = Math.ceil(reservations.length / itemsPerPage);
 
-	const totalPages = Math.ceil(reservations?.length / itemsPerPage);
-
-	// Previous
-	const handlePrevCheckIn = () => {
-		if (currentPage > 1) {
-			setcurrentPage(currentPage - 1);
-		}
-	};
-
-	// Next
-	const handleNextCheckIn = () => {
-		if (currentPage < totalPages) {
-			setcurrentPage(currentPage + 1);
-		}
-	};
+	const paginatedData = reservations.slice(
+		(currentPage - 1) * itemsPerPage,
+		currentPage * itemsPerPage
+	);
 
 	return (
-		<div className="mt-3 md:ml-[200px] lg:ml-[270px] xl:ml-[320px] px-4 ">
-			<div className="flex justify-between">
-				<h1 className="font-bold text-xl mb-4">Guest Reservation</h1>
-
-				<Link href="/guest-reservation">
-					<p>
-						<span className="text-blue-500  italic font-semibold text-sm">
-							See all
-						</span>
+		<div className="max-w-7xl mx-auto px-6 mt-10 space-y-6 animate-in fade-in duration-500">
+			{/* Header */}
+			<div className="flex items-center justify-between">
+				<div>
+					<h1 className="text-2xl font-bold text-stone-800 tracking-tight">
+						Reservasi Tamu
+					</h1>
+					<p className="text-stone-500 text-sm mt-1">
+						Daftar reservasi terbaru di guesthouse Anda
 					</p>
+				</div>
+
+				<Link
+					href="/guest-reservation"
+					className="text-[#FFB22C] font-bold text-sm flex items-center gap-1 hover:underline"
+				>
+					Lihat semua <ArrowUpRight size={14} />
 				</Link>
 			</div>
 
-			<div className="border shadow rounded-lg p-4 overflow-x-auto">
-				<table className="min-w-full text-left tracking-wide ">
-					<thead className="text-sm">
-						<tr className="bg-gray-100 font-medium">
-							<th className="px-2 py-2 whitespace-nowrap">#</th>
-							<th className="px-2 py-2 whitespace-nowrap">GUEST NAME</th>
-							<th className="px-2 py-2 whitespace-nowrap">ROOM</th>
-
-							<th className="px-2 py-2 whitespace-nowrap">CHECKIN</th>
-							<th className="px-2 py-2 whitespace-nowrap">CHECKOUT</th>
-							<th className="px-2 py-2 whitespace-nowrap">TOTAL PAYMENT</th>
-							<th className="px-2 py-2 whitespace-nowrap">STATUS</th>
-						</tr>
-					</thead>
-					<tbody>
-						{getPaginatedData(reservations, currentPage).map((item, index) => (
-							<tr key={index} className="text-gray-700 border-b">
-								<td className="py-4 px-2 whitespace-nowrap">
-									{(currentPage - 1) * itemsPerPage + index + 1}
-								</td>
-								<td className="py-4 px-2 whitespace-nowrap">
-									{item.guest.name}
-								</td>
-								<td className="py-4 px-2 whitespace-nowrap">
-									{item.room.name}
-								</td>
-								<td className="py-4 px-2 whitespace-nowrap">
-									{formatDateIndo(item.checkIn)}
-								</td>
-								<td className="py-4 px-2 whitespace-nowrap">
-									{formatDateIndo(item.checkOut)}
-								</td>
-								<td className="py-4 px-2 whitespace-nowrap">
-									{item.totalPrice.toLocaleString("jp-JP", {
-										style: "currency",
-										currency: "JPY",
-									})}
-								</td>
-								<td className="py-4 px-2 whitespace-nowrap text-xs">
-									<Badge type={item.status}>{item.status}</Badge>
-								</td>
+			{/* Table Card */}
+			<div className="bg-white border border-stone-200 rounded-[32px] shadow-sm overflow-hidden">
+				<div className="overflow-x-auto">
+					<table className="min-w-full text-sm">
+						<thead className="bg-amber-50 border-b border-amber-100 text-stone-700">
+							<tr>
+								<th className="px-6 py-4 text-left font-bold">#</th>
+								<th className="px-6 py-4 text-left font-bold">Nama Tamu</th>
+								<th className="px-6 py-4 text-left font-bold">Kamar</th>
+								<th className="px-6 py-4 text-left font-bold">Check-in</th>
+								<th className="px-6 py-4 text-left font-bold">Check-out</th>
+								<th className="px-6 py-4 text-left font-bold">
+									Total Pembayaran
+								</th>
+								<th className="px-6 py-4 text-left font-bold">Status</th>
 							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-			{/* Pagination */}
-			<div className="flex justify-between items-center mt-8 gap-4">
-				{/* Previous Button */}
-				<button
-					onClick={handlePrevCheckIn}
-					disabled={currentPage === 1}
-					className="flex items-center gap-1 px-4 py-2 rounded-lg border border-gray-400 text-gray-600 text-sm font-medium transition duration-200 ease-in-out
-			hover:bg-gray-200 hover:text-gray-800 active:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-				>
-					<svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-						<path
-							d="M13.125 16.25L6.875 10L13.125 3.75"
-							stroke="#5D6679"
-							strokeWidth="1.5"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						/>
-					</svg>
-					<span>Previous</span>
-				</button>
+						</thead>
 
-				{/* Page Info */}
-				<p className="text-sm text-gray-600 font-semibold">
-					Page {currentPage} of {totalPages}
-				</p>
+						<tbody className="divide-y divide-stone-100">
+							{paginatedData.map((item, index) => (
+								<tr key={index} className="hover:bg-stone-50 transition">
+									<td className="px-6 py-4 font-medium text-stone-600">
+										{(currentPage - 1) * itemsPerPage + index + 1}
+									</td>
+									<td className="px-6 py-4 font-semibold text-stone-800">
+										{item.guest.name}
+									</td>
+									<td className="px-6 py-4 text-stone-700">{item.room.name}</td>
+									<td className="px-6 py-4 text-stone-600">
+										{formatDateIndo(item.checkIn)}
+									</td>
+									<td className="px-6 py-4 text-stone-600">
+										{formatDateIndo(item.checkOut)}
+									</td>
+									<td className="px-6 py-4 font-semibold text-[#FFB22C]">
+										{item.totalPrice.toLocaleString("ja-JP", {
+											style: "currency",
+											currency: "JPY",
+										})}
+									</td>
+									<td className="px-6 py-4 text-xs">
+										<Badge type={item.status}>{item.status}</Badge>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
 
-				{/* Next Button */}
-				<button
-					onClick={handleNextCheckIn}
-					disabled={currentPage === totalPages}
-					className="flex items-center gap-1 px-4 py-2 rounded-lg border border-gray-400 text-gray-600 text-sm font-medium transition duration-200 ease-in-out
-			hover:bg-gray-200 hover:text-gray-800 active:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-				>
-					<span>Next</span>
-					<svg width="16" height="16" viewBox="0 0 16 20" fill="none">
-						<path
-							fillRule="evenodd"
-							clipRule="evenodd"
-							d="M9.9641 10.0005L4.0716 15.893L5.24993 17.0714L11.7316 10.5897C11.8878 10.4334 11.9756 10.2215 11.9756 10.0005C11.9756 9.77955 11.8878 9.56763 11.7316 9.41135L5.24993 2.92969L4.0716 4.10802L9.9641 10.0005Z"
-							fill="#5D6679"
-						/>
-					</svg>
-				</button>
+				{/* Pagination */}
+				<div className="flex items-center justify-between px-6 py-4 border-t border-stone-100 bg-stone-50">
+					<button
+						onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+						disabled={currentPage === 1}
+						className="flex items-center gap-2 px-4 py-2 rounded-xl border border-stone-300 text-stone-600 text-sm font-semibold
+						hover:bg-stone-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+					>
+						<ChevronLeft size={16} />
+						Sebelumnya
+					</button>
+
+					<p className="text-sm font-semibold text-stone-600">
+						Halaman {currentPage} dari {totalPages}
+					</p>
+
+					<button
+						onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+						disabled={currentPage === totalPages}
+						className="flex items-center gap-2 px-4 py-2 rounded-xl border border-stone-300 text-stone-600 text-sm font-semibold
+						hover:bg-stone-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+					>
+						Selanjutnya
+						<ChevronRight size={16} />
+					</button>
+				</div>
 			</div>
 		</div>
 	);

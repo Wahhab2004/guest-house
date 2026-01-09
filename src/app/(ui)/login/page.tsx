@@ -75,7 +75,7 @@ export default function LoginPage() {
 						<p className="text-gray-500 mb-6">Welcome to Ryosuke Guesthouse</p>
 
 						<form onSubmit={handleLogin} className="space-y-4">
-							<label className="block text-sm font-medium mb-1">Email</label>
+							<label className="block text-sm font-medium mb-1">Username</label>
 							<div className="mb-4 flex items-center border border-gray-300 rounded-full px-3 transition duration-150 focus-within:ring-2 focus-within:ring-indigo-400">
 								<input
 									type="username"
