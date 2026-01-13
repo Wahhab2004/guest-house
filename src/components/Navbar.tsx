@@ -124,7 +124,7 @@ const Navbar = () => {
 					) : (
 						<>
 							<li className="md:hidden mt-2">
-								<Link href="/sign-up">
+								<Link href="/register">
 									<button className="w-full border-2 border-white text-white font-bold rounded-full py-2 hover:bg-white hover:text-black">
 										Sign Up
 									</button>
@@ -180,7 +180,7 @@ const Navbar = () => {
 						</div>
 					) : (
 						<>
-							<Link href="/sign-up">
+							<Link href="/register">
 								<button className="font-bold border-2 text-white border-white rounded-full py-2 w-[150px] hover:bg-white hover:text-black">
 									Sign Up
 								</button>
