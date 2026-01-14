@@ -36,21 +36,21 @@ export default function RoomInformation() {
 			<InfoCard
 				title="Kamar Tersedia"
 				value={tersedia}
-				icon="/svg/room-available.svg"
+				// icon="/svg/room-available.svg"
 				href="/room"
 			/>
 
 			<InfoCard
 				title="Kamar Terpakai"
 				value={terpakai}
-				icon="/svg/used-room.svg"
+				// icon="/svg/used-room.svg"
 				href="/room"
 			/>
 
 			<InfoCard
 				title="Tamu Menginap"
 				value={menginap}
-				icon="/svg/guest-overnight.svg"
+				// icon="/svg/guest-overnight.svg"
 				href="/room"
 			/>
 		</div>
@@ -60,12 +60,12 @@ export default function RoomInformation() {
 function InfoCard({
 	title,
 	value,
-	icon,
+	// icon,
 	href,
 }: {
 	title: string;
 	value: number;
-	icon: string;
+	// icon: string;
 	href: string;
 }) {
 	return (
@@ -86,7 +86,7 @@ function InfoCard({
 				</div>
 
 				<div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 group-hover:scale-110 transition-transform duration-300">
-					<Image src={icon} alt={title} width={48} height={48} />
+					{/* <Image src={icon} alt={title} width={48} height={48} /> */}
 				</div>
 			</div>
 		</div>

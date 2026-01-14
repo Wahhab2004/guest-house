@@ -58,7 +58,7 @@ export default function RootLayout({
 			>
 				{!hideNavbar && <Navbar />}
 
-				<Toaster position="top-center" reverseOrder={false} />
+				<Toaster position="top-right" reverseOrder={false} />
 
 				{children}
 				{!hideFooter && <Footer />}
