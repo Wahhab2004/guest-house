@@ -1,6 +1,6 @@
 "use client";
 
-import NavbarAdmin from "@/components/admin/navbarAdmin";
+import NavbarAdmin from "@/components/admin/adminNavbar";
 
 export default function RootLayout({
 	children,

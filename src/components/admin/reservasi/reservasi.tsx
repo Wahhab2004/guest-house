@@ -1,4 +1,5 @@
-// pages/UserPage.tsx
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { type Reservation } from "@/fetching";
 import formatDateIndo from "../../format-tanggal/formatTanggal";
@@ -11,8 +12,8 @@ import ActionButton from "@/components/ActionButton";
 
 export default function Reservasi() {
 	const [token, setToken] = useState<string | null>(null);
-	const [reservations, setReservation] = useState<Reservation[]>([]);
-	const [filteredReservations, setFilteredReservation] = useState<
+	const [reservations, setReservations] = useState<Reservation[]>([]);
+	const [filteredReservations, setFilteredReservations] = useState<
 		Reservation[]
 	>([]);
 	const [editReservation, setEditReservation] = useState<Reservation | null>(
@@ -23,29 +24,27 @@ export default function Reservasi() {
 
 	const [currentPage, setCurrentPage] = useState(1);
 	const [itemsPerPage, setItemsPerPage] = useState(10);
+
 	const [search, setSearch] = useState("");
+	const [searchType, setSearchType] = useState("guestName");
 	const [status, setStatus] = useState("");
-	const [sortBy, setSortBy] = useState("");
-	const [order, setOrder] = useState("desc");
 	const [paymentStatus, setPaymentStatus] = useState("");
+	const [sortBy, setSortBy] = useState("createdAt");
+	const [order, setOrder] = useState("desc");
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
-	const [searchType, setSearchType] = useState("guestName");
-	const [showFilter, setShowFilter] = useState(false);
 
+	const [showFilter, setShowFilter] = useState(false);
 	const [isAddOpen, setIsAddOpen] = useState(false);
 	const [isEditOpen, setIsEditOpen] = useState(false);
 	const [isDetailOpen, setIsDetailOpen] = useState(false);
-
 	const [selectedReservationId, setSelectedReservationId] = useState<
 		string | null
 	>(null);
 
 	const fetchReservations = useCallback(async () => {
 		try {
-			const cookies = document.cookie.split("; ");
-			const tokenCookie = cookies.find((row) => row.startsWith("token="));
-			const tokenValue = tokenCookie?.split("=")[1] || null;
+			const tokenValue = Cookies.get("token") || null;
 			setToken(tokenValue);
 
 			const params = new URLSearchParams({
@@ -53,335 +52,179 @@ export default function Reservasi() {
 				paymentStatus,
 				startDate,
 				endDate,
-				guestName: searchType === "guestName" ? search : "", // search digunakan untuk guestName
+				guestName: searchType === "guestName" ? search : "",
 				roomName: searchType === "roomName" ? search : "",
 				order,
 				sortBy,
 			});
 
 			const res = await fetch(
-				`${
-					process.env.NEXT_PUBLIC_API_BASE_URL
-				}/reservations?${params.toString()}`,
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/reservations?${params}`,
 				{
-					headers: {
-						Authorization: tokenValue ? `Bearer ${tokenValue}` : "",
-					},
+					headers: { Authorization: tokenValue ? `Bearer ${tokenValue}` : "" },
 					cache: "no-store",
 				}
 			);
 
-			if (!res.ok) throw new Error("Failed to fetch reservations");
+			if (!res.ok) throw new Error("Gagal memuat reservasi");
 			const json = await res.json();
 
-			setReservation(json.data);
-			setFilteredReservation(json.data);
+			setReservations(json.data);
+			setFilteredReservations(json.data);
 		} catch (error) {
-			console.error("Error fetching reservations:", error);
+			console.error(error);
 		}
-	}, [status, paymentStatus, startDate, endDate, search, order, sortBy, searchType]);
+	}, [
+		status,
+		paymentStatus,
+		startDate,
+		endDate,
+		search,
+		order,
+		sortBy,
+		searchType,
+	]);
 
 	useEffect(() => {
 		fetchReservations();
 	}, [fetchReservations]);
 
-	const getPaginatedData = () => {
-		const startIndex = (currentPage - 1) * itemsPerPage;
-		const endIndex = startIndex + itemsPerPage;
-		return filteredReservations?.slice(startIndex, endIndex);
-	};
+	const paginatedData = filteredReservations.slice(
+		(currentPage - 1) * itemsPerPage,
+		currentPage * itemsPerPage
+	);
 
-	const totalPages = Math.ceil(filteredReservations?.length / itemsPerPage);
+	const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
 
-	const handleNext = () =>
-		currentPage < totalPages && setCurrentPage(currentPage + 1);
-	const handlePrevious = () =>
-		currentPage > 1 && setCurrentPage(currentPage - 1);
-
-	const handleOpenAddModal = () => setIsAddOpen(true);
-
-	// handle open edit
-	const handleOpenEditModal = (id: string) => {
-		const reservationToEdit = reservations.find((res) => res.id === id);
-		if (reservationToEdit) {
-			setEditReservation(reservationToEdit);
-			setSelectedReservationId(id);
-			setIsEditOpen(true);
-		}
-	};
-
-	const handleCloseEditModal = () => {
-		setIsEditOpen(false);
-		setSelectedReservationId(null);
-		setEditReservation(null);
-	};
-
-	// handle open detail
-	const handleOpenDetailModal = (id: string) => {
-		setSelectedReservationId(id);
-		setIsDetailOpen(true);
-	};
-
-	const handleCloseDetailModal = () => {
-		setIsDetailOpen(false);
-		setSelectedReservationId(null);
-	};
-
-	const handleCloseAddModal = () => setIsAddOpen(false);
-
-	useEffect(() => {
-		if (selectedReservationId) {
-			const found = reservations.find((r) => r.id === selectedReservationId);
-			setDetailReservation(found || null);
-		}
-	}, [selectedReservationId, reservations]);
-
-	const handleSave = (data: Reservation) => {
-		if (selectedReservationId) {
-			const updatedReservations = reservations.map((res) => {
-				if (res.id === selectedReservationId) {
-					return data;
-				}
-				return res;
-			});
-			setReservation(updatedReservations);
-			setFilteredReservation(updatedReservations);
-			setIsEditOpen(false);
-			setSelectedReservationId(null);
-		}
-	};
-
-	const handleDeleteReservation = async (id: string) => {
-		try {
-			const token = Cookies.get("token"); // Ambil token dari cookie
-
-			if (!token) {
-				console.error("Token tidak tersedia.");
-				return;
-			}
-
-			const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-			const response = await fetch(`${baseUrl}/reservations/${id}`, {
-				method: "DELETE",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-
-			if (!response.ok) {
-				const data = await response.json();
-				throw new Error(data.message || "Gagal menghapus reservasi");
-			}
-
-			setReservation((prev) => prev.filter((res) => res.id !== id));
-			setFilteredReservation((prev) => prev.filter((res) => res.id !== id));
-		} catch (error) {
-			console.error("Error deleting reservation:", error);
-		}
-	};
 	const resetFilters = () => {
 		setSearch("");
 		setStatus("");
 		setPaymentStatus("");
-		setSortBy("createdAt");
-		setOrder("desc");
-		setItemsPerPage(5);
 		setStartDate("");
 		setEndDate("");
+		setSortBy("createdAt");
+		setOrder("desc");
+		setItemsPerPage(10);
 	};
+
 	return (
-		<div className="px-6">
-			<div className="flex justify-between items-center xl:px-0 2xl:px-7 mb-4 py-2">
-				<div className="w-full bg-white rounded-xl shadow p-6 flex flex-col gap-6">
-					{/* Header */}
-					<div className="flex justify-between items-center">
-						<h2 className="text-lg font-bold text-gray-700">Reservasi</h2>
-						<div className="flex gap-2">
-							<button
-								onClick={() => setShowFilter((prev) => !prev)}
-								className="px-4 py-2 rounded-lg bg-blue-500 text-white text-sm hover:bg-blue-600 transition"
-							>
-								{showFilter ? "Tutup Filter" : "Filter"}
-							</button>
-							{showFilter && (
-								<button
-									onClick={resetFilters}
-									className="text-xs px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition text-gray-600"
-								>
-									Reset
-								</button>
-							)}
-						</div>
+		<div>
+			{/* HEADER */}
+			<div className="bg-white border border-stone-200 rounded-[32px] p-6 shadow-sm mb-10">
+				<div className="flex justify-between items-center">
+					<div>
+						<h1 className="text-2xl font-bold text-stone-800">
+							Manajemen Reservasi
+						</h1>
+						<p className="text-sm text-stone-500 mt-1">
+							Kelola seluruh data reservasi tamu
+						</p>
 					</div>
 
-					{/* Filter Section */}
-					{showFilter && (
-						<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 text-sm transition-all duration-300">
-							{/* Search Type */}
-							<select
-								value={searchType}
-								onChange={(e) => setSearchType(e.target.value)}
-								className="border rounded px-2 py-2"
-							>
-								<option value="guestName">Nama Tamu</option>
-								<option value="roomName">Nama Kamar</option>
-							</select>
+					<div className="flex gap-2">
+						<button
+							onClick={() => setShowFilter((p) => !p)}
+							className="px-4 py-2 rounded-xl bg-amber-600 text-white text-sm font-semibold hover:bg-amber-700 transition"
+						>
+							{showFilter ? "Tutup Filter" : "Filter"}
+						</button>
 
-							{/* Search Input */}
-							<input
-								type="text"
-								placeholder={`Cari berdasarkan ${
-									searchType === "guestName" ? "Nama Tamu" : "Nama Kamar"
-								}...`}
-								value={search}
-								onChange={(e) => setSearch(e.target.value)}
-								className="border rounded px-3 py-2"
-							/>
-
-							{/* Status Reservasi */}
-							<div className="flex flex-col">
-								<label className="text-gray-600 text-xs font-semibold mb-1">
-									Status Reservasi
-								</label>
-								<select
-									value={status}
-									onChange={(e) => setStatus(e.target.value)}
-									className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-								>
-									<option value="">Semua Status</option>
-									<option value="CONFIRMED">✅ Disetujui</option>
-									<option value="PENDING">⏳ Pending</option>
-									<option value="CANCELED">❌ Dibatalkan</option>
-									<option value="CHECKED_OUT">🏁 Selesai</option>
-								</select>
-							</div>
-
-							{/* Status Pembayaran */}
-							<div className="flex flex-col">
-								<label className="text-gray-600 text-xs font-semibold mb-1">
-									Status Pembayaran
-								</label>
-								<select
-									value={paymentStatus}
-									onChange={(e) => setPaymentStatus(e.target.value)}
-									className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-								>
-									<option value="">Semua</option>
-									<option value="PAID">💰 Lunas</option>
-									<option value="UNPAID">💸 Belum Lunas</option>
-									<option value="REFUND">🔄 Refund</option>
-								</select>
-							</div>
-
-							{/* Tanggal Booking */}
-							<div className="flex flex-col">
-								<label className="text-gray-600 text-xs font-semibold mb-1">
-									Tanggal Booking
-								</label>
-								<div className="flex gap-1">
-									<input
-										type="date"
-										value={startDate}
-										onChange={(e) => setStartDate(e.target.value)}
-										className="border px-2 py-2 rounded-lg w-full"
-									/>
-									<span className="text-gray-500 self-center">-</span>
-									<input
-										type="date"
-										value={endDate}
-										onChange={(e) => setEndDate(e.target.value)}
-										className="border px-2 py-2 rounded-lg w-full"
-									/>
-								</div>
-							</div>
-
-							{/* Urutkan */}
-							<div className="flex flex-col">
-								<label className="text-gray-600 text-xs font-semibold mb-1">
-									Urutkan
-								</label>
-								<div className="flex gap-1">
-									<select
-										value={sortBy}
-										onChange={(e) => setSortBy(e.target.value)}
-										className="border px-2 py-2 rounded-l-lg"
-									>
-										<option value="createdAt">📅 Waktu Booking</option>
-										<option value="checkIn">🏨 Tanggal Check-In</option>
-									</select>
-									<select
-										value={order}
-										onChange={(e) => setOrder(e.target.value)}
-										className="border px-2 py-2 rounded-r-lg"
-									>
-										<option value="desc">⬆ Terbaru</option>
-										<option value="asc">⬇ Terdahulu</option>
-									</select>
-								</div>
-							</div>
-
-							{/* Items Per Page */}
-							<div className="flex flex-col">
-								<label className="text-gray-600 text-xs font-semibold mb-1">
-									Tampilkan
-								</label>
-								<select
-									value={itemsPerPage.toString()}
-									onChange={(e) => setItemsPerPage(Number(e.target.value))}
-									className="border px-3 py-2 rounded-lg"
-								>
-									<option value="5">5</option>
-									<option value="10">10</option>
-									<option value="15">15</option>
-									<option value="30">30</option>
-								</select>
-							</div>
-						</div>
-					)}
+						<button
+							onClick={() => setIsAddOpen(true)}
+							className="px-4 py-2 rounded-xl bg-stone-800 text-white text-sm font-semibold hover:bg-stone-900 transition"
+						>
+							Tambah Reservasi
+						</button>
+					</div>
 				</div>
 
-				<div className="flex gap-2">
-					{/* Add */}
-					<button
-						onClick={handleOpenAddModal}
-						className="bg-blue-500 text-white px-4 py-2 rounded text-[10px] xl:mr-4 xl:text-sm"
-					>
-						Tambah
-					</button>
-				</div>
+				{/* FILTER */}
+				{showFilter && (
+					<div className="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 text-sm">
+						<select
+							value={searchType}
+							onChange={(e) => setSearchType(e.target.value)}
+							className="border rounded-xl px-3 py-2"
+						>
+							<option value="guestName">Nama Tamu</option>
+							<option value="roomName">Nama Kamar</option>
+						</select>
+
+						<input
+							type="text"
+							placeholder="Cari..."
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
+							className="border rounded-xl px-3 py-2"
+						/>
+
+						<select
+							value={status}
+							onChange={(e) => setStatus(e.target.value)}
+							className="border rounded-xl px-3 py-2"
+						>
+							<option value="">Semua Status</option>
+							<option value="CONFIRMED">Disetujui</option>
+							<option value="PENDING">Pending</option>
+							<option value="CANCELED">Dibatalkan</option>
+							<option value="CHECKED_OUT">Selesai</option>
+						</select>
+
+						<button
+							onClick={resetFilters}
+							className="rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 font-semibold"
+						>
+							Reset Filter
+						</button>
+					</div>
+				)}
 			</div>
 
-			<AddReservation
-				isOpen={isAddOpen}
-				onClose={handleCloseAddModal}
-				onSave={handleSave}
-				token={token}
-			/>
-			<EditReservation
-				isOpen={isEditOpen}
-				onClose={handleCloseEditModal}
-				reservation={editReservation}
-				onUpdate={handleSave}
-				token={token}
-			/>
+			{/* TABLE */}
 			<ReservasiTable
-				reservations={getPaginatedData()}
-				onEdit={handleOpenEditModal}
-				onDelete={handleDeleteReservation}
-				currentPage={currentPage}
-				itemsPerPage={itemsPerPage}
-				onDetail={handleOpenDetailModal}
+				reservations={paginatedData}
+				onEdit={(id) => {
+					setSelectedReservationId(id);
+					setEditReservation(reservations.find((r) => r.id === id) || null);
+					setIsEditOpen(true);
+				}}
+				onDelete={(id) => {
+					setReservations((prev) => prev.filter((r) => r.id !== id));
+					setFilteredReservations((prev) => prev.filter((r) => r.id !== id));
+				}}
+				onDetail={(id) => {
+					setSelectedReservationId(id);
+					setDetailReservation(reservations.find((r) => r.id === id) || null);
+					setIsDetailOpen(true);
+				}}
 			/>
-			<DetailReservation
-				isOpen={isDetailOpen}
-				onClose={handleCloseDetailModal}
-				reservation={detailReservation}
-			/>
+
 			<PaginationControl
 				totalPages={totalPages}
 				currentPage={currentPage}
-				handleNext={handleNext}
-				handlePrevious={handlePrevious}
+				handleNext={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+				handlePrevious={() => setCurrentPage((p) => Math.max(1, p - 1))}
+			/>
+
+			{/* MODAL */}
+			<AddReservation
+				isOpen={isAddOpen}
+				onClose={() => setIsAddOpen(false)}
+				onSave={() => {}}
+				token={token}
+			/>
+
+			<EditReservation
+				isOpen={isEditOpen}
+				onClose={() => setIsEditOpen(false)}
+				reservation={editReservation}
+				onUpdate={() => {}}
+				token={token}
+			/>
+			<DetailReservation
+				isOpen={isDetailOpen}
+				onClose={() => setIsDetailOpen(false)}
+				reservation={detailReservation}
 			/>
 		</div>
 	);
@@ -391,8 +234,8 @@ interface ReservasiTableProps {
 	reservations: Reservation[];
 	onEdit: (id: string) => void;
 	onDelete: (id: string) => void;
-	currentPage: number;
-	itemsPerPage: number;
+	// currentPage: number;
+	// itemsPerPage: number;
 	onDetail: (id: string) => void;
 }
 
@@ -467,19 +310,19 @@ function ReservasiTable({
 										<div className="flex gap-2">
 											<ActionButton
 												color="blue"
-												label="Detail"
+												label=""
 												onClick={() => onDetail(res.id)}
-												icon="👁️"
+												icon="📝"
 											/>
 											<ActionButton
 												color="amber"
-												label="Edit"
+												label=""
 												onClick={() => onEdit(res.id)}
 												icon="✏️"
 											/>
 											<ActionButton
 												color="red"
-												label="Hapus"
+												label=""
 												onClick={() => onDelete(res.id)}
 												icon="🗑️"
 											/>
@@ -524,7 +367,7 @@ export function DetailReservation({
 	if (!isOpen || !reservation) return null;
 
 	return (
-		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[101]">
 			<div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-2xl space-y-6 overflow-y-auto max-h-[90vh]">
 				<h2 className="text-2xl font-semibold text-center text-gray-800 border-b pb-3">
 					Detail Reservasi
@@ -605,8 +448,9 @@ export function DetailReservation({
 						<p className="text-gray-500 mb-1">Bukti Pembayaran</p>
 
 						{reservation.payment?.proofUrl ? (
+							// Nanti perbaiki href
 							<a
-								href={"http://localhost:5000" + reservation.payment?.proofUrl}
+								href={reservation.payment?.proofUrl}
 								target="_blank"
 								rel="noopener noreferrer"
 								className="text-blue-600 underline"

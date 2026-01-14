@@ -2,12 +2,10 @@
 
 import Reservasi from "@/components/admin/reservasi/reservasi";
 
-
-
 export default function GuestReservation() {
-    return (
-        <section className="mt-10 md:ml-[140px] lg:ml-[200px] xl:ml-[300px]">
-            <Reservasi />
-        </section>
-    );
+	return (
+		<section className="mt-28 max-w-7xl mx-auto px-6 space-y-6">
+			<Reservasi />
+		</section>
+	);
 }

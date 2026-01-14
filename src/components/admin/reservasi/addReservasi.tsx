@@ -171,7 +171,7 @@ const AddReservation: React.FC<AddReservationProps> = ({
 
 	return (
 		<div
-			className="modal"
+			className="modal z-[101]"
 			style={{
 				display: isOpen ? "block" : "none",
 				position: "fixed",

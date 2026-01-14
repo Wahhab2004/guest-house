@@ -78,7 +78,7 @@ const GuestReservation = () => {
 										{(currentPage - 1) * itemsPerPage + index + 1}
 									</td>
 									<td className="px-6 py-4 font-semibold text-stone-800">
-										{item.guest.name}
+										{item.guest?.name}
 									</td>
 									<td className="px-6 py-4 text-stone-700">{item.room.name}</td>
 									<td className="px-6 py-4 text-stone-600">

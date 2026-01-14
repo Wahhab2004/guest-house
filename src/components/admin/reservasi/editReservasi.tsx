@@ -95,7 +95,7 @@ const EditReservation: React.FC<EditReservationProps> = ({
 
 	return (
 		<div
-			className="modal"
+			className="modal z-[101]"
 			style={{
 				display: isOpen ? "block" : "none",
 				position: "fixed",
