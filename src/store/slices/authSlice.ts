@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiFetch } from "@/lib/api";
+import Cookies from "js-cookie";
 
 interface AuthState {
 	user: {
@@ -8,31 +9,62 @@ interface AuthState {
 		name: string;
 		email: string;
 	} | null;
+	token: string | null;
 	loading: boolean;
 	error: string | null;
 }
 
 const initialState: AuthState = {
 	user: null,
+	token: null,
 	loading: false,
 	error: null,
 };
 
 /* =====================
-   THUNK: LOGIN ADMIN
+   THUNK: LOGIN ADMIN & GUEST
 ===================== */
 export const loginAdmin = createAsyncThunk(
-	"auth/loginAdmin",
-	async (payload: { email: string; password: string }, { rejectWithValue }) => {
+	"auth/login",
+	async (
+		payload: { username: string; password: string },
+		{ rejectWithValue }
+	) => {
 		try {
-			const data = await apiFetch("/admin/login", {
-				method: "POST",
-				body: JSON.stringify(payload),
-			});
+			const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+			// Detect endpoint berdasarkan origin atau bisa langsung try /login-admin dulu
+			const endpoints = ["/login-admin", "/login"];
+			let lastError = null;
 
-			return data;
+			for (const endpoint of endpoints) {
+				try {
+					const res = await fetch(`${baseUrl}${endpoint}`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify(payload),
+					});
+
+					const data = await res.json();
+
+					if (res.ok) {
+						// Simpan token ke cookie
+						Cookies.set("token", data.token, { expires: 1 });
+						Cookies.set("user", JSON.stringify(data.user), { expires: 1 });
+						return data;
+					}
+
+					lastError = data.message || `Login failed at ${endpoint}`;
+				} catch (err) {
+					lastError = err;
+					continue;
+				}
+			}
+
+			return rejectWithValue(lastError || "Login gagal");
 		} catch (error: any) {
-			return rejectWithValue(error.message);
+			return rejectWithValue(error.message || "Terjadi kesalahan saat login");
 		}
 	}
 );
@@ -46,6 +78,14 @@ const authSlice = createSlice({
 	reducers: {
 		logout(state) {
 			state.user = null;
+			state.token = null;
+			Cookies.remove("token");
+			Cookies.remove("user");
+		},
+		// Load user dari cookie/localStorage saat app mount
+		loadUserFromStorage(state, action) {
+			state.user = action.payload.user;
+			state.token = action.payload.token;
 		},
 	},
 	extraReducers: (builder) => {
@@ -57,14 +97,17 @@ const authSlice = createSlice({
 			.addCase(loginAdmin.fulfilled, (state, action) => {
 				state.loading = false;
 				state.user = action.payload.user;
-				// state.token = action.payload.token;
+				state.token = action.payload.token;
+				state.error = null;
 			})
 			.addCase(loginAdmin.rejected, (state, action) => {
 				state.loading = false;
 				state.error = action.payload as string;
+				state.user = null;
+				state.token = null;
 			});
 	},
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, loadUserFromStorage } = authSlice.actions;
 export default authSlice.reducer;

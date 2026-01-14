@@ -15,7 +15,7 @@ export default function LayoutClient({
 		"/checkin",
 		"/checkout",
 		"/guest-reservation",
-		"/room/",
+		"/room",
 		"/guest-history",
 		"/guest-book",
 	];

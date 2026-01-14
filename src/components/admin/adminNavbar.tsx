@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
-import Cookies from "js-cookie";
-import { Guest } from "@/fetching";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store";
+import { logout } from "@/store/slices/authSlice";
+import toast from "react-hot-toast";
 import {
 	LayoutDashboard,
 	CalendarCheck,
@@ -27,18 +29,19 @@ const menus = [
 
 export default function NavbarAdmin() {
 	const pathname = usePathname();
+	const router = useRouter();
+	const dispatch = useDispatch<AppDispatch>();
+	const { user } = useSelector((state: RootState) => state.auth);
 	const [isOpen, setIsOpen] = useState(false);
-	const [user, setUser] = useState<Guest | null>(null);
 
-	useEffect(() => {
-		const storedUser = Cookies.get("user");
-		if (storedUser) setUser(JSON.parse(storedUser));
-	}, []);
+	console.log(user);
 
 	const handleLogout = () => {
-		Cookies.remove("user");
-		Cookies.remove("token");
-		window.location.href = "/login-admin";
+		dispatch(logout());
+		toast.success("Logout berhasil!");
+		setTimeout(() => {
+			router.push("/login-admin");
+		}, 500);
 	};
 
 	return (

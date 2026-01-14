@@ -3,13 +3,20 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
+import { loginAdmin } from "@/store/slices/authSlice";
+import { RootState, AppDispatch } from "@/store";
 
 export default function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+
+	const dispatch = useDispatch<AppDispatch>();
+	const router = useRouter();
+	const { loading } = useSelector((state: RootState) => state.auth);
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -20,34 +27,18 @@ export default function LoginPage() {
 		}
 
 		try {
-			const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-			const res = await fetch(`${baseUrl}/login`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ username, password }),
-			});
-
-			const result = await res.json();
-
-			if (!res.ok) {
-				throw new Error(result.message || "Login gagal.");
-			}
-
-			// Simpan token dan user ke cookie
-			Cookies.set("token", result.token, { expires: 3 });
-			Cookies.set("user", JSON.stringify(result.user), { expires: 3 });
+			const result = await dispatch(
+				loginAdmin({ username, password })
+			).unwrap();
 
 			toast.success("Login berhasil!");
 			setTimeout(() => {
-				window.location.href = "/";
+				router.push("/");
 			}, 1500);
 		} catch (error: unknown) {
-			if (error instanceof Error) {
-				toast.error(error.message);
+			if (typeof error === "string") {
+				toast.error(error);
 			} else {
-				console.error("Login error:", error);
 				toast.error("Terjadi kesalahan saat login.");
 			}
 		}
@@ -83,6 +74,7 @@ export default function LoginPage() {
 									onChange={(e) => setUsername(e.target.value)}
 									placeholder="whb123"
 									className="w-full py-2 outline-none bg-transparent"
+									disabled={loading}
 								/>
 								<Image
 									width={25}
@@ -101,11 +93,13 @@ export default function LoginPage() {
 									onChange={(e) => setPassword(e.target.value)}
 									placeholder="********"
 									className="w-full py-2 outline-none bg-transparent"
+									disabled={loading}
 								/>
 								<button
 									type="button"
 									onClick={togglePasswordVisibility}
 									className="ml-2 focus:outline-none"
+									disabled={loading}
 								>
 									<Image
 										width={25}
@@ -121,8 +115,12 @@ export default function LoginPage() {
 								<Link href="/reset-password">Forgot password?</Link>
 							</div>
 
-							<button className="w-full py-2 bg-indigo-600 text-white rounded-md font-semibold mb-4 transition-colors duration-200 hover:bg-indigo-700 active:scale-95">
-								Login
+							<button
+								type="submit"
+								disabled={loading}
+								className="w-full py-2 bg-indigo-600 text-white rounded-md font-semibold mb-4 transition-colors duration-200 hover:bg-indigo-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								{loading ? "Loading..." : "Login"}
 							</button>
 						</form>
 

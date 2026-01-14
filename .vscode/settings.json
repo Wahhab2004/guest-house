@@ -1,0 +1,4 @@
+{
+  "console-ninja.excludeFiles": ["**/*"],
+  "console-ninja.enable": false
+}

@@ -10,7 +10,8 @@ interface JwtPayload {
 }
 
 export function middleware(req: NextRequest) {
-	const token = req.cookies.get("admin_token")?.value;
+	const token = req.cookies.get("token")?.value;
+	console.log("Token from cookie:", token);
 
 	// Tidak ada token → redirect ke login
 	if (!token) {
@@ -27,16 +28,16 @@ export function middleware(req: NextRequest) {
 		}
 
 		// Guest dilarang akses area admin
-		if (decoded.type === "guest" && req.nextUrl.pathname.startsWith("/admin")) {
+		if (decoded.type === "guest" && req.nextUrl.pathname.startsWith("/dasbor")) {
 			return NextResponse.redirect(new URL("/", req.url));
 		}
 
-		// Admin masuk area guest (opsional)
+		// Guest dilarang akses guest-reservation (hanya untuk admin)
 		if (
-			decoded.type === "admin" &&
+			decoded.type === "guest" &&
 			req.nextUrl.pathname.startsWith("/guest-reservation")
 		) {
-			return NextResponse.redirect(new URL("/admin", req.url));
+			return NextResponse.redirect(new URL("/", req.url));
 		}
 	} catch (error) {
 		console.error("Invalid token:", error);
