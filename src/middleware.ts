@@ -1,42 +1,54 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 interface JwtPayload {
-  id: string;
-  type: "admin" | "guest";
-  iat: number;
-  exp: number;
+	id: string;
+	type: "admin" | "guest";
+	iat: number;
+	exp: number;
 }
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("token")?.value; // Ambil token dari cookie
+	const token = req.cookies.get("admin_token")?.value;
 
-  // Kalau tidak ada token
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+	// Tidak ada token → redirect ke login
+	if (!token) {
+		return NextResponse.redirect(new URL("/login", req.url));
+	}
 
-  try {
-    const decoded = jwtDecode<JwtPayload>(token);
+	try {
+		const decoded = jwtDecode<JwtPayload>(token);
 
-    // Proteksi: Guest tidak bisa ke /dasbor dan /guest-reservation
-    if (
-      decoded.type === "guest" &&
-      (req.nextUrl.pathname.startsWith("/dasbor") ||
-        req.nextUrl.pathname.startsWith("/guest-reservation"))
-    ) {
-      return NextResponse.redirect(new URL("/", req.url)); // redirect ke home
-    }
-  } catch (error) {
-    console.error("Token invalid:", error);
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+		// Token expired (optional tapi disarankan)
+		const isExpired = decoded.exp * 1000 < Date.now();
+		if (isExpired) {
+			return NextResponse.redirect(new URL("/login", req.url));
+		}
 
-  return NextResponse.next();
+		// Guest dilarang akses area admin
+		if (decoded.type === "guest" && req.nextUrl.pathname.startsWith("/admin")) {
+			return NextResponse.redirect(new URL("/", req.url));
+		}
+
+		// Admin masuk area guest (opsional)
+		if (
+			decoded.type === "admin" &&
+			req.nextUrl.pathname.startsWith("/guest-reservation")
+		) {
+			return NextResponse.redirect(new URL("/admin", req.url));
+		}
+	} catch (error) {
+		console.error("Invalid token:", error);
+		return NextResponse.redirect(new URL("/login", req.url));
+	}
+
+	return NextResponse.next();
 }
 
-// Aktifkan middleware di route tertentu
+/* =====================
+   ROUTE YANG DIPROTEK
+===================== */
 export const config = {
-  matcher: ["/dasbor/:path*", "/guest-reservation/:path*"], // path yang dicek
+	matcher: ["/admin/:path*", "/guest-reservation/:path*", "/dasbor/:path*"],
 };

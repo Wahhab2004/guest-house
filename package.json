@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.11.0",
     "date-fns": "^4.1.0",
     "datepicker": "^0.0.0",
@@ -23,7 +24,9 @@
     "react-datepicker": "^8.4.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
+    "react-redux": "^9.2.0",
     "react-slick": "^0.30.3",
+    "redux": "^5.0.1",
     "slick-carousel": "^1.8.1",
     "swiper": "^11.2.1"
   },
