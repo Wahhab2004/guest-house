@@ -1,3 +1,6 @@
+import Cookies from "js-cookie";
+
+
 // Room
 export interface Room {
 	id: string;
@@ -161,6 +164,64 @@ export const fetchRoomById = async (id: string): Promise<Room | null> => {
 		return null;
 	}
 };
+
+export const updateRoom = async (
+	id: string,
+	payload: Partial<Room>
+): Promise<Room | null> => {
+	try {
+		const token = Cookies.get("token");
+		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+		const response = await fetch(`${baseUrl}/rooms/${id}`, {
+			method: "PUT", // atau PATCH, tergantung BE kamu
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: token ? `Bearer ${token}` : "",
+			},
+			body: JSON.stringify(payload),
+			cache: "no-store",
+		});
+
+		if (!response.ok) {
+			const err = await response.json();
+			throw new Error(err.message || "Gagal memperbarui kamar");
+		}
+
+		const json = await response.json();
+		return json.data as Room;
+	} catch (error) {
+		console.error("Error updating room:", error);
+		return null;
+	}
+};
+
+export const deleteRoom = async (id: string): Promise<boolean> => {
+	try {
+		const token = Cookies.get("token");
+		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+		const response = await fetch(`${baseUrl}/rooms/${id}`, {
+			method: "DELETE",
+			headers: {
+				Authorization: token ? `Bearer ${token}` : "",
+			},
+			cache: "no-store",
+		});
+
+		if (!response.ok) {
+			const err = await response.json();
+			throw new Error(err.message || "Gagal menghapus kamar");
+		}
+
+		return true;
+	} catch (error) {
+		console.error("Error deleting room:", error);
+		return false;
+	}
+};
+
+
 
 export const fetchAccount = async (): Promise<Guest[]> => {
 	try {
