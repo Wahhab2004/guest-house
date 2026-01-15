@@ -119,7 +119,7 @@ export default function Rooms() {
 											<td className="px-6 py-4 text-stone-700 whitespace-nowrap">
 												{room.price.toLocaleString("ja-JP", {
 													style: "currency",
-													currency: "JPYg",
+													currency: "JPY",
 												})}
 											</td>
 
