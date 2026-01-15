@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Review from "./../../../../components/review";
+// import Review from "./../../../../components/review";
 import { useEffect, useState } from "react";
 import { fetchRoomById, Room } from "@/fetching";
 import { useParams } from "next/navigation";
@@ -53,7 +53,7 @@ export default function DetailProductPage() {
 				<Location />
 				<RefundPolicy />
 				<FeedbackForm />
-				<Review />
+				{/* <Review /> */}
 			</main>
 		</section>
 	);
