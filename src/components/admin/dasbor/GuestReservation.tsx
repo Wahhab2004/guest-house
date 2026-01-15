@@ -25,7 +25,7 @@ const GuestReservation = () => {
 		fetchData();
 	}, []);
 
-	const totalPages = Math.ceil(reservations.length / itemsPerPage);
+	const totalPages = Math.ceil(reservations?.length / itemsPerPage);
 
 	const paginatedData = reservations.slice(
 		(currentPage - 1) * itemsPerPage,
@@ -72,7 +72,7 @@ const GuestReservation = () => {
 						</thead>
 
 						<tbody className="divide-y divide-stone-100">
-							{paginatedData.map((item, index) => (
+							{paginatedData?.map((item, index) => (
 								<tr key={index} className="hover:bg-stone-50 transition">
 									<td className="px-6 py-4 font-medium text-stone-600">
 										{(currentPage - 1) * itemsPerPage + index + 1}
