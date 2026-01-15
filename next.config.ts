@@ -39,6 +39,10 @@ const nextConfig: NextConfig = {
 				protocol: "https",
 				hostname: "be-guesthouse.vercel.app",
 			},
+			{
+				protocol: "https",
+				hostname: "content.fun-japan.jp",
+			},
 		],
 	},
 };
