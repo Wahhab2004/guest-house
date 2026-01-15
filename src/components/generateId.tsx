@@ -1,4 +1,4 @@
-import { fetchAccount, fetchPayments, fetchReservations } from "@/fetching";
+import { fetchGuests, fetchPayments, fetchReservations } from "@/fetching";
 
 const generateReservationId = async (): Promise<string> => {
 	const reservations = await fetchReservations();
@@ -43,7 +43,7 @@ const generatePaymentIds = async (): Promise<string> => {
 export { generatePaymentIds };
 
 const generateGuestId = async (): Promise<string> => {
-	const guests = await fetchAccount();
+	const guests = await fetchGuests();
 
 	const guestsIds = guests
 		.map((res) => res.id)

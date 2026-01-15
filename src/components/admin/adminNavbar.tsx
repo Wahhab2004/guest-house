@@ -22,7 +22,7 @@ import {
 const menus = [
 	{ label: "Dashboard", href: "/dasbor", icon: LayoutDashboard },
 	{ label: "Reservasi", href: "/guest-reservation", icon: CalendarCheck },
-	{ label: "Buku Tamu", href: "/guest-book", icon: BookOpen },
+	{ label: "Buku Tamu", href: "/buku-tamu", icon: BookOpen },
 	{ label: "Riwayat", href: "/guest-history", icon: History },
 	{ label: "Kamar", href: "/room", icon: Hotel },
 ];
@@ -45,7 +45,7 @@ export default function NavbarAdmin() {
 	};
 
 	return (
-		<nav className="fixed top-0 left-0 right-0 z-[100] h-20 bg-white/80 backdrop-blur-md border-b border-stone-200">
+		<nav className="fixed top-0 left-0 right-0 z-[5] h-20 bg-white/80 backdrop-blur-md border-b border-stone-200">
 			<div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
 				{/* LOGO */}
 				<div className="flex items-center gap-3">

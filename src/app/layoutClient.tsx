@@ -17,7 +17,7 @@ export default function LayoutClient({
 		"/guest-reservation",
 		"/room",
 		"/guest-history",
-		"/guest-book",
+		"/buku-tamu",
 	];
 	const loginPage = ["/login", "/register", "/reset-password"];
 

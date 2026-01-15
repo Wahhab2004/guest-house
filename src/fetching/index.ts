@@ -223,7 +223,7 @@ export const deleteRoom = async (id: string): Promise<boolean> => {
 
 
 
-export const fetchAccount = async (): Promise<Guest[]> => {
+export const fetchGuests = async (): Promise<Guest[]> => {
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 		const response = await fetch(`${baseUrl}/guests`, {
