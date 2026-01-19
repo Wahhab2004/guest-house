@@ -14,7 +14,7 @@ const statusColors: Record<string, string> = {
 	CONFIRMED: "bg-yellow-500 text-white",
 	CHECKED_OUT: "bg-gray-400 text-white",
 	CANCELED: "bg-red-500 text-white",
-  ACTIVE: "bg-green-500 text-white",
+	ACTIVE: "bg-green-500 text-white",
 };
 
 // Background card per status
@@ -23,7 +23,7 @@ const cardBackground: Record<string, string> = {
 	CONFIRMED: "bg-gradient-to-br from-yellow-50 to-yellow-100",
 	CHECKED_OUT: "bg-gradient-to-br from-gray-100 to-gray-200",
 	CANCELED: "bg-gradient-to-br from-red-50 to-red-100",
-  ACTIVE: "bg-gradient-to-br from-green-50 to-green-100",
+	ACTIVE: "bg-gradient-to-br from-green-50 to-green-100",
 };
 
 // Sub-komponen untuk menampilkan label + value
@@ -62,10 +62,10 @@ export default function ReservationCard({
 		status === "CONFIRMED"
 			? "Pending Payment"
 			: status === "ACTIVE"
-			? "Active"
-			: status === "CHECKED_OUT"
-			? "Checked Out"
-			: "Cancelled";
+				? "Active"
+				: status === "CHECKED_OUT"
+					? "Checked Out"
+					: "Cancelled";
 
 	const handleRedirectPayment = (e: React.MouseEvent) => {
 		e.stopPropagation();

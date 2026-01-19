@@ -41,7 +41,7 @@ const ReservationTabs = () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
         const res = await axios.get(`${baseUrl}/reservations`, {
-          params: { bookerId: user.id },
+          params: { guestId: user.id },
         });
         setReservations(res.data.data);
       } catch (err: unknown) {

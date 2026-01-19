@@ -29,7 +29,7 @@ export enum PaymentStatus {
 	UNPAID = "UNPAID",
 	REFUNDED = "REFUNDED",
 }
-
+	
 export enum PriceCategory {
 	FREE = "FREE",
 	HALF = "HALF",
