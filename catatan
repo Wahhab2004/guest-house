@@ -96,3 +96,55 @@ To Do List | May 14:
 3. ALERT
    - Register ✓
    - Login ✓
+
+
+###################################################
+### 2026 ###
+## All To Do List 2026
+Seluruh
+1. Permudah akses masuk ke admin
+
+
+Admin
+1. Buat tab guests (Pertimbangkan buku tamu sebagai guest)
+2. Buat panduan penggunaan Admin panel 
+3. Perbaiki admin panel (navbar) ✔
+4. Tidak bisa membuat reservasi karena belum ada input utk anak2
+5. Pasca edit reservasi, nama tamu dan kamar nya tidak muncul. Perlu di reload ulang.
+6. Ada navbar public di tab room. ✔
+7. Tambahkan gambar di tab room ✔
+8. Riwayat reservasi masih belum oke.
+9. Reload data masih lama
+10. Edit reservasi nggak lengkap
+11. Lihat detail di dashboard masih belum berfungsi ✔
+
+
+
+Publik
+1. Fetching room take too slow
+2. Menu My Reservation dihapuskan kalua belum login
+3. Perbaiki button login dan signup
+4. Button signup mengarahkan ke halaman yang salah
+5. Konsistensi form
+6. Give bg to login and signup form.
+7. Kolom nama mungkin bisa dihapus
+8. Loading reservation took long
+9. Tambahkan tombol Kembali saat di detail room
+10. Konsistensi Booking Details
+11. Fetch api rata2 masih lama
+12. Grand total belum tepat
+13. Profil masih dummy
+14. Di my reservation bagian past booking harusnya kalua unpaid ga bisa masuk. Mestinya di active atau cancel saja
+
+
+
+## To Do List 19 - 25 Januari 2026
+1. Testing seluruh fungsionalitas aplikasi.
+2. Bug fixing jika ditemukan error atau bug.
+3. Dokumentasi kode (opsional) dan pembuatan panduan pengguna.
+4. Persiapan untuk peluncuran aplikasi.
+5. Peluncuran aplikasi dan monitoring awal.
+
+1. Menyelesaikan fitur CRUD untuk semua entitas utama (Guest, Reservation, Room, Payment).
+2. Membuat fitur CRUD untuk Guest atau Buku Tamu
+

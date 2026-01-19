@@ -27,7 +27,7 @@ const GuestReservation = () => {
 
 	const totalPages = Math.ceil(reservations?.length / itemsPerPage);
 
-	const paginatedData = reservations.slice(
+	const paginatedData = reservations?.slice(
 		(currentPage - 1) * itemsPerPage,
 		currentPage * itemsPerPage
 	);

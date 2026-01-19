@@ -1,112 +1,213 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { type Reservation } from "@/fetching";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Reservation } from "@/fetching";
 import formatDateIndo from "../../format-tanggal/formatTanggal";
-import EditReservation from "./editReservasi";
-import AddReservation from "./addReservasi";
 import Cookies from "js-cookie";
 import PaginationControl from "@/components/admin/reservasi/PaginationControl";
 import Badge from "@/components/Badge";
 import ActionButton from "@/components/ActionButton";
+import ReservationModal from "./reservationModalForm";
+import EditReservationModal from "./editReservationModal";
+import {
+	PaymentMethod,
+	PaymentStatus,
+	ReservationStatus,
+} from "@/types/prisma";
+import { EditReservationForm } from "@/types/forms";
 
+/* ================= TYPES ================= */
+interface FilterState {
+	search: string;
+	searchType: "guestName" | "roomName";
+	status: ReservationStatus | "";
+	startDate: string;
+	endDate: string;
+	sortBy: "createdAt" | "checkIn" | "checkOut";
+	order: "asc" | "desc";
+}
+
+/* ================= MAIN ================= */
 export default function Reservasi() {
-	const [token, setToken] = useState<string | null>(null);
 	const [reservations, setReservations] = useState<Reservation[]>([]);
-	const [filteredReservations, setFilteredReservations] = useState<
-		Reservation[]
-	>([]);
-	const [editReservation, setEditReservation] = useState<Reservation | null>(
-		null
-	);
-	const [detailReservation, setDetailReservation] =
-		useState<Reservation | null>(null);
+	const [selected, setSelected] = useState<Reservation | null>(null);
+
+	const [isAddOpen, setIsAddOpen] = useState(false);
+	const [isEditOpen, setIsEditOpen] = useState(false);
+	const [isDetailOpen, setIsDetailOpen] = useState(false);
 
 	const [currentPage, setCurrentPage] = useState(1);
 	const [itemsPerPage, setItemsPerPage] = useState(10);
 
-	const [search, setSearch] = useState("");
-	const [searchType, setSearchType] = useState("guestName");
-	const [status, setStatus] = useState("");
-	const [paymentStatus, setPaymentStatus] = useState("");
-	const [sortBy, setSortBy] = useState("createdAt");
-	const [order, setOrder] = useState("desc");
-	const [startDate, setStartDate] = useState("");
-	const [endDate, setEndDate] = useState("");
-
 	const [showFilter, setShowFilter] = useState(false);
-	const [isAddOpen, setIsAddOpen] = useState(false);
-	const [isEditOpen, setIsEditOpen] = useState(false);
-	const [isDetailOpen, setIsDetailOpen] = useState(false);
-	const [selectedReservationId, setSelectedReservationId] = useState<
-		string | null
-	>(null);
 
+	const [filters, setFilters] = useState<FilterState>({
+		search: "",
+		searchType: "guestName",
+		status: "",
+		startDate: "",
+		endDate: "",
+		sortBy: "createdAt",
+		order: "desc",
+	});
+
+	/* ================= FETCH ================= */
 	const fetchReservations = useCallback(async () => {
 		try {
-			const tokenValue = Cookies.get("token") || null;
-			setToken(tokenValue);
+			const token = Cookies.get("token");
 
 			const params = new URLSearchParams({
-				status,
-				paymentStatus,
-				startDate,
-				endDate,
-				guestName: searchType === "guestName" ? search : "",
-				roomName: searchType === "roomName" ? search : "",
-				order,
-				sortBy,
+				status: filters.status || "",
+				startDate: filters.startDate,
+				endDate: filters.endDate,
+				guestName: filters.searchType === "guestName" ? filters.search : "",
+				roomName: filters.searchType === "roomName" ? filters.search : "",
+				order: filters.order,
+				sortBy: filters.sortBy,
 			});
 
 			const res = await fetch(
 				`${process.env.NEXT_PUBLIC_API_BASE_URL}/reservations?${params}`,
 				{
-					headers: { Authorization: tokenValue ? `Bearer ${tokenValue}` : "" },
+					headers: token ? { Authorization: `Bearer ${token}` } : {},
 					cache: "no-store",
-				}
+				},
 			);
 
 			if (!res.ok) throw new Error("Gagal memuat reservasi");
-			const json = await res.json();
 
-			setReservations(json.data);
-			setFilteredReservations(json.data);
-		} catch (error) {
-			console.error(error);
+			const json = await res.json();
+			setReservations(json.data || []);
+			setCurrentPage(1);
+		} catch (err) {
+			console.error("Fetch reservations failed:", err);
 		}
-	}, [
-		status,
-		paymentStatus,
-		startDate,
-		endDate,
-		search,
-		order,
-		sortBy,
-		searchType,
-	]);
+	}, [filters]);
 
 	useEffect(() => {
 		fetchReservations();
 	}, [fetchReservations]);
 
-	const paginatedData = filteredReservations.slice(
-		(currentPage - 1) * itemsPerPage,
-		currentPage * itemsPerPage
-	);
+	/* ================= FILTER + SORT ================= */
+	const filtered = useMemo(() => {
+		let data = [...reservations];
 
-	const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
+		if (filters.search) {
+			data = data.filter((r) => {
+				if (filters.searchType === "guestName") {
+					return r.guest?.name
+						?.toLowerCase()
+						.includes(filters.search.toLowerCase());
+				}
+				return r.room?.name
+					?.toLowerCase()
+					.includes(filters.search.toLowerCase());
+			});
+		}
+
+		if (filters.status) {
+			data = data.filter((r) => r.status === filters.status);
+		}
+
+		data.sort((a, b) => {
+			const aVal = new Date(
+				(filters.sortBy === "createdAt"
+					? a.createdAt
+					: filters.sortBy === "checkIn"
+						? a.checkIn
+						: a.checkOut) || "",
+			).getTime();
+
+			const bVal = new Date(
+				(filters.sortBy === "createdAt"
+					? b.createdAt
+					: filters.sortBy === "checkIn"
+						? b.checkIn
+						: b.checkOut) || "",
+			).getTime();
+
+			return filters.order === "asc" ? aVal - bVal : bVal - aVal;
+		});
+
+		return data;
+	}, [reservations, filters]);
+
+	/* ================= PAGINATION ================= */
+	const totalPages = Math.ceil(filtered.length / itemsPerPage);
+
+	const paginatedData = useMemo(() => {
+		const start = (currentPage - 1) * itemsPerPage;
+		return filtered.slice(start, start + itemsPerPage);
+	}, [filtered, currentPage, itemsPerPage]);
+
+	/* ================= HANDLERS ================= */
+	const handleEdit = (id: string) => {
+		const found = reservations.find((r) => r.id === id);
+		if (!found) return;
+
+		setSelected(found);
+		setIsEditOpen(true);
+	};
+
+	const handleDetail = (id: string) => {
+		const found = reservations.find((r) => r.id === id);
+		if (!found) return;
+
+		setSelected(found);
+		setIsDetailOpen(true);
+	};
+
+	const handleDelete = async (id: string) => {
+		try {
+			const token = Cookies.get("token");
+
+			const res = await fetch(
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/reservations/${id}`,
+				{
+					method: "DELETE",
+					headers: token ? { Authorization: `Bearer ${token}` } : {},
+				},
+			);
+
+			if (!res.ok) throw new Error("Gagal menghapus reservasi");
+
+			// Jika berhasil, update state lokal
+			setReservations((prev) => prev.filter((r) => r.id !== id));
+		} catch (err) {
+			console.error("Delete reservation failed:", err);
+			alert("Gagal menghapus reservasi");
+		}
+	};
 
 	const resetFilters = () => {
-		setSearch("");
-		setStatus("");
-		setPaymentStatus("");
-		setStartDate("");
-		setEndDate("");
-		setSortBy("createdAt");
-		setOrder("desc");
+		setFilters({
+			search: "",
+			searchType: "guestName",
+			status: "",
+			startDate: "",
+			endDate: "",
+			sortBy: "createdAt",
+			order: "desc",
+		});
 		setItemsPerPage(10);
 	};
 
+	const EMPTY_EDIT_FORM: EditReservationForm = {
+		id: "",
+		guestId: "",
+		roomId: "",
+		checkIn: "",
+		checkOut: "",
+
+		additionalGuests: [],
+
+		status: ReservationStatus.PENDING,
+		paymentStatus: PaymentStatus.UNPAID,
+		paymentMethod: PaymentMethod.TRANSFER,
+		paymentSender: "",
+	};
+
+	/* ================= RENDER ================= */
 	return (
 		<div>
 			{/* HEADER */}
@@ -142,8 +243,13 @@ export default function Reservasi() {
 				{showFilter && (
 					<div className="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 text-sm">
 						<select
-							value={searchType}
-							onChange={(e) => setSearchType(e.target.value)}
+							value={filters.searchType}
+							onChange={(e) =>
+								setFilters((p) => ({
+									...p,
+									searchType: e.target.value as "guestName" | "roomName",
+								}))
+							}
 							className="border rounded-xl px-3 py-2"
 						>
 							<option value="guestName">Nama Tamu</option>
@@ -153,14 +259,21 @@ export default function Reservasi() {
 						<input
 							type="text"
 							placeholder="Cari..."
-							value={search}
-							onChange={(e) => setSearch(e.target.value)}
+							value={filters.search}
+							onChange={(e) =>
+								setFilters((p) => ({ ...p, search: e.target.value }))
+							}
 							className="border rounded-xl px-3 py-2"
 						/>
 
 						<select
-							value={status}
-							onChange={(e) => setStatus(e.target.value)}
+							value={filters.status}
+							onChange={(e) =>
+								setFilters((p) => ({
+									...p,
+									status: e.target.value as ReservationStatus | "",
+								}))
+							}
 							className="border rounded-xl px-3 py-2"
 						>
 							<option value="">Semua Status</option>
@@ -183,20 +296,9 @@ export default function Reservasi() {
 			{/* TABLE */}
 			<ReservasiTable
 				reservations={paginatedData}
-				onEdit={(id) => {
-					setSelectedReservationId(id);
-					setEditReservation(reservations.find((r) => r.id === id) || null);
-					setIsEditOpen(true);
-				}}
-				onDelete={(id) => {
-					setReservations((prev) => prev.filter((r) => r.id !== id));
-					setFilteredReservations((prev) => prev.filter((r) => r.id !== id));
-				}}
-				onDetail={(id) => {
-					setSelectedReservationId(id);
-					setDetailReservation(reservations.find((r) => r.id === id) || null);
-					setIsDetailOpen(true);
-				}}
+				onEdit={handleEdit}
+				onDelete={handleDelete}
+				onDetail={handleDetail}
 			/>
 
 			<PaginationControl
@@ -206,36 +308,70 @@ export default function Reservasi() {
 				handlePrevious={() => setCurrentPage((p) => Math.max(1, p - 1))}
 			/>
 
-			{/* MODAL */}
-			<AddReservation
+			{/* CREATE */}
+			<ReservationModal
 				isOpen={isAddOpen}
 				onClose={() => setIsAddOpen(false)}
-				onSave={() => {}}
-				token={token}
+				onSave={(data) => {
+					// Refresh data lengkap setelah tambah
+					fetchReservations();
+				}}
 			/>
 
-			<EditReservation
+			{/* EDIT */}
+			<EditReservationModal
 				isOpen={isEditOpen}
-				onClose={() => setIsEditOpen(false)}
-				reservation={editReservation}
-				onUpdate={() => {}}
-				token={token}
+				onClose={() => {
+					setIsEditOpen(false);
+					setSelected(null);
+				}}
+				onSave={(data) => {
+					// Refresh data lengkap setelah update
+					fetchReservations();
+				}}
+				initialData={
+					selected
+						? {
+								id: selected.id,
+								guestId: selected.guestId ?? "",
+								roomId: selected.roomId,
+
+								checkIn: selected.checkIn.split("T")[0],
+								checkOut: selected.checkOut.split("T")[0],
+
+								additionalGuests: selected.additionalGuests || [],
+
+								status: selected.status as ReservationStatus,
+								paymentStatus: selected.payment?.status as
+									| PaymentStatus
+									| undefined,
+								paymentMethod: selected.payment?.method as
+									| PaymentMethod
+									| undefined,
+								paymentSender: selected.payment?.sender || "",
+							}
+						: EMPTY_EDIT_FORM
+				}
 			/>
+
+			{/* DETAIL */}
 			<DetailReservation
 				isOpen={isDetailOpen}
-				onClose={() => setIsDetailOpen(false)}
-				reservation={detailReservation}
+				onClose={() => {
+					setIsDetailOpen(false);
+					setSelected(null);
+				}}
+				reservation={selected}
 			/>
 		</div>
 	);
 }
 
+/* ================= TABLE ================= */
 interface ReservasiTableProps {
 	reservations: Reservation[];
 	onEdit: (id: string) => void;
 	onDelete: (id: string) => void;
-	// currentPage: number;
-	// itemsPerPage: number;
 	onDetail: (id: string) => void;
 }
 
@@ -246,8 +382,8 @@ function ReservasiTable({
 	onDetail,
 }: ReservasiTableProps) {
 	return (
-		<div className="w-full ">
-			<h1 className="text-xl font-bold mb-3 ">Reservasi</h1>
+		<div className="w-full">
+			<h1 className="text-xl font-bold mb-3">Reservasi</h1>
 			<div className="border shadow-md rounded-xl bg-white overflow-x-auto">
 				<table className="w-full text-left text-sm">
 					<thead className="bg-gray-100 uppercase">
@@ -272,7 +408,7 @@ function ReservasiTable({
 						</tr>
 					</thead>
 					<tbody>
-						{reservations?.length > 0 ? (
+						{reservations.length > 0 ? (
 							reservations.map((res, index) => (
 								<tr
 									key={res.id}
@@ -301,9 +437,9 @@ function ReservasiTable({
 										</Badge>
 									</td>
 									<td className="px-4 py-3 whitespace-nowrap">
-										{res.totalPrice.toLocaleString("jp-JP", {
+										{res.totalPrice.toLocaleString("id-ID", {
 											style: "currency",
-											currency: "JPY",
+											currency: "IDR",
 										})}
 									</td>
 									<td className="px-4 py-3">
@@ -333,7 +469,7 @@ function ReservasiTable({
 						) : (
 							<tr>
 								<td
-									colSpan={12}
+									colSpan={11}
 									className="text-center text-gray-500 py-6 text-sm"
 								>
 									Tidak ada data reservasi.
@@ -347,27 +483,18 @@ function ReservasiTable({
 	);
 }
 
+/* ================= DETAIL ================= */
 interface DetailProps {
 	isOpen: boolean;
 	onClose: () => void;
 	reservation: Reservation | null;
 }
 
-interface DetailProps {
-	isOpen: boolean;
-	onClose: () => void;
-	reservation: Reservation | null;
-}
-
-export function DetailReservation({
-	isOpen,
-	onClose,
-	reservation,
-}: DetailProps) {
+function DetailReservation({ isOpen, onClose, reservation }: DetailProps) {
 	if (!isOpen || !reservation) return null;
 
 	return (
-		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[101]">
+		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[101]">
 			<div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-2xl space-y-6 overflow-y-auto max-h-[90vh]">
 				<h2 className="text-2xl font-semibold text-center text-gray-800 border-b pb-3">
 					Detail Reservasi
@@ -380,7 +507,7 @@ export function DetailReservation({
 					</div>
 
 					<div>
-						<p className="text-gray-500">Email Tamu</p>
+						<p className="text-gray-500">Email</p>
 						<p className="font-medium">{reservation.guest?.email || "-"}</p>
 					</div>
 
@@ -413,49 +540,29 @@ export function DetailReservation({
 
 					<div>
 						<p className="text-gray-500">Metode Pembayaran</p>
-						<p className="font-medium">{reservation.payment?.method}</p>
+						<p className="font-medium">{reservation.payment?.method || "-"}</p>
 					</div>
 
 					<div>
 						<p className="text-gray-500">Status Pembayaran</p>
-						<span
-							className={`px-2 py-1 text-xs rounded-full font-semibold ${
-								reservation.payment?.status === "paid"
-									? "bg-green-100 text-green-700"
-									: "bg-red-100 text-red-700"
-							}`}
-						>
-							{reservation.payment?.status === "paid" ? "Lunas" : "Belum Lunas"}
-						</span>
+						<p className="font-medium">{reservation.payment?.status || "-"}</p>
 					</div>
 
 					<div>
-						<p className="text-gray-500">Status</p>
-						<span
-							className={`px-2 py-1 text-xs rounded-full font-semibold ${
-								reservation.status === "confirmed"
-									? "bg-green-100 text-green-700"
-									: reservation.status === "cancelled"
-									? "bg-red-100 text-red-700"
-									: "bg-yellow-100 text-yellow-700"
-							}`}
-						>
-							{reservation.status}
-						</span>
+						<p className="text-gray-500">Status Reservasi</p>
+						<p className="font-medium">{reservation.status}</p>
 					</div>
 
 					<div>
-						<p className="text-gray-500 mb-1">Bukti Pembayaran</p>
-
+						<p className="text-gray-500">Bukti Pembayaran</p>
 						{reservation.payment?.proofUrl ? (
-							// Nanti perbaiki href
 							<a
-								href={reservation.payment?.proofUrl}
+								href={reservation.payment.proofUrl}
 								target="_blank"
 								rel="noopener noreferrer"
 								className="text-blue-600 underline"
 							>
-								Lihat Bukti Pembayaran
+								Lihat Bukti
 							</a>
 						) : (
 							<p className="italic text-gray-400">Tidak tersedia</p>
