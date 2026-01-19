@@ -18,6 +18,8 @@ import {
 	Home,
 } from "lucide-react";
 
+import Image from "next/image";
+
 const menus = [
 	{ label: "Dashboard", href: "/dasbor", icon: LayoutDashboard },
 	{ label: "Reservasi", href: "/guest-reservation", icon: CalendarCheck },
@@ -33,8 +35,6 @@ export default function NavbarAdmin() {
 	const { user } = useSelector((state: RootState) => state.auth);
 	const [isOpen, setIsOpen] = useState(false);
 
-	console.log(user);
-
 	const handleLogout = () => {
 		dispatch(logout());
 		toast.success("Logout berhasil!");
@@ -48,14 +48,19 @@ export default function NavbarAdmin() {
 			<div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
 				{/* LOGO */}
 				<div className="flex items-center gap-3">
-					<div className="bg-[#FFB22C] p-2 rounded-xl shadow-lg shadow-amber-100">
-						<Home className="text-white" size={22} />
-					</div>
+					<Image
+						src="/images/ummu_logo_1.png"
+						alt="Umy Logo"
+						width={100}
+						height={100}
+						className="shadow-lg shadow-amber-100"
+					/>
+
 					<div className="hidden sm:block">
 						<h1 className="font-bold text-stone-800 text-xl leading-none">
-							Guesthouse Ryosuke
+							Ummu Ryosuke
 						</h1>
-						<p className="text-[10px] text-[#FFB22C] font-bold uppercase tracking-widest mt-1">
+						<p className="font-bold leading-none text-[10px] text-[#FFB22C] font-bold  tracking-widest mt-1 uppercase">
 							Admin Panel
 						</p>
 					</div>
@@ -75,7 +80,7 @@ export default function NavbarAdmin() {
 									"flex items-center gap-2 px-6 py-2.5 rounded-xl transition-all duration-300 font-semibold text-sm",
 									isActive
 										? "bg-white text-[#FFB22C] shadow-sm border border-stone-100"
-										: "text-stone-500 hover:text-stone-800"
+										: "text-stone-500 hover:text-stone-800",
 								)}
 							>
 								<Icon size={18} />
@@ -124,7 +129,7 @@ export default function NavbarAdmin() {
 									"flex items-center gap-4 px-5 py-4 rounded-2xl font-bold",
 									isActive
 										? "bg-amber-50 text-amber-700"
-										: "text-stone-600 bg-stone-50"
+										: "text-stone-600 bg-stone-50",
 								)}
 							>
 								<Icon size={20} />

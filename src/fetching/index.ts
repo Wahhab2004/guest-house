@@ -1,6 +1,5 @@
 import Cookies from "js-cookie";
 
-
 // Room
 export interface Room {
 	id: string;
@@ -61,7 +60,6 @@ export interface AdditionalGuests {
 	dateOfBirth: string;
 	gender: string;
 	priceCategory: string;
-	
 }
 
 // Account
@@ -76,7 +74,6 @@ export interface Guest {
 	dateOfBirth: string;
 	country: string;
 	gender: string;
-
 }
 
 export interface FetchParams {
@@ -86,14 +83,47 @@ export interface FetchParams {
 	order?: string;
 }
 
+const getMondayAndSunday = () => {
+	const now = new Date();
+	const day = now.getDay();
+	// Minggu = 0, Senin = 1, ..., Sabtu = 6
 
-export const fetchFilteredReservations = async (): Promise<Reservation[]> => {
+	// Hitung Senin
+	const diffToMonday = day === 0 ? -6 : 1 - day;
+	const monday = new Date(now);
+	monday.setDate(now.getDate() + diffToMonday);
+	monday.setHours(0, 0, 0, 0);
+
+	// Hitung Minggu
+	const sunday = new Date(monday);
+	sunday.setDate(monday.getDate() + 6);
+	sunday.setHours(23, 59, 59, 999);
+
+	return { monday, sunday };
+};
+
+export const fetchFilteredReservations = async (
+	params?: FetchParams,
+): Promise<Reservation[]> => {
 	const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-	const res = await fetch(`${baseUrl}/reservations`, {
+	const { monday, sunday } = getMondayAndSunday();
+
+	const query = new URLSearchParams({
+		checkInStart: monday.toISOString().split("T")[0],
+		checkInEnd: sunday.toISOString().split("T")[0],
+	});
+
+	// Optional filter tambahan
+	if (params?.status) query.append("status", params.status);
+	if (params?.sort_by) query.append("sortBy", params.sort_by);
+	if (params?.order) query.append("sortOrder", params.order);
+	if (params?.search) query.append("guestName", params.search);
+
+	const res = await fetch(`${baseUrl}/reservations?${query.toString()}`, {
 		cache: "no-store",
 		headers: {
-		
+			"Content-Type": "application/json",
 		},
 	});
 
@@ -102,6 +132,49 @@ export const fetchFilteredReservations = async (): Promise<Reservation[]> => {
 	const json = await res.json();
 	return json.data;
 };
+
+export interface ReservationSummary {
+	totalAll: number;
+	totalFiltered: number;
+	byStatus: Record<string, number>;
+	byPayment: Record<string, number>;
+	paidButNotActive: number;
+}
+
+export interface ReservationResponse {
+	data: Reservation[];
+	summary: ReservationSummary;
+}
+
+const getMonthRange = () => {
+	const now = new Date();
+	const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+	const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+	lastDay.setHours(23, 59, 59, 999);
+
+	return { firstDay, lastDay };
+};
+
+export const fetchReservationSummaryThisMonth =
+	async (): Promise<ReservationSummary> => {
+		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+		const { firstDay, lastDay } = getMonthRange();
+
+		const query = new URLSearchParams({
+			checkInStart: firstDay.toISOString().split("T")[0],
+			checkInEnd: lastDay.toISOString().split("T")[0],
+		});
+
+		const res = await fetch(`${baseUrl}/reservations?${query.toString()}`, {
+			cache: "no-store",
+		});
+
+		if (!res.ok) throw new Error("Failed to fetch reservation summary");
+
+		const json: ReservationResponse = await res.json();
+		return json.summary;
+	};
 
 export const fetchReservations = async (): Promise<Reservation[]> => {
 	try {
@@ -119,7 +192,7 @@ export const fetchReservations = async (): Promise<Reservation[]> => {
 };
 
 export const fetchReservationById = async (
-	id: string
+	id: string,
 ): Promise<Reservation | null> => {
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -167,7 +240,7 @@ export const fetchRoomById = async (id: string): Promise<Room | null> => {
 
 export const updateRoom = async (
 	id: string,
-	payload: Partial<Room>
+	payload: Partial<Room>,
 ): Promise<Room | null> => {
 	try {
 		const token = Cookies.get("token");
@@ -220,8 +293,6 @@ export const deleteRoom = async (id: string): Promise<boolean> => {
 		return false;
 	}
 };
-
-
 
 export const fetchGuests = async (): Promise<Guest[]> => {
 	try {

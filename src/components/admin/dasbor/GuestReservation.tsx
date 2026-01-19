@@ -2,7 +2,8 @@
 
 import Badge from "@/components/Badge";
 import formatDateIndo from "@/components/format-tanggal/formatTanggal";
-import { Reservation, fetchReservations } from "@/fetching";
+import { Reservation } from "@/fetching";
+import { fetchFilteredReservations } from "@/fetching";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
@@ -10,26 +11,40 @@ import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 const GuestReservation = () => {
 	const [reservations, setReservations] = useState<Reservation[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
 	const itemsPerPage = 5;
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const data = await fetchReservations();
+				setLoading(true);
+				setError(null);
+
+				// Ambil reservasi minggu ini (Senin - Minggu)
+				const data = await fetchFilteredReservations({
+					sort_by: "checkIn",
+					order: "asc",
+				});
+
 				setReservations(data);
-			} catch (error) {
-				console.error("Gagal mengambil data reservasi:", error);
+			} catch (err) {
+				console.error("Gagal mengambil data reservasi:", err);
+				setError("Gagal memuat data reservasi");
+			} finally {
+				setLoading(false);
 			}
 		};
 
 		fetchData();
 	}, []);
 
-	const totalPages = Math.ceil(reservations?.length / itemsPerPage);
+	const totalPages = Math.ceil(reservations.length / itemsPerPage);
 
-	const paginatedData = reservations?.slice(
+	const paginatedData = reservations.slice(
 		(currentPage - 1) * itemsPerPage,
-		currentPage * itemsPerPage
+		currentPage * itemsPerPage,
 	);
 
 	return (
@@ -38,10 +53,10 @@ const GuestReservation = () => {
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="text-2xl font-bold text-stone-800 tracking-tight">
-						Reservasi Tamu
+						Reservasi Minggu Ini
 					</h1>
 					<p className="text-stone-500 text-sm mt-1">
-						Daftar reservasi terbaru di guesthouse Anda
+						Daftar reservasi dari Senin sampai Minggu
 					</p>
 				</div>
 
@@ -72,32 +87,82 @@ const GuestReservation = () => {
 						</thead>
 
 						<tbody className="divide-y divide-stone-100">
-							{paginatedData?.map((item, index) => (
-								<tr key={index} className="hover:bg-stone-50 transition">
-									<td className="px-6 py-4 font-medium text-stone-600">
-										{(currentPage - 1) * itemsPerPage + index + 1}
-									</td>
-									<td className="px-6 py-4 font-semibold text-stone-800">
-										{item.guest?.name}
-									</td>
-									<td className="px-6 py-4 text-stone-700">{item.room.name}</td>
-									<td className="px-6 py-4 text-stone-600">
-										{formatDateIndo(item.checkIn)}
-									</td>
-									<td className="px-6 py-4 text-stone-600">
-										{formatDateIndo(item.checkOut)}
-									</td>
-									<td className="px-6 py-4 font-semibold text-[#FFB22C]">
-										{item.totalPrice.toLocaleString("ja-JP", {
-											style: "currency",
-											currency: "JPY",
-										})}
-									</td>
-									<td className="px-6 py-4 text-xs">
-										<Badge type={item.status}>{item.status}</Badge>
+							{/* Loading State */}
+							{loading && (
+								<tr>
+									<td
+										colSpan={7}
+										className="px-6 py-10 text-center text-stone-500 font-semibold"
+									>
+										Memuat data reservasi...
 									</td>
 								</tr>
-							))}
+							)}
+
+							{/* Error State */}
+							{error && !loading && (
+								<tr>
+									<td
+										colSpan={7}
+										className="px-6 py-10 text-center text-red-500 font-semibold"
+									>
+										{error}
+									</td>
+								</tr>
+							)}
+
+							{/* Empty State */}
+							{!loading && !error && paginatedData.length === 0 && (
+								<tr>
+									<td
+										colSpan={7}
+										className="px-6 py-10 text-center text-stone-400 font-semibold"
+									>
+										Tidak ada reservasi minggu ini
+									</td>
+								</tr>
+							)}
+
+							{/* Data Rows */}
+							{!loading &&
+								!error &&
+								paginatedData.map((item, index) => (
+									<tr
+										key={item.id ?? index}
+										className="hover:bg-stone-50 transition"
+									>
+										<td className="px-6 py-4 font-medium text-stone-600">
+											{(currentPage - 1) * itemsPerPage + index + 1}
+										</td>
+
+										<td className="px-6 py-4 font-semibold text-stone-800">
+											{item.guest?.name || "-"}
+										</td>
+
+										<td className="px-6 py-4 text-stone-700">
+											{item.room?.name || "-"}
+										</td>
+
+										<td className="px-6 py-4 text-stone-600">
+											{formatDateIndo(item.checkIn)}
+										</td>
+
+										<td className="px-6 py-4 text-stone-600">
+											{formatDateIndo(item.checkOut)}
+										</td>
+
+										<td className="px-6 py-4 font-semibold ">
+											{item.totalPrice.toLocaleString("jp-JP", {
+												style: "currency",
+												currency: "JPY",
+											})}
+										</td>
+
+										<td className="px-6 py-4 text-xs">
+											<Badge type={item.status}>{item.status}</Badge>
+										</td>
+									</tr>
+								))}
 						</tbody>
 					</table>
 				</div>
@@ -115,12 +180,12 @@ const GuestReservation = () => {
 					</button>
 
 					<p className="text-sm font-semibold text-stone-600">
-						Halaman {currentPage} dari {totalPages}
+						Halaman {totalPages === 0 ? 0 : currentPage} dari {totalPages}
 					</p>
 
 					<button
 						onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-						disabled={currentPage === totalPages}
+						disabled={currentPage === totalPages || totalPages === 0}
 						className="flex items-center gap-2 px-4 py-2 rounded-xl border border-stone-300 text-stone-600 text-sm font-semibold
 						hover:bg-stone-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
 					>
