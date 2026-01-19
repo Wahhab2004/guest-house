@@ -12,7 +12,6 @@ import {
 	LayoutDashboard,
 	CalendarCheck,
 	BookOpen,
-	History,
 	Hotel,
 	Menu,
 	X,
@@ -23,7 +22,7 @@ const menus = [
 	{ label: "Dashboard", href: "/dasbor", icon: LayoutDashboard },
 	{ label: "Reservasi", href: "/guest-reservation", icon: CalendarCheck },
 	{ label: "Buku Tamu", href: "/buku-tamu", icon: BookOpen },
-	{ label: "Riwayat", href: "/guest-history", icon: History },
+	// { label: "Riwayat", href: "/guest-history", icon: History },
 	{ label: "Kamar", href: "/room", icon: Hotel },
 ];
 
