@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Guest, Room } from "@/fetching";
 import { ReservationForm } from "@/types/forms";
+import { X, Calendar, Users, BedDouble } from "lucide-react";
 
 interface ReservationModalProps {
 	isOpen: boolean;
@@ -139,143 +140,218 @@ export default function ReservationModal({
 
 	/* ================= UI ================= */
 	return (
-		<div className="fixed inset-0 z-[101] bg-black/50">
-			<div className="bg-white w-[720px] max-h-[90vh] overflow-y-auto rounded-xl p-6 mx-auto mt-16">
-				<h2 className="text-xl font-semibold mb-4">Tambah Reservasi</h2>
-
-				{error && (
-					<p className="bg-red-100 text-red-600 p-2 mb-4 rounded">{error}</p>
-				)}
-
-				{/* Guest */}
-				<select
-					value={formData.guestId}
-					onChange={(e) =>
-						setFormData({ ...formData, guestId: e.target.value })
-					}
-					className="input w-full mb-3"
-				>
-					<option value="">-- Pilih Guest --</option>
-					{guests.map((g) => (
-						<option key={g.id} value={g.id}>
-							{g.name} ({g.email})
-						</option>
-					))}
-				</select>
-
-				{/* Date */}
-				<div className="flex gap-3 mb-3">
-					<input
-						type="date"
-						value={formData.checkIn}
-						onChange={(e) =>
-							setFormData({ ...formData, checkIn: e.target.value })
-						}
-						className="input w-1/2"
-					/>
-					<input
-						type="date"
-						value={formData.checkOut}
-						onChange={(e) =>
-							setFormData({ ...formData, checkOut: e.target.value })
-						}
-						className="input w-1/2"
-					/>
-				</div>
-
-				{/* Room */}
-				<select
-					value={formData.roomId}
-					onChange={(e) => setFormData({ ...formData, roomId: e.target.value })}
-					className="input w-full mb-3"
-				>
-					<option value="">-- Pilih Room --</option>
-					{rooms.map((r) => (
-						<option key={r.id} value={r.id}>
-							{r.name} - Rp{r.price}
-						</option>
-					))}
-				</select>
-
-				{/* Guest Count */}
-				<div className="flex gap-3 mb-4">
-					<input
-						type="number"
-						min={1}
-						max={3}
-						value={formData.adultCount}
-						onChange={(e) =>
-							setFormData({
-								...formData,
-								adultCount: Number(e.target.value),
-							})
-						}
-						className="input w-1/2"
-						placeholder="Adult"
-					/>
-					<input
-						type="number"
-						min={0}
-						max={2}
-						value={formData.childCount}
-						onChange={(e) =>
-							setFormData({
-								...formData,
-								childCount: Number(e.target.value),
-							})
-						}
-						className="input w-1/2"
-						placeholder="Child"
-					/>
-				</div>
-
-				{/* Additional Guests */}
-				{formData.additionalGuests.map((g, i) => (
-					<div key={i} className="border p-3 rounded mb-3">
-						<input
-							placeholder="Nama Anak"
-							className="input w-full mb-2"
-							value={g.name ?? ""}
-							onChange={(e) => {
-								const updated = [...formData.additionalGuests];
-								updated[i] = {
-									...updated[i],
-									name: e.target.value,
-								};
-								setFormData({
-									...formData,
-									additionalGuests: updated,
-								});
-							}}
-						/>
-						<input
-							type="date"
-							className="input w-full"
-							value={g.dateOfBirth ?? ""}
-							onChange={(e) => {
-								const updated = [...formData.additionalGuests];
-								updated[i] = {
-									...updated[i],
-									dateOfBirth: e.target.value,
-								};
-								setFormData({
-									...formData,
-									additionalGuests: updated,
-								});
-							}}
-						/>
+		<div className="fixed inset-0 z-[101] bg-black/50 backdrop-blur-sm flex items-center justify-center px-4">
+			<div className="bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-[32px] shadow-2xl animate-in fade-in zoom-in duration-300">
+				{/* Header */}
+				<div className="bg-gradient-to-r from-orange-400 to-amber-500 p-6 rounded-t-[32px] flex items-center justify-between">
+					<div>
+						<h2 className="text-xl font-bold text-white">Tambah Reservasi</h2>
+						<p className="text-white/80 text-sm">
+							Lengkapi informasi reservasi dengan benar
+						</p>
 					</div>
-				))}
+					<button
+						onClick={onClose}
+						className="p-2 rounded-xl bg-white/20 hover:bg-white/30 text-white transition"
+					>
+						<X size={20} />
+					</button>
+				</div>
 
-				{/* Action */}
-				<div className="flex justify-end gap-3">
-					<button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">
+				{/* Body */}
+				<div className="p-6 space-y-6">
+					{error && (
+						<p className="bg-red-100 text-red-600 p-3 rounded-xl font-semibold text-sm">
+							{error}
+						</p>
+					)}
+
+					{/* Guest & Room */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div>
+							<label className="label">Guest</label>
+							<select
+								value={formData.guestId}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										guestId: e.target.value,
+									})
+								}
+								className="input w-full"
+							>
+								<option value="">-- Pilih Guest --</option>
+								{guests.map((g) => (
+									<option key={g.id} value={g.id}>
+										{g.name} ({g.email})
+									</option>
+								))}
+							</select>
+						</div>
+
+						<div>
+							<label className="label flex items-center gap-1">
+								<BedDouble size={14} /> Room
+							</label>
+							<select
+								value={formData.roomId}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										roomId: e.target.value,
+									})
+								}
+								className="input w-full"
+							>
+								<option value="">-- Pilih Room --</option>
+								{rooms.map((r) => (
+									<option key={r.id} value={r.id}>
+										{r.name} - Rp{r.price}
+									</option>
+								))}
+							</select>
+						</div>
+					</div>
+
+					{/* Dates */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div>
+							<label className="label flex items-center gap-1">
+								<Calendar size={14} /> Check-in
+							</label>
+							<input
+								type="date"
+								value={formData.checkIn}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										checkIn: e.target.value,
+									})
+								}
+								className="input w-full"
+							/>
+						</div>
+
+						<div>
+							<label className="label flex items-center gap-1">
+								<Calendar size={14} /> Check-out
+							</label>
+							<input
+								type="date"
+								value={formData.checkOut}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										checkOut: e.target.value,
+									})
+								}
+								className="input w-full"
+							/>
+						</div>
+					</div>
+
+					{/* Guest Count */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div>
+							<label className="label flex items-center gap-1">
+								<Users size={14} /> Adult
+							</label>
+							<input
+								type="number"
+								min={1}
+								max={3}
+								value={formData.adultCount}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										adultCount: Number(e.target.value),
+									})
+								}
+								className="input w-full"
+							/>
+						</div>
+
+						<div>
+							<label className="label flex items-center gap-1">
+								<Users size={14} /> Child
+							</label>
+							<input
+								type="number"
+								min={0}
+								max={2}
+								value={formData.childCount}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										childCount: Number(e.target.value),
+									})
+								}
+								className="input w-full"
+							/>
+						</div>
+					</div>
+
+					{/* Additional Guests */}
+					{formData.additionalGuests.length > 0 && (
+						<div className="space-y-3">
+							<h3 className="font-bold text-slate-700">Additional Guests</h3>
+
+							{formData.additionalGuests.map((g, i) => (
+								<div
+									key={i}
+									className="bg-slate-50 border border-slate-200 rounded-2xl p-4 grid grid-cols-1 md:grid-cols-2 gap-3"
+								>
+									<input
+										placeholder="Nama Anak"
+										className="input w-full"
+										value={g.name ?? ""}
+										onChange={(e) => {
+											const updated = [...formData.additionalGuests];
+											updated[i] = {
+												...updated[i],
+												name: e.target.value,
+											};
+											setFormData({
+												...formData,
+												additionalGuests: updated,
+											});
+										}}
+									/>
+
+									<input
+										type="date"
+										className="input w-full"
+										value={g.dateOfBirth ?? ""}
+										onChange={(e) => {
+											const updated = [...formData.additionalGuests];
+											updated[i] = {
+												...updated[i],
+												dateOfBirth: e.target.value,
+											};
+											setFormData({
+												...formData,
+												additionalGuests: updated,
+											});
+										}}
+									/>
+								</div>
+							))}
+						</div>
+					)}
+				</div>
+
+				{/* Footer */}
+				<div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50 rounded-b-[32px]">
+					<button
+						onClick={onClose}
+						className="px-5 py-2 rounded-xl border border-slate-300 font-semibold text-slate-600 hover:bg-slate-100 transition"
+					>
 						Batal
 					</button>
 					<button
 						onClick={handleSubmit}
 						disabled={isSubmitting}
-						className="px-4 py-2 bg-green-600 text-white rounded"
+						className="px-6 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold shadow hover:shadow-lg transition disabled:opacity-50"
 					>
 						{isSubmitting ? "Menyimpan..." : "Simpan"}
 					</button>

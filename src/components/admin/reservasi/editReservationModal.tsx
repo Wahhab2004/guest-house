@@ -4,9 +4,19 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Guest, Room } from "@/types/prisma";
 import { EditReservationForm } from "@/types/forms";
-import { PaymentMethod, PaymentStatus, ReservationStatus } from "@/types/prisma";
-
-
+import {
+	PaymentMethod,
+	PaymentStatus,
+	ReservationStatus,
+} from "@/types/prisma";
+import {
+	X,
+	Calendar,
+	Users,
+	BedDouble,
+	CreditCard,
+	UploadCloud,
+} from "lucide-react";
 
 interface ReservationModalProps {
 	isOpen: boolean;
@@ -15,9 +25,26 @@ interface ReservationModalProps {
 	initialData: EditReservationForm;
 }
 
-const STATUS_OPTIONS = ["PENDING", "CONFIRMED", "CANCELLED", "ACTIVE", "CHECKED_OUT"];
-const PAYMENT_STATUS_OPTIONS = ["UNPAID", "PAID", "FAILED"];
-const PAYMENT_METHODS = ["TRANSFER", "CASH", "EWALLET"];
+const STATUS_OPTIONS: ReservationStatus[] = [
+	ReservationStatus.PENDING,
+	ReservationStatus.CONFIRMED,
+	ReservationStatus.CANCELED, // ⚠️ perhatikan: CANCELED (1 L) sesuai Prisma
+	ReservationStatus.ACTIVE,
+	ReservationStatus.CHECKED_OUT,
+];
+
+const PAYMENT_STATUS_OPTIONS: PaymentStatus[] = [
+	PaymentStatus.UNPAID,
+	PaymentStatus.PAID,
+	PaymentStatus.HALF_PAID,
+	PaymentStatus.REFUNDED,
+];
+
+const PAYMENT_METHODS: PaymentMethod[] = [
+	PaymentMethod.TRANSFER,
+	PaymentMethod.CASH,
+	PaymentMethod.E_WALLET, // ⚠️ bukan EWALLET
+];
 
 export default function EditReservationModal({
 	isOpen,
@@ -25,7 +52,7 @@ export default function EditReservationModal({
 	onSave,
 	initialData,
 }: ReservationModalProps) {
-	const [formData, setFormData] = useState(initialData);
+	const [formData, setFormData] = useState<EditReservationForm>(initialData);
 	const [guests, setGuests] = useState<Guest[]>([]);
 	const [rooms, setRooms] = useState<Room[]>([]);
 	const [error, setError] = useState<string | null>(null);
@@ -35,7 +62,7 @@ export default function EditReservationModal({
 
 	const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
-	/* ================= UPDATE FORM DATA WHEN INITIAL DATA CHANGES ================= */
+	/* ================= UPDATE FORM DATA ================= */
 	useEffect(() => {
 		setFormData(initialData);
 	}, [initialData]);
@@ -72,7 +99,6 @@ export default function EditReservationModal({
 		if (!formData.roomId) return setErr("Room wajib dipilih");
 		if (!formData.checkIn || !formData.checkOut)
 			return setErr("Tanggal wajib diisi");
-		
 
 		setError(null);
 		return true;
@@ -104,9 +130,7 @@ export default function EditReservationModal({
 			if (formData.paymentSender)
 				fd.append("paymentSender", formData.paymentSender);
 
-			if (proofFile) {
-				fd.append("proofUrl", proofFile);
-			}
+			if (proofFile) fd.append("proofUrl", proofFile);
 
 			const res = await fetch(`${baseUrl}/reservations/${initialData.id}`, {
 				method: "PUT",
@@ -125,7 +149,7 @@ export default function EditReservationModal({
 
 			onSave(result.data);
 			onClose();
-		} catch (err) {
+		} catch {
 			setError("Terjadi kesalahan server");
 		} finally {
 			setIsSubmitting(false);
@@ -136,158 +160,255 @@ export default function EditReservationModal({
 
 	/* ================= UI ================= */
 	return (
-		<div className="fixed inset-0 z-[101] bg-black/50">
-			<div className="bg-white w-[760px] max-h-[90vh] overflow-y-auto rounded-xl p-6 mx-auto mt-16">
-				<h2 className="text-xl font-semibold mb-4">Edit Reservasi</h2>
-
-				{error && (
-					<p className="bg-red-100 text-red-600 p-2 mb-4 rounded">{error}</p>
-				)}
-
-				{/* Guest */}
-				<select
-					value={formData.guestId}
-					onChange={(e) =>
-						setFormData({ ...formData, guestId: e.target.value })
-					}
-					className="input w-full mb-3"
-				>
-					<option value="">-- Pilih Guest --</option>
-					{guests.map((g) => (
-						<option key={g.id} value={g.id}>
-							{g.name} ({g.email})
-						</option>
-					))}
-				</select>
-
-				{/* Date */}
-				<div className="flex gap-3 mb-3">
-					<input
-						type="date"
-						value={formData.checkIn}
-						onChange={(e) =>
-							setFormData({ ...formData, checkIn: e.target.value })
-						}
-						className="input w-1/2"
-					/>
-					<input
-						type="date"
-						value={formData.checkOut}
-						onChange={(e) =>
-							setFormData({ ...formData, checkOut: e.target.value })
-						}
-						className="input w-1/2"
-					/>
-				</div>
-
-				{/* Room */}
-				<select
-					value={formData.roomId}
-					onChange={(e) => setFormData({ ...formData, roomId: e.target.value })}
-					className="input w-full mb-3"
-				>
-					<option value="">-- Pilih Room --</option>
-					{rooms.map((r) => (
-						<option key={r.id} value={r.id}>
-							{r.name} - Rp{r.price}
-						</option>
-					))}
-				</select>
-
-		
-
-				{/* <p className="text-sm mb-4">
-					Total Guest: <b>{guestTotal}</b>
-				</p> */}
-
-				{/* STATUS */}
-				<div className="grid grid-cols-2 gap-3 mb-4">
-					<select
-						value={formData.status || ""}
-						onChange={(e) =>
-							setFormData({ ...formData, status: e.target.value as ReservationStatus })
-						}
-						className="input"
+		<div className="fixed inset-0 z-[101] bg-black/50 backdrop-blur-sm flex items-center justify-center px-4">
+			<div className="bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-[32px] shadow-2xl animate-in fade-in zoom-in duration-300">
+				{/* Header */}
+				<div className="bg-gradient-to-r from-orange-400 to-amber-500 p-6 rounded-t-[32px] flex items-center justify-between">
+					<div>
+						<h2 className="text-xl font-bold text-white">Edit Reservasi</h2>
+						<p className="text-white/80 text-sm">
+							Perbarui status dan informasi pembayaran tamu
+						</p>
+					</div>
+					<button
+						onClick={onClose}
+						className="p-2 rounded-xl bg-white/20 hover:bg-white/30 text-white transition"
 					>
-						<option value="">-- Status Reservasi --</option>
-						{STATUS_OPTIONS.map((s) => (
-							<option key={s} value={s}>
-								{s}
-							</option>
-						))}
-					</select>
+						<X size={20} />
+					</button>
+				</div>
 
-					<select
-						value={formData.paymentStatus || ""}
-						onChange={(e) =>
-							setFormData({
-								...formData,
-								paymentStatus: e.target.value as PaymentStatus,
-							})
-						}
-						className="input"
+				{/* Body */}
+				<div className="p-6 space-y-6">
+					{error && (
+						<p className="bg-red-100 text-red-600 p-3 rounded-xl font-semibold text-sm">
+							{error}
+						</p>
+					)}
+
+					{/* Guest & Room */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div>
+							<label className="label flex items-center gap-1">
+								<Users size={14} /> Guest
+							</label>
+							<select
+								value={formData.guestId}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										guestId: e.target.value,
+									})
+								}
+								className="input w-full"
+							>
+								<option value="">-- Pilih Guest --</option>
+								{guests.map((g) => (
+									<option key={g.id} value={g.id}>
+										{g.name} ({g.email})
+									</option>
+								))}
+							</select>
+						</div>
+
+						<div>
+							<label className="label flex items-center gap-1">
+								<BedDouble size={14} /> Room
+							</label>
+							<select
+								value={formData.roomId}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										roomId: e.target.value,
+									})
+								}
+								className="input w-full"
+							>
+								<option value="">-- Pilih Room --</option>
+								{rooms.map((r) => (
+									<option key={r.id} value={r.id}>
+										{r.name} - Rp{r.price}
+									</option>
+								))}
+							</select>
+						</div>
+					</div>
+
+					{/* Dates */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div>
+							<label className="label flex items-center gap-1">
+								<Calendar size={14} /> Check-in
+							</label>
+							<input
+								type="date"
+								value={formData.checkIn}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										checkIn: e.target.value,
+									})
+								}
+								className="input w-full"
+							/>
+						</div>
+
+						<div>
+							<label className="label flex items-center gap-1">
+								<Calendar size={14} /> Check-out
+							</label>
+							<input
+								type="date"
+								value={formData.checkOut}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										checkOut: e.target.value,
+									})
+								}
+								className="input w-full"
+							/>
+						</div>
+					</div>
+
+					{/* Status & Payment */}
+					<div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
+						<div className="space-y-1">
+							<h3 className="font-bold text-slate-700 flex items-center gap-2">
+								<CreditCard size={16} /> Status & Pembayaran
+							</h3>
+							<p className="text-sm text-slate-500">
+								Perbarui status reservasi dan konfirmasi pembayaran tamu.
+								Disarankan untuk mengubah <b>Status Pembayaran</b> terlebih
+								dahulu, kemudian aktifkan reservasi jika pembayaran sudah
+								diterima.
+							</p>
+						</div>
+
+						{/* Soft Warning */}
+						{formData.paymentStatus === PaymentStatus.PAID &&
+							formData.status === ReservationStatus.CONFIRMED && (
+								<div className="bg-amber-100 border border-amber-200 text-amber-700 rounded-xl p-3 text-sm font-semibold">
+									Pembayaran sudah diterima, tetapi reservasi belum diaktifkan.
+									Pertimbangkan untuk mengubah status menjadi <b>ACTIVE</b>.
+								</div>
+							)}
+
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div>
+								<label className="label">Status Reservasi</label>
+								<select
+									value={formData.status || ""}
+									onChange={(e) =>
+										setFormData({
+											...formData,
+											status: e.target.value as ReservationStatus,
+										})
+									}
+									className="input w-full"
+								>
+									<option value="">-- Pilih Status Reservasi --</option>
+									{STATUS_OPTIONS.map((s) => (
+										<option key={s} value={s}>
+											{s}
+										</option>
+									))}
+								</select>
+							</div>
+
+							<div>
+								<label className="label">Status Pembayaran</label>
+								<select
+									value={formData.paymentStatus || ""}
+									onChange={(e) =>
+										setFormData({
+											...formData,
+											paymentStatus: e.target.value as PaymentStatus,
+										})
+									}
+									className="input w-full"
+								>
+									<option value="">-- Pilih Status Pembayaran --</option>
+									{PAYMENT_STATUS_OPTIONS.map((s) => (
+										<option key={s} value={s}>
+											{s}
+										</option>
+									))}
+								</select>
+							</div>
+
+							<div>
+								<label className="label">Metode Pembayaran</label>
+								<select
+									value={formData.paymentMethod || ""}
+									onChange={(e) =>
+										setFormData({
+											...formData,
+											paymentMethod: e.target.value as PaymentMethod,
+										})
+									}
+									className="input w-full"
+								>
+									<option value="">-- Pilih Metode Pembayaran --</option>
+									{PAYMENT_METHODS.map((m) => (
+										<option key={m} value={m}>
+											{m}
+										</option>
+									))}
+								</select>
+							</div>
+
+							<div>
+								<label className="label">Pengirim / Nama Pemilik Akun</label>
+								<input
+									placeholder="Contoh: BCA - Andi Saputra"
+									className="input w-full"
+									value={formData.paymentSender || ""}
+									onChange={(e) =>
+										setFormData({
+											...formData,
+											paymentSender: e.target.value,
+										})
+									}
+								/>
+							</div>
+						</div>
+
+						{/* Upload Proof */}
+						<div>
+							<label className="label flex items-center gap-1">
+								<UploadCloud size={14} /> Bukti Pembayaran
+							</label>
+							<p className="text-sm text-slate-500 mb-2">
+								Unggah foto atau screenshot bukti transfer sebagai arsip dan
+								verifikasi.
+							</p>
+							<input
+								type="file"
+								accept="image/*"
+								onChange={(e) => setProofFile(e.target.files?.[0] || null)}
+								className="block w-full text-sm file:mr-4 file:py-2 file:px-4
+			file:rounded-xl file:border-0
+			file:bg-orange-100 file:text-orange-700
+			hover:file:bg-orange-200 transition"
+							/>
+						</div>
+					</div>
+				</div>
+
+				{/* Footer */}
+				<div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50 rounded-b-[32px]">
+					<button
+						onClick={onClose}
+						className="px-5 py-2 rounded-xl border border-slate-300 font-semibold text-slate-600 hover:bg-slate-100 transition"
 					>
-						<option value="">-- Status Pembayaran --</option>
-						{PAYMENT_STATUS_OPTIONS.map((s) => (
-							<option key={s} value={s}>
-								{s}
-							</option>
-						))}
-					</select>
-				</div>
-
-				{/* PAYMENT */}
-				<div className="grid grid-cols-2 gap-3 mb-4">
-					<select
-						value={formData.paymentMethod || ""}
-						onChange={(e) =>
-							setFormData({
-								...formData,
-								paymentMethod: e.target.value as PaymentMethod,
-							})
-						}
-						className="input"
-					>
-						<option value="">-- Metode Pembayaran --</option>
-						{PAYMENT_METHODS.map((m) => (
-							<option key={m} value={m}>
-								{m}
-							</option>
-						))}
-					</select>
-
-					<input
-						placeholder="Pengirim Pembayaran"
-						className="input"
-						value={formData.paymentSender || ""}
-						onChange={(e) =>
-							setFormData({
-								...formData,
-								paymentSender: e.target.value,
-							})
-						}
-					/>
-				</div>
-
-				{/* Upload Bukti */}
-				<div className="mb-4">
-					<label className="block text-sm mb-1">Bukti Pembayaran</label>
-					<input
-						type="file"
-						accept="image/*"
-						onChange={(e) => setProofFile(e.target.files?.[0] || null)}
-					/>
-				</div>
-
-				{/* Action */}
-				<div className="flex justify-end gap-3">
-					<button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">
 						Batal
 					</button>
 					<button
 						onClick={handleSubmit}
 						disabled={isSubmitting}
-						className="px-4 py-2 bg-green-600 text-white rounded"
+						className="px-6 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold shadow hover:shadow-lg transition disabled:opacity-50"
 					>
 						{isSubmitting ? "Menyimpan..." : "Update"}
 					</button>
