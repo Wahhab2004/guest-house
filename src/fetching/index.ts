@@ -25,8 +25,8 @@ export interface Payment {
 // Review
 export interface Review {
 	id: string;
-	idReservation: string;
-	idRoom: string;
+	JPYeservation: string;
+	JPYoom: string;
 	idAccount: string;
 	rating: number;
 	review: string;

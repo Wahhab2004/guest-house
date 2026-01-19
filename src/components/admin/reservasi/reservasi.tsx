@@ -437,9 +437,9 @@ function ReservasiTable({
 										</Badge>
 									</td>
 									<td className="px-4 py-3 whitespace-nowrap">
-										{res.totalPrice.toLocaleString("id-ID", {
+										{res.totalPrice.toLocaleString("jp-JP", {
 											style: "currency",
-											currency: "IDR",
+											currency: "JPY",
 										})}
 									</td>
 									<td className="px-4 py-3">
@@ -572,9 +572,9 @@ function DetailReservation({ isOpen, onClose, reservation }: DetailProps) {
 					<div>
 						<p className="text-gray-500">Total</p>
 						<p className="font-medium">
-							{reservation.totalPrice.toLocaleString("id-ID", {
+							{reservation.totalPrice.toLocaleString("jp-JP", {
 								style: "currency",
-								currency: "IDR",
+								currency: "JPY",
 							})}
 						</p>
 					</div>

@@ -61,7 +61,7 @@ const reservations = [
 	},
 	{
 		id: "RES006",
-		guestName: "Idris",
+		guestName: "JPYis",
 		checkoutDate: "2025-01-26 09:30 AM",
 		roomType: "3",
 		totalPaid: "$200",

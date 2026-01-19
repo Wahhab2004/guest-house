@@ -12,7 +12,7 @@ const ConvertDate = (timestamp: {
     ); // Menambahkan nanodetik
 
     // Menggunakan toLocaleString untuk mendapatkan format tanggal dan waktu yang diinginkan
-    const formattedDate = dateWithNanoseconds.toLocaleString("id-ID", {
+    const formattedDate = dateWithNanoseconds.toLocaleString("jp-JP", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",

@@ -13,7 +13,7 @@ export default function ReservationPage() {
 	const [activeSection, setActiveSection] = useState("");
 	const [reservation, setReservation] = useState<Reservation | null>(null);
 	const searchParams = useSearchParams();
-	const idReservation = searchParams.get("id");
+	const JPYeservation = searchParams.get("id");
 	const [canAccess, setCanAccess] = useState({
 		orderDetails: true, // selalu bisa akses
 		payment: false, // hanya bisa setelah orderDetails lengkap
@@ -22,15 +22,15 @@ export default function ReservationPage() {
 
 	// 1️⃣ Fetch reservation berdasarkan query id
 	useEffect(() => {
-		if (!idReservation) return;
+		if (!JPYeservation) return;
 
 		const getReservationByID = async () => {
-			const data = await fetchReservationById(String(idReservation));
+			const data = await fetchReservationById(String(JPYeservation));
 			setReservation(data);
 		};
 
 		getReservationByID();
-	}, [idReservation]);
+	}, [JPYeservation]);
 
 	// 2️⃣ Set active section berdasarkan status
 	useEffect(() => {
