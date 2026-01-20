@@ -29,13 +29,13 @@ export default function ReservationInsights() {
 	}, []);
 
 	const pending = summary?.byStatus?.PENDING || 0;
-	const confirmed = summary?.byStatus?.CONFIRMED || 0;
+	// const confirmed = summary?.byStatus?.CONFIRMED || 0;
 	const unpaid = summary?.byPayment?.UNPAID || 0;
 	const totalMonth = summary?.totalFiltered || 0;
 	const paidButNotActive = summary?.paidButNotActive || 0;
 
 	return (
-		<div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+		<div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
 			<InsightCard
 				title="Reservasi Bulan Ini"
 				value={loading ? "..." : totalMonth}
@@ -60,13 +60,13 @@ export default function ReservationInsights() {
 				gradient="from-red-50 to-red-100"
 			/>
 
-			<InsightCard
+			{/* <InsightCard
 				title="Sudah Dikonfirmasi"
 				value={loading ? "..." : confirmed}
 				icon={<CheckCircle className="text-green-500" size={28} />}
 				href="/guest-reservation?status=CONFIRMED"
 				gradient="from-green-50 to-green-100"
-			/>
+			/> */}
 
 			<InsightCard
 				title="Sudah Bayar, Belum Aktif"
