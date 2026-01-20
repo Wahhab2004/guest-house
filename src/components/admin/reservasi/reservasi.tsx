@@ -412,7 +412,7 @@ function ReservasiTable({
 }: ReservasiTableProps) {
 	return (
 		<div className="w-full">
-			<h1 className="text-xl font-bold mb-3">Daftar Reservasi</h1>
+			{/* <h1 className="text-xl font-bold mb-3">Daftar Reservasi</h1> */}
 			<div className="border shadow-md rounded-xl bg-white overflow-x-auto">
 				<table className="w-full text-left text-sm">
 					<thead className="bg-amber-500 text-white rounded-t-xl">

@@ -145,6 +145,7 @@ Publik
 3. Dokumentasi kode (opsional) dan pembuatan panduan pengguna.
 4. Persiapan untuk peluncuran aplikasi.
 5. Peluncuran aplikasi dan monitoring awal.
+6. Bug: user bisa login melalui login-admin
 
 1. Menyelesaikan fitur CRUD untuk semua entitas utama (Guest, Reservation, Room, Payment).
 2. Membuat fitur CRUD untuk Guest atau Buku Tamu

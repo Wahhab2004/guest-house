@@ -37,7 +37,8 @@ export default function AdminLoginPage() {
 			}, 1000);
 		} catch (error: unknown) {
 			if (typeof error === "string") {
-				toast.error(error);
+				toast.error("Akun Admin tidak ditemukan.");
+			
 			} else {
 				toast.error("Terjadi kesalahan saat login.");
 			}
