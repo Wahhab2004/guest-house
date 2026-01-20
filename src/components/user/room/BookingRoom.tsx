@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Guest, Room } from "@/fetching";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
+
 
 type Gender = "Male" | "Female" | "Other" | "";
 
@@ -33,6 +34,20 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 	const [loading, setLoading] = useState(false);
 
 	const router = useRouter();
+	const searchParams = useSearchParams();
+
+	// Mengambil checkIn dan CheckOut dari query params jika ada
+	useEffect(() => {
+		const checkInParam = searchParams.get("checkIn");
+		const checkOutParam = searchParams.get("checkOut");
+
+		if (checkInParam) {
+			setCheckIn(checkInParam);
+		}
+		if (checkOutParam) {
+			setCheckOut(checkOutParam);
+		}
+	})
 
 	const handleAnakChange = (
 		index: number,

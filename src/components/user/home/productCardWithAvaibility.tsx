@@ -149,7 +149,15 @@ export default function ProductCardWithAvailability() {
 						className="group w-full bg-white border border-slate-200 rounded-3xl shadow-md
 							hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
 					>
-						<Link href={`/rooms/${room.id}`}>
+						<Link
+							href={{
+								pathname: `/rooms/${room.id}`,
+								query: {
+									checkIn: checkIn.split("T")[0],
+									checkOut: checkOut.split("T")[0],
+								},
+							}}
+						>
 							<div className="relative w-full h-[18rem] overflow-hidden rounded-t-3xl">
 								<Image
 									src={
@@ -197,9 +205,15 @@ export default function ProductCardWithAvailability() {
 								</span>
 
 								<Link
-									href={`/rooms/${room.id}`}
+									href={{
+										pathname: `/rooms/${room.id}`,
+										query: {
+											checkIn: checkIn.split("T")[0],
+											checkOut: checkOut.split("T")[0],
+										},
+									}}
 									className="text-white bg-gradient-to-r from-amber-500 to-amber-600
-										hover:shadow-lg font-bold rounded-2xl text-sm px-5 py-2 transition"
+    hover:shadow-lg font-bold rounded-2xl text-sm px-5 py-2 transition"
 								>
 									Book Room
 								</Link>
