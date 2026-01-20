@@ -52,6 +52,7 @@ const nextConfig: NextConfig = {
 			{
 				protocol: "https",
 				hostname: "be-guesthouse.vercel.app",
+				pathname: "/uploads/**",
 			}
 		],
 	},
