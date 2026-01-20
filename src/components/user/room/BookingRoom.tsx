@@ -37,7 +37,7 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 	const handleAnakChange = (
 		index: number,
 		field: keyof (typeof anakDetails)[0],
-		value: string
+		value: string,
 	) => {
 		const updated = [...anakDetails];
 		updated[index] = {
@@ -78,8 +78,8 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 
 		const validAdditionalGuests = hasChildren
 			? anakDetails.filter(
-					(a) => a.name.trim() !== "" && a.dateOfBirth.trim() !== ""
-			  )
+					(a) => a.name.trim() !== "" && a.dateOfBirth.trim() !== "",
+				)
 			: [];
 
 		// Validasi jumlah dewasa
@@ -160,9 +160,6 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 
 	return (
 		<>
-			{/* Toast container */}
-			<Toaster position="top-center" reverseOrder={false} />
-
 			<form
 				onSubmit={handleSubmit}
 				className="p-6 bg-white shadow-lg rounded-lg space-y-6 max-w-lg mx-auto"
@@ -243,7 +240,6 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 									<option value="">Select Gender</option>
 									<option value="Female">Female</option>
 									<option value="Male">Male</option>
-								
 								</select>
 							</div>
 						))}

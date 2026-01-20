@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { loginAdmin } from "@/store/slices/authSlice";
 import { RootState, AppDispatch } from "@/store";
 
@@ -28,7 +28,7 @@ export default function LoginPage() {
 
 		try {
 			const result = await dispatch(
-				loginAdmin({ username, password })
+				loginAdmin({ username, password }),
 			).unwrap();
 
 			toast.success("Login berhasil!");
@@ -55,9 +55,6 @@ export default function LoginPage() {
 
 	return (
 		<div className="min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-10">
-			{/* Toast container */}
-			<Toaster position="top-center" reverseOrder={false} />
-
 			<div className="w-full max-w-4xl flex flex-col md:flex-row border shadow-xl rounded-lg">
 				{/* Left Section - Form */}
 				<div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white animate-fade-in">
