@@ -1,22 +1,49 @@
 import React from "react";
 
+const BRAND_GRADIENT = "bg-gradient-to-r from-amber-500 to-amber-600";
+
 const FeaturesSection = () => {
 	return (
-		<div className="w-11/12 xl:w-full max-w-7xl mx-auto mt-10 px-4">
-			<div className="text-center">
-				<h1 className="text-[2.5rem] font-semibold">
-					Why Choose Ummu Guest House?
+		<section className="w-11/12 xl:w-full max-w-7xl mx-auto mt-24 px-4">
+			{/* Header */}
+			<div className="text-center max-w-3xl mx-auto mb-16">
+				<span
+					className="inline-block mb-3 px-4 py-1 rounded-full
+					bg-amber-100 text-amber-700 text-sm font-semibold"
+				>
+					Why Choose Us
+				</span>
+
+				<h1 className="text-[2.5rem] font-bold text-slate-800">
+					Why Choose Ummu Ryosuke Guest House?
 				</h1>
-				<p className="text-gray-500">
-					&quot;Your home away from home – where comfort, culture, and convenience meet.&quot;
+
+				<p className="text-slate-500 mt-3 leading-relaxed">
+					Your home away from home — where{" "}
+					<span className="font-semibold text-slate-700">
+						comfort, culture, and convenience
+					</span>{" "}
+					come together for a truly memorable stay.
 				</p>
 			</div>
-			<div className="grid md:grid-cols-2 gap-10 mt-10">
+
+			{/* Grid */}
+			<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
 				{features.map((feature, index) => (
-					<div key={index} className="flex gap-4 items-start">
-						<span className="p-3 rounded-full bg-blue-100">
+					<div
+						key={index}
+						className="group bg-white border border-amber-100
+						rounded-3xl p-6 shadow-md
+						hover:shadow-xl hover:-translate-y-1
+						transition-all duration-300"
+					>
+						{/* Icon */}
+						<div
+							className="w-14 h-14 rounded-2xl flex items-center justify-center
+							bg-amber-100 text-amber-700 mb-5
+							group-hover:bg-amber-200 transition"
+						>
 							<svg
-								className="w-6 h-6 text-blue-600"
 								aria-hidden="true"
 								xmlns="http://www.w3.org/2000/svg"
 								width="24"
@@ -32,15 +59,38 @@ const FeaturesSection = () => {
 									d={feature.iconPath}
 								/>
 							</svg>
-						</span>
-						<div>
-							<h3 className="font-semibold text-xl">{feature.title}</h3>
-							<p className="mt-1 text-gray-500">{feature.description}</p>
 						</div>
+
+						{/* Content */}
+						<h3 className="font-bold text-lg text-slate-800 mb-2">
+							{feature.title}
+						</h3>
+
+						<p className="text-slate-500 text-sm leading-relaxed">
+							{feature.description}
+						</p>
 					</div>
 				))}
 			</div>
-		</div>
+
+			{/* CTA */}
+			<div className="mt-16 text-center">
+				<h3 className="text-xl font-bold text-slate-800 mb-3">
+					Ready to experience comfort like never before?
+				</h3>
+
+				<a
+					href="#rooms"
+					className={`inline-flex items-center justify-center
+					px-8 py-3 rounded-2xl
+					${BRAND_GRADIENT}
+					text-white font-bold
+					hover:shadow-xl transition`}
+				>
+					Explore Our Rooms
+				</a>
+			</div>
+		</section>
 	);
 };
 
@@ -84,8 +134,7 @@ const features = [
 		title: "Family-Friendly Environment",
 		description:
 			"Kids under 5 stay free, and children 5–10 years old get 50% off – making it easier for families to travel together.",
-		iconPath:
-			"M12 6.5v11m-5.5-5.5h11",
+		iconPath: "M12 6.5v11m-5.5-5.5h11",
 	},
 ];
 

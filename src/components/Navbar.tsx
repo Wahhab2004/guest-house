@@ -1,29 +1,73 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
-import "./styles/style.css";
 import { Guest } from "@/fetching";
+import Image from "next/image";
+import { ChevronDown, Menu, X, User } from "lucide-react";
+
+const BRAND_GRADIENT = "bg-gradient-to-r from-amber-500 to-amber-600";
 
 const Navbar = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [user, setUser] = useState<Guest | null>(null);
 	const [dropdownOpen, setDropdownOpen] = useState(false);
+	const dropdownRef = useRef<HTMLDivElement | null>(null);
+	const [hidden, setHidden] = useState(false);
+	const lastScrollY = useRef(0);
 
 	const pathname = usePathname();
 
-	const toggleMenu = () => setIsOpen(!isOpen);
-	const toggleDropdown = () => setDropdownOpen((prev) => !prev);
+	const toggleMenu = () => setIsOpen((p) => !p);
+	const toggleDropdown = () => setDropdownOpen((p) => !p);
 
 	const isActive = (path: string) => pathname === path;
 
 	useEffect(() => {
+		const handleScroll = () => {
+			const currentScrollY = window.scrollY;
+
+			// Always show when at top
+			if (currentScrollY < 10) {
+				setHidden(false);
+				lastScrollY.current = currentScrollY;
+				return;
+			}
+
+			// Scrolling down → hide
+			if (currentScrollY > lastScrollY.current) {
+				setHidden(true);
+			} else {
+				// Scrolling up → show
+				setHidden(false);
+			}
+
+			lastScrollY.current = currentScrollY;
+		};
+
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
+
+	useEffect(() => {
 		const storedUser = Cookies.get("user");
-		if (storedUser) {
-			setUser(JSON.parse(storedUser));
-		}
+		if (storedUser) setUser(JSON.parse(storedUser));
+	}, []);
+
+	// Close dropdown if click outside
+	useEffect(() => {
+		const handler = (e: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(e.target as Node)
+			) {
+				setDropdownOpen(false);
+			}
+		};
+		document.addEventListener("mousedown", handler);
+		return () => document.removeEventListener("mousedown", handler);
 	}, []);
 
 	const handleLogout = () => {
@@ -34,164 +78,152 @@ const Navbar = () => {
 	};
 
 	return (
-		<nav className="fixed top-0 left-0 right-0 z-50 w-full shadow">
-			<div className="flex items-center justify-between py-4 px-6 shadow-lg bg-white/50 text-black backdrop-blur-md">
+		<nav
+			className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300
+	${hidden ? "-translate-y-full" : "translate-y-0"}`}
+		>
+			<div
+				className="mx-auto flex items-center justify-between px-6 md:px-10 lg:px-20 py-3
+				bg-white shadow-lg border-b border-amber-100"
+			>
 				{/* Logo */}
-				<Link href="/">
-					<p className="text-xl font-bold">Guest House Ryosuke</p>
+				<Link href="/" className="flex items-center gap-2">
+					<Image
+						src="/images/ummu_logo_1.png"
+						alt="Logo"
+						width={120}
+						height={50}
+						className="object-contain"
+					/>
 				</Link>
 
-				{/* Mobile Menu Button */}
+				{/* Mobile Button */}
 				<button
-					className="md:hidden text-white focus:outline-none"
+					className="md:hidden p-2 rounded-xl border border-amber-200
+					text-amber-700 hover:bg-amber-50 transition"
 					onClick={toggleMenu}
 				>
-					<svg
-						className="w-6 h-6"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M4 6h16M4 12h16m-7 6h7"
-						/>
-					</svg>
+					{isOpen ? <X size={20} /> : <Menu size={20} />}
 				</button>
 
-				{/* Navigation Menu */}
+				{/* Menu */}
 				<ul
-					className={`md:flex md:items-center md:justify-between absolute md:relative bg-black/40 md:bg-transparent transition-all duration-500 ease-in-out  text-xs md:text-sm lg:text-base w-full md:w-auto ${
-						isOpen ? "top-[3.8rem] left-0 right-0 md:top-0" : "hidden md:flex"
-					}`}
+					className={`md:flex md:items-center gap-2 absolute md:static top-full left-0 w-full md:w-auto
+					bg-white md:bg-transparent
+					border-b md:border-0 border-amber-100 md:shadow-none shadow-xl
+					transition-all duration-300 ease-in-out
+					${isOpen ? "block" : "hidden md:flex"}`}
 				>
-					<li>
-						<Link href="/">
-							<p
-								className={`py-2 px-4 hover:scale-x-105 ${
-									isActive("/") ? "rounded-lg border border-2" : ""
-								}`}
-							>
-								Home
-							</p>
-						</Link>
-					</li>
+					<NavItem href="/" active={isActive("/")}>
+						Home
+					</NavItem>
 
-					<li>
-						<Link href="/rooms">
-							<p
-								className={`py-2 px-4 hover:scale-x-105 ${
-									isActive("/rooms") ? "rounded-lg border border-2" : ""
-								}`}
-							>
-								Rooms
-							</p>
-						</Link>
-					</li>
+					<NavItem href="#rooms" active={false}>
+						Rooms
+					</NavItem>
 
-					<li>
-						<Link href="/my-reservations">
-							<p
-								className={`py-2 px-4 hover:scale-x-105 ${
-									isActive("/my-reservations")
-										? "rounded-lg border border-2"
-										: ""
-								}`}
-							>
-								My Reservations
-							</p>
-						</Link>
-					</li>
+					{/* 🔒 Only show if logged in */}
+					{user && (
+						<NavItem
+							href="/my-reservations"
+							active={isActive("/my-reservations")}
+						>
+							My Reservations
+						</NavItem>
+					)}
 
-					{/* Mobile Buttons */}
-					{user ? (
-						<li className="md:hidden mt-2 px-4">
-							<div className="flex items-center justify-between rounded-xl  py-3 shadow-md">
-								<span className="font-semibold text-base italic ">
-									{user.name}
-								</span>
+					{/* Mobile Auth */}
+					{!user && (
+						<div className="md:hidden px-4 py-3 space-y-2">
+							<Link href="/register">
+								<button
+									className="w-full rounded-xl border border-amber-400
+									text-amber-600 font-bold py-2 hover:bg-amber-50 transition"
+								>
+									Sign Up
+								</button>
+							</Link>
+							<Link href="/login">
+								<button
+									className={`w-full rounded-xl ${BRAND_GRADIENT}
+									text-white font-bold py-2 hover:shadow-lg transition`}
+								>
+									Login
+								</button>
+							</Link>
+						</div>
+					)}
+
+					{/* Mobile User */}
+					{user && (
+						<div className="md:hidden px-4 py-3 border-t border-amber-100">
+							<div className="flex items-center justify-between">
+								<div className="flex items-center gap-2 text-amber-700">
+									<User size={16} />
+									<span className="font-semibold">{user.name}</span>
+								</div>
 								<button
 									onClick={handleLogout}
-									className="text-sm px-3 py-1 rounded-full bg-red-100 hover:bg-red-200 text-red-600 font-medium transition duration-150"
+									className="text-sm px-3 py-1 rounded-lg
+									bg-red-100 text-red-600 hover:bg-red-200 transition"
 								>
 									Logout
 								</button>
 							</div>
-						</li>
-					) : (
-						<>
-							<li className="md:hidden mt-2">
-								<Link href="/register">
-									<button className="w-full border-2 border-white text-white font-bold rounded-full py-2 hover:bg-white hover:text-black">
-										Sign Up
-									</button>
-								</Link>
-							</li>
-
-							<li className="md:hidden mt-2">
-								<Link href="/login">
-									<button className="w-full bg-white text-black font-bold rounded-full py-2 hover:bg-transparent hover:border-2 hover:text-white">
-										Login
-									</button>
-								</Link>
-							</li>
-						</>
+						</div>
 					)}
 				</ul>
 
-				{/* Desktop Right Section */}
-				<div className="hidden md:flex gap-2 text-xs md:text-sm items-center relative">
-					{user ? (
-						<div className="relative">
+				{/* Desktop Right */}
+				<div className="hidden md:flex items-center gap-3">
+					{!user ? (
+						<>
+							<Link href="/register">
+								<button
+									className="px-5 py-2 rounded-xl border border-amber-400
+									text-amber-600 font-bold hover:bg-amber-50 transition"
+								>
+									Sign Up
+								</button>
+							</Link>
+							<Link href="/login">
+								<button
+									className={`px-5 py-2 rounded-xl ${BRAND_GRADIENT}
+									text-white font-bold hover:shadow-lg transition`}
+								>
+									Login
+								</button>
+							</Link>
+						</>
+					) : (
+						<div className="relative" ref={dropdownRef}>
 							<button
 								onClick={toggleDropdown}
-								className="flex items-center gap-2 text-white font-semibold"
+								className="flex items-center gap-2 px-4 py-2
+								rounded-xl bg-amber-50 hover:bg-amber-100 transition
+								font-semibold text-amber-700 border border-amber-200"
 							>
+								<User size={16} />
 								<span>{user.name}</span>
-								<svg
-									className="w-4 h-4"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="2"
-										d="M19 9l-7 7-7-7"
-									/>
-								</svg>
+								<ChevronDown size={14} />
 							</button>
 
 							{dropdownOpen && (
-								<div className="absolute right-0 mt-2 bg-white text-black rounded shadow w-40">
+								<div
+									className="absolute right-0 mt-2 w-44
+									bg-white rounded-xl shadow-lg border border-amber-200
+									overflow-hidden"
+								>
 									<button
 										onClick={handleLogout}
-										className="w-full text-left px-4 py-2 hover:bg-gray-100"
+										className="w-full text-left px-4 py-2
+										text-sm hover:bg-red-50 text-red-600 font-semibold"
 									>
 										Logout
 									</button>
 								</div>
 							)}
 						</div>
-					) : (
-						<>
-							<Link href="/register">
-								<button className="font-bold border-2 text-white border-white rounded-full py-2 w-[150px] hover:bg-white hover:text-black">
-									Sign Up
-								</button>
-							</Link>
-
-							<Link href="/login">
-								<button className="bg-white text-black font-bold rounded-full py-2 w-[150px] hover:border hover:bg-transparent hover:border-2 hover:text-white">
-									Login
-								</button>
-							</Link>
-						</>
 					)}
 				</div>
 			</div>
@@ -200,3 +232,31 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+/* ================= UI PARTS ================= */
+function NavItem({
+	href,
+	active,
+	children,
+}: {
+	href: string;
+	active: boolean;
+	children: React.ReactNode;
+}) {
+	return (
+		<li>
+			<Link href={href}>
+				<span
+					className={`block px-4 py-2 rounded-xl font-semibold transition
+					${
+						active
+							? "bg-amber-100 text-amber-700 border border-amber-200 shadow-sm"
+							: "text-slate-700 hover:bg-amber-50 hover:text-amber-700"
+					}`}
+				>
+					{children}
+				</span>
+			</Link>
+		</li>
+	);
+}
