@@ -43,6 +43,16 @@ const nextConfig: NextConfig = {
 				protocol: "https",
 				hostname: "content.fun-japan.jp",
 			},
+			{
+				protocol: "http",
+				hostname: "localhost",
+				port: "5000",
+				pathname: "/uploads/**",
+			},
+			{
+				protocol: "https",
+				hostname: "be-guesthouse.vercel.app",
+			}
 		],
 	},
 };

@@ -240,7 +240,7 @@ export const fetchRoomById = async (id: string): Promise<Room | null> => {
 
 export const updateRoom = async (
 	id: string,
-	payload: Partial<Room>,
+	data: FormData,
 ): Promise<Room | null> => {
 	try {
 		const token = Cookies.get("token");
@@ -252,7 +252,7 @@ export const updateRoom = async (
 				"Content-Type": "application/json",
 				Authorization: token ? `Bearer ${token}` : "",
 			},
-			body: JSON.stringify(payload),
+			body: data,
 			cache: "no-store",
 		});
 

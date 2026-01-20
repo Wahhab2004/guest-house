@@ -146,6 +146,7 @@ Publik
 4. Persiapan untuk peluncuran aplikasi.
 5. Peluncuran aplikasi dan monitoring awal.
 6. Bug: user bisa login melalui login-admin
+7. Bug: Data tetap nempel saat keluar dari Edit. Dia jadi harus di refresh dulu.
 
 1. Menyelesaikan fitur CRUD untuk semua entitas utama (Guest, Reservation, Room, Payment).
 2. Membuat fitur CRUD untuk Guest atau Buku Tamu

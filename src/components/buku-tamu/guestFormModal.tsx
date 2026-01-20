@@ -347,7 +347,7 @@ function Input({
 			/>
 
 			{error && (
-				<p className="text-xs text-red-500 mt-1 animate-pulse">{error}</p>
+				<p className="text-xs text-red-500 mt-1">{error}</p>
 			)}
 		</div>
 	);

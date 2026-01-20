@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import RoomFormModal from "@/components/admin/room/roomFormModal";
 import { createRoom, updateRoom, deleteRoom } from "@/lib/room";
+import { getProofUrl } from "@/components/admin/reservasi/reservasi";
 
 export default function Rooms() {
 	const [rooms, setRooms] = useState<Room[]>([]);
@@ -37,7 +38,7 @@ export default function Rooms() {
 					if (selectedRoom) {
 						const res = await updateRoom(selectedRoom.id, data);
 						setRooms((prev) =>
-							prev.map((r) => (r.id === selectedRoom.id ? res.data : r))
+							prev.map((r) => (r.id === selectedRoom.id ? res.data : r)),
 						);
 					} else {
 						const res = await createRoom(data);
@@ -95,12 +96,10 @@ export default function Rooms() {
 											{/* IMAGE */}
 											<td className="px-6 py-4">
 												<div className="relative w-24 h-16 rounded-xl overflow-hidden border border-stone-200 bg-stone-100">
-													<Image
-														src={room.photoUrl}
+													<img
+														src={getProofUrl(room.photoUrl) || "/no-image.png"}
 														alt={room.name}
-														fill
-														className="object-cover"
-														sizes="96px"
+														className="object-cover object-center w-full h-full"
 													/>
 												</div>
 											</td>
@@ -151,8 +150,9 @@ export default function Rooms() {
 														onClick={async () => {
 															if (!confirm("Hapus kamar ini?")) return;
 															await deleteRoom(room.id);
+															
 															setRooms((prev) =>
-																prev.filter((r) => r.id !== room.id)
+																prev.filter((r) => r.id !== room.id),
 															);
 														}}
 														className="px-3 py-1 rounded-lg bg-red-100 text-red-600"

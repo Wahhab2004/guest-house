@@ -513,7 +513,7 @@ function ReservasiTable({
 }
 
 /* ================= DETAIL ================= */
-const getProofUrl = (url?: string | null) => {
+export const getProofUrl = (url?: string | null) => {
 	if (!url) return null;
 
 	// Kalau sudah full URL, pakai langsung
@@ -521,6 +521,7 @@ const getProofUrl = (url?: string | null) => {
 
 	// Kalau masih relative, gabungkan dengan API base URL
 	const base = "http://localhost:5000";
+	// const base = "https://be-guesthouse.vercel.app";
 	return `${base}${url}`;
 };
 

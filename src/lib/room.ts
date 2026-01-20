@@ -1,33 +1,31 @@
 import Cookies from "js-cookie";
-import { Room } from "@/fetching";
+import toast from "react-hot-toast";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 /* CREATE */
-export async function createRoom(payload: Omit<Room, "id">) {
+export async function createRoom(data: FormData) {
 	const token = Cookies.get("token");
 	const res = await fetch(`${baseUrl}/rooms`, {
 		method: "POST",
 		headers: {
-			"Content-Type": "application/json",
 			Authorization: `Bearer ${token}`,
 		},
-		body: JSON.stringify(payload),
+		body: data,
 	});
 	if (!res.ok) throw new Error("Gagal menambah kamar");
 	return res.json();
 }
 
 /* UPDATE */
-export async function updateRoom(id: string, payload: Partial<Room>) {
+export async function updateRoom(id: string, data: FormData) {
 	const token = Cookies.get("token");
 	const res = await fetch(`${baseUrl}/rooms/${id}`, {
 		method: "PUT",
 		headers: {
-			"Content-Type": "application/json",
 			Authorization: `Bearer ${token}`,
 		},
-		body: JSON.stringify(payload),
+		body: data,
 	});
 	if (!res.ok) throw new Error("Gagal update kamar");
 	return res.json();
@@ -42,6 +40,11 @@ export async function deleteRoom(id: string) {
 			Authorization: `Bearer ${token}`,
 		},
 	});
-	if (!res.ok) throw new Error("Gagal hapus kamar");
+
+	const result = await res.json();
+	if (!res.ok) {
+		toast.error(result.message || "Gagal hapus kamar");
+		throw new Error("Gagal hapus kamar");
+	}
 	return true;
 }
