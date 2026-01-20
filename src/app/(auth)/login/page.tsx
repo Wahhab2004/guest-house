@@ -8,6 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { loginAdmin } from "@/store/slices/authSlice";
 import { RootState, AppDispatch } from "@/store";
+import { Eye, EyeOff, User, Lock } from "lucide-react";
+
+const BRAND_GRADIENT = "bg-gradient-to-r from-amber-500 to-amber-600";
 
 export default function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false);
@@ -27,14 +30,11 @@ export default function LoginPage() {
 		}
 
 		try {
-			const result = await dispatch(
-				loginAdmin({ username, password }),
-			).unwrap();
-
+			await dispatch(loginAdmin({ username, password })).unwrap();
 			toast.success("Login berhasil!");
 			setTimeout(() => {
 				router.push("/");
-			}, 1500);
+			}, 1200);
 		} catch (error: unknown) {
 			if (typeof error === "string") {
 				toast.error(error);
@@ -44,141 +44,172 @@ export default function LoginPage() {
 		}
 	};
 
-	const togglePasswordVisibility = () => {
-		setShowPassword((prev) => !prev);
-	};
-
-	// Tambahkan fungsi untuk handle click login sosial
-	const handleSocialLogin = (platform: string) => {
-		toast.error(`Sorry, login via ${platform} is not available yet.`);
-	};
-
 	return (
-		<div className="min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-10">
-			<div className="w-full max-w-4xl flex flex-col md:flex-row border shadow-xl rounded-lg">
-				{/* Left Section - Form */}
-				<div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white animate-fade-in">
-					<div className="w-full max-w-md">
-						<h1 className="text-3xl font-bold mb-2">Login</h1>
-						<p className="text-gray-500 mb-6">Welcome to Ryosuke Guesthouse</p>
+		<div className="relative min-h-screen flex items-center justify-center">
+			{/* Background Image */}
+			<Image
+				src="/images/house.jpg"
+				alt="Guest House Background"
+				fill
+				priority
+				className="object-cover"
+			/>
 
-						<form onSubmit={handleLogin} className="space-y-4">
-							<label className="block text-sm font-medium mb-1">Username</label>
-							<div className="mb-4 flex items-center border border-gray-300 rounded-full px-3 transition duration-150 focus-within:ring-2 focus-within:ring-indigo-400">
+			{/* Overlay */}
+			<div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+
+			{/* Login Card */}
+			<div className="relative z-10 w-full max-w-md mx-4">
+				<div
+					className="bg-white/90 backdrop-blur-xl
+					rounded-3xl shadow-2xl border border-amber-100
+					p-8 md:p-10"
+				>
+					{/* Logo */}
+					<div className="flex justify-center mb-6">
+						<Image
+							src="/images/ummu_logo_1.png"
+							alt="Ummu Guest House"
+							width={140}
+							height={60}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Header */}
+					<h1 className="text-3xl font-bold text-center text-slate-800 mb-1">
+						Welcome Back
+					</h1>
+					<p className="text-center text-slate-500 mb-8">
+						Login to manage your reservations
+					</p>
+
+					<form onSubmit={handleLogin} className="space-y-5">
+						{/* Username */}
+						<div>
+							<label className="block text-sm font-semibold text-slate-700 mb-1">
+								Username
+							</label>
+							<div
+								className="flex items-center gap-2
+								border border-slate-200 rounded-2xl px-4 py-2
+								focus-within:ring-2 focus-within:ring-amber-400 transition"
+							>
+								<User size={18} className="text-amber-600" />
 								<input
-									type="username"
+									type="text"
 									value={username}
 									onChange={(e) => setUsername(e.target.value)}
 									placeholder="whb123"
-									className="w-full py-2 outline-none bg-transparent"
+									className="w-full outline-none bg-transparent text-slate-700"
 									disabled={loading}
 								/>
-								<Image
-									width={25}
-									height={25}
-									src="/svg/person.svg"
-									alt="Google"
-									className="h-5 w-5"
-								/>
 							</div>
+						</div>
 
-							<label className="block text-sm font-medium mb-1">Password</label>
-							<div className="mb-4 flex items-center border border-gray-300 rounded-full px-3 transition duration-150 focus-within:ring-2 focus-within:ring-indigo-400">
+						{/* Password */}
+						<div>
+							<label className="block text-sm font-semibold text-slate-700 mb-1">
+								Password
+							</label>
+							<div
+								className="flex items-center gap-2
+								border border-slate-200 rounded-2xl px-4 py-2
+								focus-within:ring-2 focus-within:ring-amber-400 transition"
+							>
+								<Lock size={18} className="text-amber-600" />
 								<input
 									type={showPassword ? "text" : "password"}
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 									placeholder="********"
-									className="w-full py-2 outline-none bg-transparent"
+									className="w-full outline-none bg-transparent text-slate-700"
 									disabled={loading}
 								/>
 								<button
 									type="button"
-									onClick={togglePasswordVisibility}
-									className="ml-2 focus:outline-none"
-									disabled={loading}
+									onClick={() => setShowPassword((p) => !p)}
+									className="text-amber-600 hover:text-amber-700 transition"
 								>
-									<Image
-										width={25}
-										height={25}
-										src={showPassword ? "/images/show.png" : "/images/hide.png"}
-										alt="toggle visibility"
-										className="w-5 h-5"
-									/>
+									{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
 								</button>
 							</div>
-
-							<div className="text-right text-sm text-blue-600 mb-4 cursor-pointer hover:underline">
-								<Link href="/reset-password">Forgot password?</Link>
-							</div>
-
-							<button
-								type="submit"
-								disabled={loading}
-								className="w-full py-2 bg-indigo-600 text-white rounded-md font-semibold mb-4 transition-colors duration-200 hover:bg-indigo-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-							>
-								{loading ? "Loading..." : "Login"}
-							</button>
-						</form>
-
-						<div className="flex items-center justify-center mb-4 mt-4">
-							<span className="border-b w-1/5 lg:w-1/4"></span>
-							<span className="text-xs text-center text-gray-500 mx-2">OR</span>
-							<span className="border-b w-1/5 lg:w-1/4"></span>
 						</div>
 
-						<div className="flex space-x-4 mb-4">
-							<button
-								type="button"
-								onClick={() => handleSocialLogin("Google")}
-								className="w-1/2 flex items-center justify-center py-2 bg-gray-100 rounded-full transition-all duration-200 hover:bg-gray-100 active:scale-95"
-							>
-								<Image
-									width={25}
-									height={25}
-									src="https://www.svgrepo.com/show/475656/google-color.svg"
-									alt="Google"
-									className="h-5 w-5 mr-2"
-								/>
-								Google
-							</button>
-
-							<button
-								type="button"
-								onClick={() => handleSocialLogin("Facebook")}
-								className="w-1/2 flex items-center justify-center py-2 bg-gray-100 rounded-full transition-all duration-200 hover:bg-gray-100 active:scale-95"
-							>
-								<Image
-									width={25}
-									height={25}
-									src="https://www.svgrepo.com/show/452196/facebook-1.svg"
-									alt="Facebook"
-									className="h-5 w-5 mr-2"
-								/>
-								Facebook
-							</button>
+						{/* Forgot */}
+						<div className="text-right text-sm">
+							<h3>Forgot password?</h3>
+							<p className="italic text-[10px] text-amber-600">Please, call Admin.</p>
 						</div>
 
-						<div className="text-center text-sm">
-							Don’t have an account?{" "}
-							<Link href="/register">
-								<span className="text-blue-600 cursor-pointer hover:underline">
-									Sign Up
-								</span>
-							</Link>
-						</div>
+						{/* Button */}
+						<button
+							type="submit"
+							disabled={loading}
+							className={`w-full py-3 rounded-2xl
+							${BRAND_GRADIENT}
+							text-white font-bold
+							hover:shadow-xl transition
+							disabled:opacity-50`}
+						>
+							{loading ? "Logging in..." : "Login"}
+						</button>
+					</form>
+
+					{/* Divider */}
+					<div className="flex items-center justify-center my-6">
+						<span className="border-b w-1/4"></span>
+						<span className="text-xs text-slate-400 mx-3">OR</span>
+						<span className="border-b w-1/4"></span>
 					</div>
-				</div>
 
-				{/* Right Section - Image */}
-				<div className="w-full md:w-[45%] hidden md:block">
-					<Image
-						width={1000}
-						height={1000}
-						src="/images/house.jpg"
-						alt="Login Visual"
-						className="w-full h-full object-cover animate-slide-in-left rounded-r-lg"
-					/>
+					{/* Social */}
+					<div className="flex gap-3">
+						<button
+							type="button"
+							onClick={() => toast.error("Google login is not available yet.")}
+							className="w-1/2 flex items-center justify-center gap-2
+							py-2 rounded-2xl border border-slate-200
+							hover:bg-slate-100 transition"
+						>
+							<Image
+								width={20}
+								height={20}
+								src="https://www.svgrepo.com/show/475656/google-color.svg"
+								alt="Google"
+							/>
+							Google
+						</button>
+
+						<button
+							type="button"
+							onClick={() =>
+								toast.error("Facebook login is not available yet.")
+							}
+							className="w-1/2 flex items-center justify-center gap-2
+							py-2 rounded-2xl border border-slate-200
+							hover:bg-slate-100 transition"
+						>
+							<Image
+								width={20}
+								height={20}
+								src="https://www.svgrepo.com/show/452196/facebook-1.svg"
+								alt="Facebook"
+							/>
+							Facebook
+						</button>
+					</div>
+
+					{/* Footer */}
+					<p className="text-center text-sm text-slate-500 mt-6">
+						Don’t have an account?{" "}
+						<Link
+							href="/register"
+							className="text-amber-600 font-semibold hover:underline"
+						>
+							Sign Up
+						</Link>
+					</p>
 				</div>
 			</div>
 		</div>
