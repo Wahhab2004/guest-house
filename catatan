@@ -136,7 +136,7 @@ Publik
 12. Grand total belum tepat
 13. Profil masih dummy
 14. Di my reservation bagian past booking harusnya kalua unpaid ga bisa masuk. Mestinya di active atau cancel saja
-
+15. Hapus nomor bank di pembayaran
 
 
 ## To Do List 19 - 25 Januari 2026
@@ -149,3 +149,15 @@ Publik
 1. Menyelesaikan fitur CRUD untuk semua entitas utama (Guest, Reservation, Room, Payment).
 2. Membuat fitur CRUD untuk Guest atau Buku Tamu
 
+
+Completed 19 Januari
+1. Menyelesaikan fitur CRUD untuk entitas Reservation.
+2. Membuat fitur CRUD untuk entitas Room.
+3. Menambakan summary reservation di dashboard
+4. Konsistensi tampilan untuk CURD reservasi.
+
+
+Compaleted 20 Januari
+1. Menyelaraskan tampilkan detail reservasi di reservasi.
+2. Membuat konfirmasi sebelum menghapus reservasi.
+3. Menambahkan notifikasi toast untuk aksi sukses dan error di reservasi.

@@ -59,6 +59,7 @@ export default function EditReservationModal({
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [token, setToken] = useState<string | null>(null);
 	const [proofFile, setProofFile] = useState<File | null>(null);
+	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
 	const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
@@ -92,6 +93,18 @@ export default function EditReservationModal({
 				.then((res) => setRooms(res.data || []));
 		}
 	}, [isOpen, formData.checkIn, formData.checkOut]);
+
+	useEffect(() => {
+		if (
+			formData.paymentStatus === PaymentStatus.PAID &&
+			(!formData.status || formData.status === ReservationStatus.CONFIRMED)
+		) {
+			setFormData((prev) => ({
+				...prev,
+				status: ReservationStatus.ACTIVE,
+			}));
+		}
+	}, [formData.paymentStatus]);
 
 	/* ================= VALIDATION ================= */
 	const validate = () => {
@@ -387,12 +400,43 @@ export default function EditReservationModal({
 							<input
 								type="file"
 								accept="image/*"
-								onChange={(e) => setProofFile(e.target.files?.[0] || null)}
+								onChange={(e) => {
+									const file = e.target.files?.[0] || null;
+									setProofFile(file);
+
+									if (file) {
+										const url = URL.createObjectURL(file);
+										setPreviewUrl(url);
+									} else {
+										setPreviewUrl(null);
+									}
+								}}
 								className="block w-full text-sm file:mr-4 file:py-2 file:px-4
-			file:rounded-xl file:border-0
-			file:bg-orange-100 file:text-orange-700
-			hover:file:bg-orange-200 transition"
+	file:rounded-xl file:border-0
+	file:bg-orange-100 file:text-orange-700
+	hover:file:bg-orange-200 transition"
 							/>
+
+							{previewUrl && (
+								<div className="mt-3 relative w-40 h-40 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+									<img
+										src={previewUrl}
+										alt="Preview Bukti Pembayaran"
+										className="w-full h-full object-cover"
+									/>
+									<button
+										type="button"
+										onClick={() => {
+											setProofFile(null);
+											setPreviewUrl(null);
+										}}
+										className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black/80 transition"
+										title="Hapus gambar"
+									>
+										×
+									</button>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>

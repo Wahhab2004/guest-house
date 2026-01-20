@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Reservation } from "@/fetching";
 import formatDateIndo from "../../format-tanggal/formatTanggal";
-import Cookies from "js-cookie";
 import PaginationControl from "@/components/admin/reservasi/PaginationControl";
 import Badge from "@/components/Badge";
 import ActionButton from "@/components/ActionButton";
@@ -15,6 +14,16 @@ import {
 	ReservationStatus,
 } from "@/types/prisma";
 import { EditReservationForm } from "@/types/forms";
+import {
+	X,
+	Image as ImageIcon,
+	CreditCard,
+	User,
+	BedDouble,
+	Calendar,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 /* ================= TYPES ================= */
 interface FilterState {
@@ -157,25 +166,45 @@ export default function Reservasi() {
 		setIsDetailOpen(true);
 	};
 
-	const handleDelete = async (id: string) => {
+	const handleDelete = async (reservation: { id: string; status: string }) => {
 		try {
+			// 🚫 Block kalau status ACTIVE
+			if (reservation.status === "ACTIVE") {
+				toast.error(
+					"Reservasi aktif tidak bisa dihapus. Silakan check-out dulu.",
+				);
+				return;
+			}
+
+			// ❓ Konfirmasi user
+			const confirmed = window.confirm(
+				"Apakah kamu yakin ingin menghapus reservasi ini?\nTindakan ini tidak bisa dibatalkan.",
+			);
+
+			if (!confirmed) return;
+
 			const token = Cookies.get("token");
 
 			const res = await fetch(
-				`${process.env.NEXT_PUBLIC_API_BASE_URL}/reservations/${id}`,
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/reservations/${reservation.id}`,
 				{
 					method: "DELETE",
 					headers: token ? { Authorization: `Bearer ${token}` } : {},
 				},
 			);
 
-			if (!res.ok) throw new Error("Gagal menghapus reservasi");
+			if (!res.ok) {
+				const result = await res.json();
+				throw new Error(result.message || "Gagal menghapus reservasi");
+			}
 
-			// Jika berhasil, update state lokal
-			setReservations((prev) => prev.filter((r) => r.id !== id));
-		} catch (err) {
+			// ✅ Update state lokal
+			setReservations((prev) => prev.filter((r) => r.id !== reservation.id));
+
+			toast.success("Reservasi berhasil dihapus");
+		} catch (err: any) {
 			console.error("Delete reservation failed:", err);
-			alert("Gagal menghapus reservasi");
+			toast.error(err.message || "Gagal menghapus reservasi");
 		}
 	};
 
@@ -371,7 +400,7 @@ export default function Reservasi() {
 interface ReservasiTableProps {
 	reservations: Reservation[];
 	onEdit: (id: string) => void;
-	onDelete: (id: string) => void;
+	onDelete: (reservation: { id: string; status: string }) => void;
 	onDetail: (id: string) => void;
 }
 
@@ -459,7 +488,7 @@ function ReservasiTable({
 											<ActionButton
 												color="red"
 												label=""
-												onClick={() => onDelete(res.id)}
+												onClick={() => onDelete({ id: res.id, status: res.status })}
 												icon="🗑️"
 											/>
 										</div>
@@ -484,111 +513,212 @@ function ReservasiTable({
 }
 
 /* ================= DETAIL ================= */
+const getProofUrl = (url?: string | null) => {
+	if (!url) return null;
+
+	// Kalau sudah full URL, pakai langsung
+	if (url.startsWith("http")) return url;
+
+	// Kalau masih relative, gabungkan dengan API base URL
+	const base = "http://localhost:5000";
+	return `${base}${url}`;
+};
+
 interface DetailProps {
 	isOpen: boolean;
 	onClose: () => void;
-	reservation: Reservation | null;
+	reservation: any;
 }
 
 function DetailReservation({ isOpen, onClose, reservation }: DetailProps) {
+	const [showImageModal, setShowImageModal] = useState(false);
+
 	if (!isOpen || !reservation) return null;
 
+	const proofUrl = getProofUrl(reservation.payment?.proofUrl);
+
 	return (
-		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[101]">
-			<div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-2xl space-y-6 overflow-y-auto max-h-[90vh]">
-				<h2 className="text-2xl font-semibold text-center text-gray-800 border-b pb-3">
-					Detail Reservasi
-				</h2>
-
-				<div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
-					<div>
-						<p className="text-gray-500">Nama Tamu</p>
-						<p className="font-medium">{reservation.guest?.name || "-"}</p>
+		<>
+			{/* MAIN MODAL */}
+			<div className="fixed inset-0 z-[101] bg-black/50 backdrop-blur-sm flex items-center justify-center px-4">
+				<div className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] shadow-2xl animate-in fade-in zoom-in duration-300">
+					{/* Header */}
+					<div className="bg-gradient-to-r from-orange-400 to-amber-500 p-6 rounded-t-[32px] flex items-center justify-between">
+						<div>
+							<h2 className="text-xl font-bold text-white">Detail Reservasi</h2>
+							<p className="text-white/80 text-sm">
+								Informasi lengkap tamu & pembayaran
+							</p>
+						</div>
+						<button
+							onClick={onClose}
+							className="p-2 rounded-xl bg-white/20 hover:bg-white/30 text-white transition"
+						>
+							<X size={20} />
+						</button>
 					</div>
 
-					<div>
-						<p className="text-gray-500">Email</p>
-						<p className="font-medium">{reservation.guest?.email || "-"}</p>
+					{/* Body */}
+					<div className="p-6 space-y-6 text-sm text-slate-700">
+						{/* Info Grid */}
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<DetailItem
+								icon={<User size={14} />}
+								label="Nama Tamu"
+								value={reservation.guest?.name}
+							/>
+							<DetailItem
+								icon={<User size={14} />}
+								label="Email"
+								value={reservation.guest?.email}
+							/>
+							<DetailItem
+								icon={<User size={14} />}
+								label="Nomor HP"
+								value={reservation.guest?.phone}
+							/>
+							<DetailItem
+								icon={<BedDouble size={14} />}
+								label="Kamar"
+								value={reservation.room?.name}
+							/>
+
+							<DetailItem
+								icon={<Calendar size={14} />}
+								label="Check-In"
+								value={formatDateIndo(reservation.checkIn)}
+							/>
+							<DetailItem
+								icon={<Calendar size={14} />}
+								label="Check-Out"
+								value={formatDateIndo(reservation.checkOut)}
+							/>
+
+							<DetailItem
+								icon={<User size={14} />}
+								label="Jumlah Tamu"
+								value={`${reservation.guestTotal} orang`}
+							/>
+
+							<DetailItem
+								icon={<CreditCard size={14} />}
+								label="Metode Pembayaran"
+								value={reservation.payment?.method}
+							/>
+
+							<DetailItem
+								icon={<CreditCard size={14} />}
+								label="Status Pembayaran"
+								value={reservation.payment?.status}
+							/>
+
+							<DetailItem
+								icon={<CreditCard size={14} />}
+								label="Status Reservasi"
+								value={reservation.status}
+							/>
+
+							<DetailItem
+								icon={<User size={14} />}
+								label="Nama Pengirim"
+								value={reservation.payment?.sender}
+							/>
+						</div>
+
+						{/* Bukti Pembayaran */}
+						<div className="space-y-2">
+							<p className="label flex items-center gap-1">
+								<ImageIcon size={14} /> Bukti Pembayaran
+							</p>
+
+							{proofUrl ? (
+								<div
+									className="relative w-44 h-44 rounded-2xl overflow-hidden border border-slate-200 shadow-sm cursor-pointer group"
+									onClick={() => setShowImageModal(true)}
+								>
+									<img
+										src={proofUrl}
+										alt="Bukti Pembayaran"
+										className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+									/>
+									<div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-semibold">
+										Klik untuk perbesar
+									</div>
+								</div>
+							) : (
+								<p className="italic text-slate-400">Tidak tersedia</p>
+							)}
+						</div>
+
+						{/* Total */}
+						<div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex justify-between items-center">
+							<p className="font-semibold text-slate-600">Total Pembayaran</p>
+							<p className="text-xl font-bold text-orange-500">
+								{reservation.totalPrice.toLocaleString("jp-JP", {
+									style: "currency",
+									currency: "JPY",
+								})}
+							</p>
+						</div>
 					</div>
 
-					<div>
-						<p className="text-gray-500">Nomor HP</p>
-						<p className="font-medium">{reservation.guest?.phone || "-"}</p>
+					{/* Footer */}
+					<div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50 rounded-b-[32px]">
+						<button
+							onClick={onClose}
+							className="px-5 py-2 rounded-xl border border-slate-300 font-semibold text-slate-600 hover:bg-slate-100 transition"
+						>
+							Tutup
+						</button>
 					</div>
-
-					<div>
-						<p className="text-gray-500">Kamar</p>
-						<p className="font-medium">{reservation.room?.name || "-"}</p>
-					</div>
-
-					<div>
-						<p className="text-gray-500">Check-In</p>
-						<p className="font-medium">{formatDateIndo(reservation.checkIn)}</p>
-					</div>
-
-					<div>
-						<p className="text-gray-500">Check-Out</p>
-						<p className="font-medium">
-							{formatDateIndo(reservation.checkOut)}
-						</p>
-					</div>
-
-					<div>
-						<p className="text-gray-500">Jumlah Tamu</p>
-						<p className="font-medium">{reservation.guestTotal} orang</p>
-					</div>
-
-					<div>
-						<p className="text-gray-500">Metode Pembayaran</p>
-						<p className="font-medium">{reservation.payment?.method || "-"}</p>
-					</div>
-
-					<div>
-						<p className="text-gray-500">Status Pembayaran</p>
-						<p className="font-medium">{reservation.payment?.status || "-"}</p>
-					</div>
-
-					<div>
-						<p className="text-gray-500">Status Reservasi</p>
-						<p className="font-medium">{reservation.status}</p>
-					</div>
-
-					<div>
-						<p className="text-gray-500">Bukti Pembayaran</p>
-						{reservation.payment?.proofUrl ? (
-							<a
-								href={reservation.payment.proofUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="text-blue-600 underline"
-							>
-								Lihat Bukti
-							</a>
-						) : (
-							<p className="italic text-gray-400">Tidak tersedia</p>
-						)}
-					</div>
-
-					<div>
-						<p className="text-gray-500">Total</p>
-						<p className="font-medium">
-							{reservation.totalPrice.toLocaleString("jp-JP", {
-								style: "currency",
-								currency: "JPY",
-							})}
-						</p>
-					</div>
-				</div>
-
-				<div className="text-right">
-					<button
-						onClick={onClose}
-						className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-					>
-						Tutup
-					</button>
 				</div>
 			</div>
+
+			{/* IMAGE MODAL (ZOOM) */}
+			{showImageModal && proofUrl && (
+				<div
+					className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-sm flex items-center justify-center px-4"
+					onClick={() => setShowImageModal(false)}
+				>
+					<div
+						className="relative max-w-4xl max-h-[90vh]"
+						onClick={(e) => e.stopPropagation()}
+					>
+						<img
+							src={proofUrl}
+							alt="Preview Bukti Pembayaran"
+							className="max-h-[90vh] rounded-[32px] shadow-2xl"
+						/>
+
+						<button
+							onClick={() => setShowImageModal(false)}
+							className="absolute top-3 right-3 p-2 rounded-xl bg-white/20 hover:bg-white/30 text-white transition"
+						>
+							<X size={18} />
+						</button>
+					</div>
+				</div>
+			)}
+		</>
+	);
+}
+
+/* ================= SMALL COMPONENT ================= */
+function DetailItem({
+	label,
+	value,
+	icon,
+}: {
+	label: string;
+	value?: string;
+	icon?: React.ReactNode;
+}) {
+	return (
+		<div className="space-y-1">
+			<p className="text-slate-500 text-xs flex items-center gap-1">
+				{icon} {label}
+			</p>
+			<p className="font-semibold text-slate-800">{value || "-"}</p>
 		</div>
 	);
 }
