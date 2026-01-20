@@ -113,25 +113,42 @@ export default function Footer() {
 						</ul>
 					</div>
 
-					{/* CTA */}
+					{/* Certified / Trust Section */}
 					<div>
 						<h3 className="text-lg font-bold text-slate-800 mb-4">
-							Plan Your Stay
+							Government Certified
 						</h3>
-						<p className="text-slate-600 mb-6">
-							Book your room now and enjoy a comfortable, family-friendly stay
-							in Tokyo.
-						</p>
 
-						<Link
-							href="#rooms"
-							className={`inline-flex items-center justify-center
-							w-full rounded-2xl ${BRAND_GRADIENT}
-							px-6 py-3 text-base font-bold text-white
-							hover:shadow-xl transition`}
+						<div
+							className="bg-white border border-amber-200
+							rounded-2xl p-4 shadow-md"
 						>
-							Book a Room
-						</Link>
+							<div className="flex items-center gap-3 mb-3">
+								<span className="text-2xl text-amber-600">🏛</span>
+								<div>
+									<p className="font-bold text-slate-800">
+										Private Lodging Business
+									</p>
+									<p className="text-xs text-slate-500">
+										Officially Registered in Japan
+									</p>
+								</div>
+							</div>
+
+							<div className="text-sm text-slate-600 space-y-1">
+								<p>
+									<span className="font-semibold">License No:</span>{" "}
+									M1300059386
+								</p>
+								<p>
+									<span className="font-semibold">Authority:</span>{" "}
+									Edogawa City Government
+								</p>
+								<p>
+									<span className="font-semibold">Country:</span> Japan
+								</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
