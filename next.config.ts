@@ -53,7 +53,11 @@ const nextConfig: NextConfig = {
 				protocol: "https",
 				hostname: "be-guesthouse.vercel.app",
 				pathname: "/uploads/**",
-			}
+			},
+			{
+				protocol: "https",
+				hostname: "res.cloudinary.com"
+			},
 		],
 	},
 };
