@@ -520,8 +520,8 @@ export const getProofUrl = (url?: string | null) => {
 	if (url.startsWith("http")) return url;
 
 	// Kalau masih relative, gabungkan dengan API base URL
-	const base = "http://localhost:5000";
-	// const base = "https://be-guesthouse.vercel.app";
+	// const base = "http://localhost:5000";
+	const base = "https://be-guesthouse.vercel.app";
 	return `${base}${url}`;
 };
 

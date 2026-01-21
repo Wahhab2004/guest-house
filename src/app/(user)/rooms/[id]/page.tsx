@@ -13,7 +13,6 @@ import DetailRoom, {
 	Location,
 	RefundPolicy,
 } from "@/components/user/room/DetailRoom";
-import FeedbackForm from "@/components/FeedbackForm";
 
 export default function DetailProductPage() {
 	const [room, setRoom] = useState<Room | null>(null);
@@ -23,7 +22,7 @@ export default function DetailProductPage() {
 		const fetchRoomsId = async () => {
 			if (!id) return;
 			const data = await fetchRoomById(String(id));
-			console.log(data);
+
 			setRoom(data);
 		};
 		fetchRoomsId();
@@ -52,7 +51,7 @@ export default function DetailProductPage() {
 				<Description />
 				<Location />
 				<RefundPolicy />
-				<FeedbackForm />
+				{/* <FeedbackForm /> */}
 				{/* <Review /> */}
 			</main>
 		</section>
