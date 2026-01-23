@@ -7,6 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Deploy Frontend to VPS
         uses: appleboy/ssh-action@v1.0.3
@@ -14,7 +15,11 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          debug: true
           script: |
+            echo "${{ secrets.VPS_SSH_KEY }}" | base64 -d > key.pem
+            chmod 600 key.pem
+
             cd ${{ secrets.VPS_PATH }}
 
             echo "Updating frontend..."
