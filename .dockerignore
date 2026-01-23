@@ -1,0 +1,13 @@
+node_modules
+.git
+.vscode
+.env.local
+Dockerfile
+README.md
+*.log
+
+# Next build cache
+.next/cache
+
+# Dev folders
+catatan
