@@ -16,6 +16,7 @@ export default function Home() {
 				{/* Booking Form */}
 				{/* <BookingForm /> */}
 
+				
 				{/* Main Section */}
 				<div className="mt-4">
 					{/* <RoomAvailabilityClient /> */}
