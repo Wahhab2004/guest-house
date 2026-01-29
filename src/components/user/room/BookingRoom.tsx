@@ -5,7 +5,6 @@ import { Guest, Room } from "@/fetching";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 
-
 type Gender = "Male" | "Female" | "Other" | "";
 
 interface BookingFormProps {
@@ -31,8 +30,6 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 
 	const [checkIn, setCheckIn] = useState("");
 	const [checkOut, setCheckOut] = useState("");
-	const [checkInCheck, setCheckInCheck] = useState("");
-	const [checkOutCheck, setCheckOutCheck] = useState("");
 
 	const [loading, setLoading] = useState(false);
 
@@ -44,13 +41,14 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 		const checkInParam = searchParams.get("checkIn");
 		const checkOutParam = searchParams.get("checkOut");
 
-		if (checkInParam) {
-			setCheckInCheck(checkInParam);
+		if (checkInParam && !checkIn) {
+			setCheckIn(checkInParam);
 		}
-		if (checkOutParam) {
-			setCheckOutCheck(checkOutParam);
+
+		if (checkOutParam && !checkOut) {
+			setCheckOut(checkOutParam);
 		}
-	})
+	}, [searchParams, checkIn, checkOut]);
 
 	const handleAnakChange = (
 		index: number,
@@ -272,7 +270,7 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 					<label className="block font-medium mb-1">Check-in Date</label>
 					<input
 						type="date"
-						value={checkIn ? checkIn : checkInCheck}
+						value={checkIn}
 						onChange={(e) => setCheckIn(e.target.value)}
 						className="border rounded px-3 py-2 w-full"
 					/>
@@ -283,8 +281,10 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 					<label className="block font-medium mb-1">Check-out Date</label>
 					<input
 						type="date"
-						value={checkOut? checkOut : checkOutCheck}
-						onChange={(e) => setCheckOut(e.target.value)}
+						value={checkOut}
+						onChange={(e) =>
+							setCheckOut(e.target.value)
+						}
 						className="border rounded px-3 py-2 w-full"
 					/>
 				</div>

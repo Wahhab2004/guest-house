@@ -165,3 +165,8 @@ Compaleted 20 Januari
 3. Menambahkan notifikasi toast untuk aksi sukses dan error di reservasi.
 4. Perbaikan gambar di detail reservasi.
 5. Mengubah validasi bahwa admin juga harus membuat password untuk user.
+
+
+Catatan 29 Januari 2026
+1. Upload gambar dari user masih belum bisa.
+2. Ketika si booker hanya booking, data nya diganti dengan yang baru dibuat.

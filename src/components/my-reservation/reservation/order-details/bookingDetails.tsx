@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Reservation } from "@/fetching";
-import { FormatTanggalIndoUser } from "@/components/format-tanggal/formatTanggal";
+import { datedFormat } from "@/components/format-tanggal/formatTanggal";
 
 interface BookingDetailsProps {
 	reservation: Reservation | null;
@@ -42,7 +42,7 @@ export default function BookingDetails({
 							<h3 className="font-medium text-gray-600">Check-in date</h3>
 							<p className="text-medium mb-2">
 								{reservation?.checkIn
-									? FormatTanggalIndoUser(reservation.checkIn)
+									? datedFormat(reservation.checkIn)
 									: "-"}
 							</p>
 						</div>
@@ -50,7 +50,7 @@ export default function BookingDetails({
 							<h3 className="font-medium text-gray-600">Check-out date</h3>
 							<p className="text-medium mb-2">
 								{reservation?.checkOut
-									? FormatTanggalIndoUser(reservation.checkOut)
+									? datedFormat(reservation.checkOut)
 									: "-"}
 							</p>
 						</div>

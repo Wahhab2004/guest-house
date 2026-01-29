@@ -25,7 +25,7 @@ const ProofAndSender = ({
 				/>
 				{formData.proofUrl && (
 					<p className="mt-2 text-sm text-gray-600">
-						File yang dipilih: {formData.proofUrl}
+						File selected: {formData.proofUrl}
 					</p>
 				)}
 			</div>

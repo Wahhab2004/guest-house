@@ -299,7 +299,7 @@ export default function NavbarReservation({
 					</div>
 
 					<InputField
-						label="First Name"
+						label="Name"
 						id="name"
 						value={mainGuestData.name}
 						onChange={(e) => handleMainGuestChange("name", e.target.value)}
@@ -361,15 +361,12 @@ export default function NavbarReservation({
 						required
 						disabled={useProfileData}
 					/>
-					<SelectField
+					<InputField
 						label="Country of Residence"
 						id="country"
 						value={mainGuestData.country}
 						onChange={(e) => handleMainGuestChange("country", e.target.value)}
-						options={[
-							{ value: "id", label: "Indonesia" },
-							{ value: "jp", label: "Japan" },
-						]}
+						placeholder="Your country"
 						disabled={useProfileData}
 					/>
 				</div>
