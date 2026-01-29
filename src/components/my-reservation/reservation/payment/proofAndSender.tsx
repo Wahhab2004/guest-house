@@ -15,7 +15,7 @@ const ProofAndSender = ({
 			{/* Upload bukti */}
 			<div>
 				<label htmlFor="proofUrl" className="block font-medium">
-					Upload Bukti Pembayaran
+					Upload Proof of Payment
 				</label>
 				<input
 					type="file"
@@ -33,7 +33,7 @@ const ProofAndSender = ({
 			{/* Nama Pengirim */}
 			<div>
 				<label htmlFor="paymentSender" className="block font-medium">
-					Nama Pengirim
+					Sender
 				</label>
 				<input
 					type="text"

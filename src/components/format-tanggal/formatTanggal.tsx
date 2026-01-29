@@ -40,6 +40,16 @@ export function FormatTanggalIndoUser(dateString: string): string {
   });
 }
 
+// Cara 2
+export function datedFormat(dateString: string): string {
+  const date = new Date(dateString);
+
+  return date.toLocaleDateString("ek-EK", {
+    day: "2-digit",      // 15
+    month: "long",       // Mei
+    year: "numeric",     // 2025
+  });
+}
 
 export function formatTanggalIndonesia(tanggalString: string): string {
 	const tanggal = new Date(tanggalString);

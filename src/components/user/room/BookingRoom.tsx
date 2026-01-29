@@ -31,6 +31,9 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 
 	const [checkIn, setCheckIn] = useState("");
 	const [checkOut, setCheckOut] = useState("");
+	const [checkInCheck, setCheckInCheck] = useState("");
+	const [checkOutCheck, setCheckOutCheck] = useState("");
+
 	const [loading, setLoading] = useState(false);
 
 	const router = useRouter();
@@ -42,10 +45,10 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 		const checkOutParam = searchParams.get("checkOut");
 
 		if (checkInParam) {
-			setCheckIn(checkInParam);
+			setCheckInCheck(checkInParam);
 		}
 		if (checkOutParam) {
-			setCheckOut(checkOutParam);
+			setCheckOutCheck(checkOutParam);
 		}
 	})
 
@@ -269,7 +272,7 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 					<label className="block font-medium mb-1">Check-in Date</label>
 					<input
 						type="date"
-						value={checkIn}
+						value={checkIn ? checkIn : checkInCheck}
 						onChange={(e) => setCheckIn(e.target.value)}
 						className="border rounded px-3 py-2 w-full"
 					/>
@@ -280,7 +283,7 @@ export default function BookingForm({ room, id }: BookingFormProps) {
 					<label className="block font-medium mb-1">Check-out Date</label>
 					<input
 						type="date"
-						value={checkOut}
+						value={checkOut? checkOut : checkOutCheck}
 						onChange={(e) => setCheckOut(e.target.value)}
 						className="border rounded px-3 py-2 w-full"
 					/>
