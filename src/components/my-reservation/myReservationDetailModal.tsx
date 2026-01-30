@@ -111,7 +111,7 @@ export default function ReservationDetailModal({
 					<p className="flex justify-between">
 						<strong>Total Price:</strong>
 						<span className="text-base font-bold">
-							${reservation.totalPrice}
+							${reservation.finalPrice}
 						</span>
 					</p>
 					<p className="flex justify-between">

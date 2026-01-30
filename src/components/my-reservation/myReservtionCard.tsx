@@ -50,7 +50,7 @@ export default function ReservationCard({
 		checkIn,
 		checkOut,
 		guestTotal,
-		totalPrice,
+		finalPrice,
 		payment,
 		status,
 	} = reservation;
@@ -114,7 +114,7 @@ export default function ReservationCard({
 			<div className="mt-4 pt-4 border-t border-gray-200">
 				<p className="text-lg font-bold text-gray-800 flex justify-between items-center">
 					<span>Total Price:</span>
-					<span className="text-2xl">¥{totalPrice}</span>
+					<span className="text-2xl">¥{finalPrice}</span>
 				</p>
 			</div>
 

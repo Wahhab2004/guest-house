@@ -152,7 +152,7 @@ const GuestReservation = () => {
 										</td>
 
 										<td className="px-6 py-4 font-semibold ">
-											{item.totalPrice.toLocaleString("jp-JP", {
+											{item.finalPrice.toLocaleString("jp-JP", {
 												style: "currency",
 												currency: "JPY",
 											})}

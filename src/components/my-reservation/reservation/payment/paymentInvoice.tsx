@@ -18,7 +18,7 @@ interface InvoiceProps {
 	room: string;
 	totalGuest: number;
 	price: number;
-	totalPrice: number;
+	finalPrice: number;
 	paymentMethod: string;
 	paymentStatus: string;
 	bankOrWallet?: string;
@@ -33,7 +33,7 @@ const PaymentInvoice: React.FC<InvoiceProps> = ({
 	room,
 	totalGuest,
 	price,
-	totalPrice,
+	finalPrice,
 	paymentMethod,
 	paymentStatus,
 	bankOrWallet,
@@ -142,7 +142,7 @@ const PaymentInvoice: React.FC<InvoiceProps> = ({
 								</td>
 								<td className="p-3 text-right">{totalGuest}</td>
 								<td className="p-3 text-right font-semibold">
-									{totalPrice.toLocaleString("jp-JP", {
+									{finalPrice.toLocaleString("jp-JP", {
 										style: "currency",
 										currency: "JPY",
 									})}
@@ -202,7 +202,7 @@ const PaymentInvoice: React.FC<InvoiceProps> = ({
 					<div className="flex justify-between mt-6 pt-4 border-t font-bold text-lg">
 						<span className="text-amber-500">Grand Total</span>
 						<span className="text-amber-500">
-							{(totalPrice * 1.1).toLocaleString("jp-JP", {
+							{(finalPrice * 1.1).toLocaleString("jp-JP", {
 								style: "currency",
 								currency: "JPY",
 							})}

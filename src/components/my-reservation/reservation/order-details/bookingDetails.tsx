@@ -76,7 +76,7 @@ export default function BookingDetails({
 						<div className="h-[1px] w-full bg-black"></div>
 						<div className="flex justify-between mt-4">
 							<h3 className="font-medium text-gray-600">Total Payment</h3>
-							<p className="font-bold">¥{reservation?.totalPrice}</p>
+							<p className="font-bold">¥{reservation?.finalPrice}</p>
 						</div>
 					</div>
 

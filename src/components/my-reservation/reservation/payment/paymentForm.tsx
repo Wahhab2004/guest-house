@@ -105,7 +105,7 @@ const PaymentForm = ({ reservation, handleNavigate }: BookingDetailsProps) => {
 						room={reservation?.room?.name || "Not provided"}
 						totalGuest={reservation?.guestTotal || 0}
 						price={reservation?.room?.price || 0}
-						totalPrice={reservation?.totalPrice || 0}
+						finalPrice={reservation?.finalPrice || 0}
 						paymentMethod={formData.method || "Not provided"}
 						bankOrWallet={formData.bankOrWallet || "Not provided"}
 						paymentStatus={reservation?.payment?.status || "Not provided"}

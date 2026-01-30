@@ -81,7 +81,7 @@ export interface Reservation {
 	guestTotal: number;
 	adultCount: number;
 	childCount: number;
-	totalPrice: number;
+	finalPrice: number;
 	status: ReservationStatus;
 
 	createdAt: string;
