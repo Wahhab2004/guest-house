@@ -684,6 +684,7 @@ function DetailReservation({ isOpen, onClose, reservation }: DetailProps) {
 										currency: "JPY",
 									})}
 								</span>
+								
 								<p className="text-xs text-slate-400">
 									Diskon sistem / manual telah diterapkan oleh admin
 								</p>
