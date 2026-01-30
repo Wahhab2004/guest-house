@@ -28,7 +28,7 @@ interface ReservationModalProps {
 const STATUS_OPTIONS: ReservationStatus[] = [
 	ReservationStatus.PENDING,
 	ReservationStatus.CONFIRMED,
-	ReservationStatus.CANCELED, // ⚠️ perhatikan: CANCELED (1 L) sesuai Prisma
+	ReservationStatus.CANCELED,
 	ReservationStatus.ACTIVE,
 	ReservationStatus.CHECKED_OUT,
 ];
@@ -43,7 +43,7 @@ const PAYMENT_STATUS_OPTIONS: PaymentStatus[] = [
 const PAYMENT_METHODS: PaymentMethod[] = [
 	PaymentMethod.TRANSFER,
 	PaymentMethod.CASH,
-	PaymentMethod.E_WALLET, // ⚠️ bukan EWALLET
+	PaymentMethod.E_WALLET,
 ];
 
 export default function EditReservationModal({
@@ -60,12 +60,14 @@ export default function EditReservationModal({
 	const [token, setToken] = useState<string | null>(null);
 	const [proofFile, setProofFile] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+	const [manualDiscount, setManualDiscount] = useState<number | "">("");
 
 	const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 	/* ================= UPDATE FORM DATA ================= */
 	useEffect(() => {
 		setFormData(initialData);
+		setManualDiscount(initialData.discountAmount || "");
 	}, [initialData]);
 
 	/* ================= TOKEN ================= */
@@ -106,6 +108,16 @@ export default function EditReservationModal({
 		}
 	}, [formData.paymentStatus]);
 
+	const previewFinalPrice = () => {
+		const subTotal = formData.subTotalPrice || 0;
+
+		if (manualDiscount === "" || isNaN(Number(manualDiscount))) {
+			return formData.finalPrice || 0;
+		}
+
+		return Math.max(subTotal - Number(manualDiscount));
+	};
+
 	/* ================= VALIDATION ================= */
 	const validate = () => {
 		if (!formData.guestId) return setErr("Guest wajib dipilih");
@@ -144,6 +156,10 @@ export default function EditReservationModal({
 				fd.append("paymentSender", formData.paymentSender);
 
 			if (proofFile) fd.append("proofUrl", proofFile);
+
+			if (manualDiscount !== "") {
+				fd.append("discountPrice", String(manualDiscount));
+			}
 
 			const res = await fetch(`${baseUrl}/reservations/${initialData.id}`, {
 				method: "PUT",
@@ -437,6 +453,55 @@ export default function EditReservationModal({
 									</button>
 								</div>
 							)}
+						</div>
+
+						{/* Price Breakdown */}
+						<div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3">
+							<h3 className="font-bold text-slate-700">Rincian Harga</h3>
+
+							{/* Subtotal */}
+							<div className="flex justify-between items-center">
+								<span className="text-slate-600">Subtotal (Tanpa Diskon)</span>
+								<span className="font-semibold">
+									{formData.subTotalPrice?.toLocaleString("jp-JP", {
+										style: "currency",
+										currency: "JPY",
+									})}
+								</span>
+							</div>
+
+							{/* Diskon Manual (Admin Override) */}
+							<div>
+								<label className="label">Diskon Manual (Override Admin)</label>
+								<input
+									type="number"
+									min="0"
+									placeholder="masukkan diskon baru"
+									className="input w-full"
+									value={manualDiscount}
+									onChange={(e) => {
+										const val = e.target.value;
+										if (val === "") return setManualDiscount("");
+										setManualDiscount(Math.max(0, Number(val)));
+									}}
+								/>
+								<p className="text-xs text-slate-500 mt-1">
+									Jika diisi, diskon ini akan <b>menggantikan</b> diskon sistem
+								</p>
+							</div>
+
+							{/* Final Preview */}
+							<div className="flex justify-between items-center pt-2 border-t border-slate-200">
+								<span className="text-lg font-bold text-orange-500">
+									Final Price
+								</span>
+								<span className="text-lg font-bold text-orange-500">
+									{previewFinalPrice().toLocaleString("jp-JP", {
+										style: "currency",
+										currency: "JPY",
+									})}
+								</span>
+							</div>
 						</div>
 					</div>
 				</div>

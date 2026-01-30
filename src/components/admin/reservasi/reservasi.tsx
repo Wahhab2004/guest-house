@@ -234,6 +234,9 @@ export default function Reservasi() {
 		paymentStatus: PaymentStatus.UNPAID,
 		paymentMethod: PaymentMethod.TRANSFER,
 		paymentSender: "",
+		finalPrice: 0,
+		subTotalPrice: 0,
+		discountAmount: 0,
 	};
 
 	/* ================= RENDER ================= */
@@ -378,6 +381,9 @@ export default function Reservasi() {
 									| PaymentMethod
 									| undefined,
 								paymentSender: selected.payment?.sender || "",
+								discountAmount: selected.discountAmount,
+								finalPrice: selected.finalPrice,
+								subTotalPrice: selected.subTotalPrice,
 							}
 						: EMPTY_EDIT_FORM
 				}
@@ -466,7 +472,7 @@ function ReservasiTable({
 										</Badge>
 									</td>
 									<td className="px-4 py-3 whitespace-nowrap">
-										{res.totalPrice.toLocaleString("jp-JP", {
+										{res.finalPrice.toLocaleString("jp-JP", {
 											style: "currency",
 											currency: "JPY",
 										})}
@@ -488,7 +494,9 @@ function ReservasiTable({
 											<ActionButton
 												color="red"
 												label=""
-												onClick={() => onDelete({ id: res.id, status: res.status })}
+												onClick={() =>
+													onDelete({ id: res.id, status: res.status })
+												}
 												icon="🗑️"
 											/>
 										</div>
@@ -651,15 +659,48 @@ function DetailReservation({ isOpen, onClose, reservation }: DetailProps) {
 							)}
 						</div>
 
-						{/* Total */}
-						<div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex justify-between items-center">
-							<p className="font-semibold text-slate-600">Total Pembayaran</p>
-							<p className="text-xl font-bold text-orange-500">
-								{reservation.totalPrice.toLocaleString("jp-JP", {
-									style: "currency",
-									currency: "JPY",
-								})}
-							</p>
+						{/* Price Breakdown */}
+						<div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+							<h3 className="font-bold text-slate-700">Rincian Pembayaran</h3>
+
+							{/* Subtotal */}
+							<div className="flex justify-between items-center">
+								<span className="text-slate-600">Subtotal (Tanpa Diskon)</span>
+								<span className="font-semibold">
+									{reservation.subTotalPrice.toLocaleString("jp-JP", {
+										style: "currency",
+										currency: "JPY",
+									})}
+								</span>
+							</div>
+
+							{/* Diskon */}
+							<div className="flex justify-between items-center text-slate-500">
+								<span>Total Diskon</span>
+								<span className="text-red-500">
+									-
+									{reservation.discountAmount?.toLocaleString("jp-JP", {
+										style: "currency",
+										currency: "JPY",
+									})}
+								</span>
+								<p className="text-xs text-slate-400">
+									Diskon sistem / manual telah diterapkan oleh admin
+								</p>
+							</div>
+
+							{/* Divider */}
+							<div className="border-t border-slate-200 pt-2 flex justify-between items-center">
+								<span className="text-lg font-bold text-orange-500">
+									Total Pembayaran
+								</span>
+								<span className="text-lg font-bold text-orange-500">
+									{reservation.finalPrice.toLocaleString("jp-JP", {
+										style: "currency",
+										currency: "JPY",
+									})}
+								</span>
+							</div>
 						</div>
 					</div>
 

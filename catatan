@@ -170,3 +170,13 @@ Compaleted 20 Januari
 Catatan 29 Januari 2026
 1. Upload gambar dari user masih belum bisa.
 2. Ketika si booker hanya booking, data nya diganti dengan yang baru dibuat.
+3. Detail reservasi tampilkan juga data booker.
+4. Terdapat bug di bagian payment and confirmation, Invoice to nya nggak masuk.
+5. Halaman my profil masih dummy.
+
+Todolist 29 Januari 2026
+1. Harga diskon fleksibel di admin panel.
+2. Perbaikan upload bukti pembayaran di user.
+
+Catatan 30 Januari 2026
+1. Respon gagal di login nya salah

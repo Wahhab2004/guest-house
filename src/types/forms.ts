@@ -32,4 +32,7 @@ export interface EditReservationForm {
 	paymentStatus?: PaymentStatus;
 	paymentMethod?: PaymentMethod;
 	paymentSender?: string;
+	finalPrice?: number;
+	discountAmount?: number;
+	subTotalPrice?: number;
 }

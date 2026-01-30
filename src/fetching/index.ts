@@ -43,7 +43,9 @@ export interface Reservation {
 	guestTotal: number;
 	adultCount: number;
 	childCount: number;
-	totalPrice: number;
+	subTotalPrice: number;
+	discountAmount: number;
+	finalPrice: number;
 	status: string;
 	guest: Guest;
 	room: Room;
