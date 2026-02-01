@@ -12,12 +12,12 @@ export default function DetailRoom({ room }: BookingFormProps) {
 
 // Daftar gambar tambahan (dibuat hanya sekali)
 	const additionalImages = useMemo(() => [
-		"/images/facilities/facility-01.png",
-		"/images/facilities/facility-02.png",
-		"/images/facilities/facility-03.png",
-		"/images/facilities/facility-01.png",
-		"/images/facilities/facility-02.png",
-		"/images/facilities/facility-03.png",
+		"/images/facilities/facility-01.jpeg",
+		"/images/facilities/facility-02.jpeg",
+		"/images/facilities/facility-03.jpeg",
+		"/images/facilities/facility-01.jpeg",
+		"/images/facilities/facility-02.jpeg",
+		"/images/facilities/facility-03.jpeg",
 	], []);
 
 	// Daftar image utama + tambahan (tanpa duplikat)

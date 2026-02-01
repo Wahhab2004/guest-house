@@ -74,7 +74,7 @@ const FacilitiesCarousel: React.FC = () => {
 							>
 								<div className="relative w-full h-[26rem]">
 									<Image
-										src={`/images/facilities/facility-0${(index % 3) + 1}.png`}
+										src={`/images/facilities/facility-0${(index % 3) + 1}.jpeg`}
 										alt={`facility-${(index % 3) + 1}`}
 										fill
 										className="object-cover group-hover:scale-110 transition-transform duration-500"
