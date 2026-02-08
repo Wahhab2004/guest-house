@@ -4,6 +4,8 @@ import { fetchGuests, Guest } from "@/fetching";
 import { useEffect, useState } from "react";
 import GuestFormModal from "@/components/buku-tamu/guestFormModal";
 import { createGuest, updateGuest, deleteGuest } from "@/lib/guests";
+import ActionButton from "@/components/ActionButton";
+import { Pencil, Trash2 } from "lucide-react";
 
 export default function Guests() {
 	const [guests, setGuests] = useState<Guest[]>([]);
@@ -36,9 +38,7 @@ export default function Guests() {
 					if (selectedGuest) {
 						const res = await updateGuest(selectedGuest.id, data);
 						setGuests((prev) =>
-							prev.map((g) =>
-								g.id === selectedGuest.id ? res.data : g
-							)
+							prev.map((g) => (g.id === selectedGuest.id ? res.data : g)),
 						);
 					} else {
 						const res = await createGuest(data);
@@ -97,44 +97,48 @@ export default function Guests() {
 											key={guest.id}
 											className="border-b last:border-none hover:bg-stone-50 transition"
 										>
-											<td className="px-6 py-4 font-semibold">
-												{guest.name}
-											</td>
-											<td className="px-6 py-4">
-												{guest.email || "-"}
-											</td>
-											<td className="px-6 py-4">
-												{guest.phone}
-											</td>
-											<td className="px-6 py-4">
-												{guest.passport}
-											</td>
-											<td className="px-6 py-4">
-												{guest.gender}
-											</td>
-											<td className="px-6 py-4">
-												<div className="flex gap-2">
-													<button
+											<td className="px-6 py-4 font-semibold">{guest.name}</td>
+											<td className="px-6 py-4">{guest.email || "-"}</td>
+											<td className="px-6 py-4">{guest.phone}</td>
+											<td className="px-6 py-4">{guest.passport}</td>
+											<td className="px-6 py-4">{guest.gender}</td>
+											<td>
+												<div className="flex gap-2 justify-center">
+													<ActionButton
 														onClick={() => {
 															setSelectedGuest(guest);
 															setOpenForm(true);
 														}}
-														className="px-3 py-1 rounded-lg bg-amber-100 text-amber-700"
-													>
-														Edit
-													</button>
-													<button
+														label="edit"
+														icon={<Pencil size={16} />}
+														variant="warning"
+														tooltip={
+															<>
+																Edit Tamu{" "}
+																<span className="font-bold">{guest.name}</span>
+															</>
+														}
+													/>
+
+													<ActionButton
 														onClick={async () => {
-															if (!confirm("Hapus guest ini?")) return;
+															if (!confirm("Hapus Guest ini?")) return;
 															await deleteGuest(guest.id);
+
 															setGuests((prev) =>
-																prev.filter((g) => g.id !== guest.id)
+																prev.filter((g) => g.id !== guest.id),
 															);
 														}}
-														className="px-3 py-1 rounded-lg bg-red-100 text-red-600"
-													>
-														Hapus
-													</button>
+														label="Hapus"
+														icon={<Trash2 size={16} />}
+														variant="danger"
+														tooltip={
+															<>
+																Hapus Tamu{" "}
+																<span className="font-bold">{guest.name}</span>
+															</>
+														}
+													/>
 												</div>
 											</td>
 										</tr>

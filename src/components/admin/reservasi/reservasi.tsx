@@ -21,6 +21,9 @@ import {
 	User,
 	BedDouble,
 	Calendar,
+	Pencil,
+	Trash2,
+	NotebookPen
 } from "lucide-react";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
@@ -477,27 +480,40 @@ function ReservasiTable({
 											currency: "JPY",
 										})}
 									</td>
-									<td className="px-4 py-3">
-										<div className="flex gap-2">
+									<td>
+										<div className="flex gap-2 justify-center">
 											<ActionButton
-												color="blue"
-												label=""
+												label="Detail Reservasi"
 												onClick={() => onDetail(res.id)}
-												icon="📝"
+												icon={<NotebookPen size={16} />}
+												tooltip="Detail Reservasi"
+												variant="detail"
 											/>
 											<ActionButton
-												color="amber"
-												label=""
+												label="Edit"
 												onClick={() => onEdit(res.id)}
-												icon="✏️"
+												icon={<Pencil size={16} />}
+												variant="warning"
+												tooltip={
+													<>
+														Edit{" "}
+														<span className="font-bold"> {res.guest.name}</span>
+													</>
+												}
 											/>
 											<ActionButton
-												color="red"
-												label=""
+												label="Hapus"
 												onClick={() =>
 													onDelete({ id: res.id, status: res.status })
 												}
-												icon="🗑️"
+												icon={<Trash2 size={16} />}
+												variant="danger"
+												tooltip={
+													<>
+														Hapus Reservasi{" "}
+														<span className="font-bold">{res.guest.name}</span>
+													</>
+												}
 											/>
 										</div>
 									</td>
@@ -684,7 +700,7 @@ function DetailReservation({ isOpen, onClose, reservation }: DetailProps) {
 										currency: "JPY",
 									})}
 								</span>
-								
+
 								<p className="text-xs text-slate-400">
 									Diskon sistem / manual telah diterapkan oleh admin
 								</p>

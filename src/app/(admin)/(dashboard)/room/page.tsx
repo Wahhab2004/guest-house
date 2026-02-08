@@ -1,11 +1,12 @@
 "use client";
 
 import { fetchRooms, Room } from "@/fetching";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import RoomFormModal from "@/components/admin/room/roomFormModal";
 import { createRoom, updateRoom, deleteRoom } from "@/lib/room";
 import { getProofUrl } from "@/components/admin/reservasi/reservasi";
+import ActionButton from "@/components/ActionButton";
+import { Pencil, Trash2, Plus } from "lucide-react";
 
 export default function Rooms() {
 	const [rooms, setRooms] = useState<Room[]>([]);
@@ -77,12 +78,12 @@ export default function Rooms() {
 						<table className="w-full text-sm">
 							<thead className="bg-stone-50 border-b border-stone-200">
 								<tr className="text-stone-600 font-semibold">
-									<th className="px-6 py-4 text-left">Gambar</th>
-									<th className="px-6 py-4 text-left">Nama Kamar</th>
-									<th className="px-6 py-4 text-left">Deskripsi</th>
-									<th className="px-6 py-4 text-left">Harga / Malam</th>
-									<th className="px-6 py-4 text-left">Status</th>
-									<th className="px-6 py-4 text-left">Aksi</th>
+									<th className="px-6 py-4">Gambar</th>
+									<th className="px-6 py-4">Nama Kamar</th>
+									<th className="px-6 py-4">Deskripsi</th>
+									<th className="px-6 py-4">Harga / Malam</th>
+									<th className="px-6 py-4">Status</th>
+									<th className="px-6 py-4">Aksi</th>
 								</tr>
 							</thead>
 
@@ -91,11 +92,11 @@ export default function Rooms() {
 									rooms.map((room) => (
 										<tr
 											key={room.id}
-											className="border-b last:border-none hover:bg-stone-50 transition"
+											className="border-b last:border-none hover:bg-stone-50 transition text-center"
 										>
 											{/* IMAGE */}
-											<td className="px-6 py-4">
-												<div className="relative w-24 h-16 rounded-xl overflow-hidden border border-stone-200 bg-stone-100">
+											<td className="px-6 py-4 flex justify-center">
+												<div className="relative w-24 h-16 rounded-xl overflow-hidden border border-stone-200 bg-stone-100 ">
 													<img
 														src={getProofUrl(room.photoUrl) || "/no-image.png"}
 														alt={room.name}
@@ -115,7 +116,7 @@ export default function Rooms() {
 											</td>
 
 											{/* PRICE */}
-											<td className="px-6 py-4 text-stone-700 whitespace-nowrap">
+											<td className="px-6 py-4  whitespace-nowrap">
 												{room.price.toLocaleString("ja-JP", {
 													style: "currency",
 													currency: "JPY",
@@ -135,30 +136,43 @@ export default function Rooms() {
 												)}
 											</td>
 
-											<td className="px-6 py-4">
-												<div className="flex gap-2">
-													<button
+											<td>
+												<div className="flex justify-center gap-2">
+													<ActionButton
 														onClick={() => {
 															setSelectedRoom(room);
 															setOpenForm(true);
 														}}
-														className="px-3 py-1 rounded-lg bg-amber-100 text-amber-700"
-													>
-														Edit
-													</button>
-													<button
+														label="Edit"
+														icon={<Pencil size={16} />}
+														variant="warning"
+														tooltip={
+															<>
+																Edit{" "}
+																<span className="font-bold">{room.name}</span>
+															</>
+														}
+													/>
+
+													<ActionButton
 														onClick={async () => {
 															if (!confirm("Hapus kamar ini?")) return;
 															await deleteRoom(room.id);
-															
+
 															setRooms((prev) =>
 																prev.filter((r) => r.id !== room.id),
 															);
 														}}
-														className="px-3 py-1 rounded-lg bg-red-100 text-red-600"
-													>
-														Hapus
-													</button>
+														label="Hapus"
+														icon={<Trash2 size={16} />}
+														variant="danger"
+														tooltip={
+															<>
+																Hapus{" "}
+																<span className="font-bold">{room.name}</span>
+															</>
+														}
+													/>
 												</div>
 											</td>
 										</tr>
