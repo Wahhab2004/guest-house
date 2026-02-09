@@ -97,14 +97,14 @@ export default function Footer() {
 							<li className="flex gap-3">
 								<MapPin size={18} className="text-amber-600 mt-1" />
 								<span>
-									WATANABE HOUSE <br />
-									1-8-14 Matsushima, Edogawa-ku <br />
+									UMMU RYOSUKE GUESTHOUSE <br />
+									1 Chome-8-14 Matsushima, Edogawa City, <br />
 									Tokyo 132-0031, Japan
 								</span>
 							</li>
 							<li className="flex gap-3">
 								<Mail size={18} className="text-amber-600 mt-1" />
-								<span>imaswatanabe@me.com</span>
+								<span>imaswatanabe@icloud.com</span>
 							</li>
 							<li className="flex gap-3">
 								<Phone size={18} className="text-amber-600 mt-1" />
@@ -137,12 +137,11 @@ export default function Footer() {
 
 							<div className="text-sm text-slate-600 space-y-1">
 								<p>
-									<span className="font-semibold">License No:</span>{" "}
-									M1300059386
+									<span className="font-semibold">License No:</span> M1300059386
 								</p>
 								<p>
-									<span className="font-semibold">Authority:</span>{" "}
-									Edogawa City Government
+									<span className="font-semibold">Authority:</span> Edogawa City
+									Government
 								</p>
 								<p>
 									<span className="font-semibold">Country:</span> Japan
@@ -161,7 +160,8 @@ export default function Footer() {
 					text-slate-500 text-sm w-11/12 xl:w-full"
 				>
 					<span>
-						© {new Date().getFullYear()} Ummu Ryosuke Guest House. All rights reserved.
+						© {new Date().getFullYear()} Ummu Ryosuke Guest House. All rights
+						reserved.
 					</span>
 					<div className="flex gap-4 mt-3 md:mt-0">
 						<Link href="#" className="hover:text-amber-600 transition">

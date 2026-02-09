@@ -95,7 +95,7 @@ export default function Maps() {
 							<div>
 								<h3 className="text-lg font-bold text-slate-800">Contact</h3>
 								<p className="text-slate-600 mt-1">
-									Email: imaswatanabe@me.com <br />
+									Email: imaswatanabe@icloud.com <br />
 									Phone: +81 80-3242-3077
 								</p>
 							</div>
