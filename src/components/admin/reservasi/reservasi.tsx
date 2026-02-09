@@ -497,7 +497,7 @@ function ReservasiTable({
 												tooltip={
 													<>
 														Edit{" "}
-														<span className="font-bold"> {res.guest.name}</span>
+														<span className="font-bold"> {res.guest?.name}</span>
 													</>
 												}
 											/>
@@ -511,7 +511,7 @@ function ReservasiTable({
 												tooltip={
 													<>
 														Hapus Reservasi{" "}
-														<span className="font-bold">{res.guest.name}</span>
+														<span className="font-bold">{res.guest?.name}</span>
 													</>
 												}
 											/>

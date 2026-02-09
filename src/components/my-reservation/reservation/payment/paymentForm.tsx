@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 interface BookingDetailsProps {
 	reservation: Reservation | null;
-	handleNavigate?: (section: string) => void; 
+	handleNavigate?: (section: string) => void;
 }
 
 export interface FormData {
@@ -29,7 +29,7 @@ const PaymentForm = ({ reservation, handleNavigate }: BookingDetailsProps) => {
 	const [formData, setFormData] = useState<FormData>(initialFormData);
 
 	const handleTextChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
 	) => {
 		const { id, value } = e.target;
 		setFormData((prev) => ({
@@ -69,7 +69,7 @@ const PaymentForm = ({ reservation, handleNavigate }: BookingDetailsProps) => {
 						"Content-Type": "application/json",
 					},
 					body: JSON.stringify(payload),
-				}
+				},
 			);
 
 			const result = await response.json();
@@ -124,7 +124,7 @@ const PaymentForm = ({ reservation, handleNavigate }: BookingDetailsProps) => {
 						onChange={handleTextChange}
 						className="border rounded-lg p-2 w-full"
 					>
-						<option value="">Select Method</option>
+						<option value="" className="text-stone-600">Select Method</option>
 						<option value="TRANSFER">Bank Transfer</option>
 						<option value="E_WALLET">E-Wallet</option>
 						<option value="CASH">Cash</option>
@@ -160,7 +160,7 @@ const PaymentOptions = ({
 	formData: FormData;
 	setFormData: React.Dispatch<React.SetStateAction<FormData>>;
 	handleTextChange: (
-		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
 	) => void;
 	handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
@@ -229,12 +229,6 @@ const PaymentOptions = ({
 					50% of the payment must be made in advance. The payment method is
 					flexible — please discuss with the admin.
 				</div>
-				<ProofAndSender
-					formData={formData}
-					setFormData={setFormData}
-					handleFileChange={handleFileChange}
-				/>
-				<WhatsAppButton />
 			</div>
 		);
 	}
