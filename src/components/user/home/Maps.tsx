@@ -30,8 +30,9 @@ export default function Maps() {
 				{/* Map */}
 				<div className="rounded-3xl overflow-hidden border border-amber-100 shadow-md">
 					<iframe
-						src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3239.9069652362773!2d139.85969927578873!3d35.70390697257987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzXCsDQyJzE0LjEiTiAxMznCsDUxJzQ0LjIiRQ!5e0!3m2!1sid!2sid!4v1754885927446!5m2!1sid!2sid"
+						src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.9057408869903!2d139.86221559999998!3d35.7039371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6018875e6ec68f99%3A0xfb379923583f87df!2sGuest%20house%20Ummu%20ryosuke%20watanabe!5e0!3m2!1sen!2sid!4v1770595242062!5m2!1sen!2sid"
 						className="w-full h-[320px] md:h-[420px]"
+						// style="border:0;"
 						allowFullScreen
 						loading="lazy"
 						referrerPolicy="no-referrer-when-downgrade"
@@ -57,8 +58,8 @@ export default function Maps() {
 									Our Address
 								</h3>
 								<p className="text-slate-600 mt-1 leading-relaxed">
-									WATANABE HOUSE <br />
-									1-8-14 Matsushima, Edogawa-ku <br />
+									UMMU RYOSUKE GUESTHOUSE <br />
+									1 Chome-8-14 Matsushima, Edogawa City, <br />
 									Tokyo 132-0031, Japan
 								</p>
 							</div>
@@ -104,7 +105,7 @@ export default function Maps() {
 					{/* CTA */}
 					<div className="mt-10">
 						<a
-							href="https://www.google.com/maps"
+							href="https://maps.app.goo.gl/uUfcmC7UfxVZd4xs6"
 							target="_blank"
 							rel="noopener noreferrer"
 							className={`inline-flex items-center justify-center
