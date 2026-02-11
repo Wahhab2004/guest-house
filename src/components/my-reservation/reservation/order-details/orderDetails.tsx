@@ -5,11 +5,13 @@ import PersonalInfo from "./personalInfo";
 interface OrderDetailsProps {
 	reservation: Reservation | null;
 	handleNavigate: (section: string) => void;
+	onReservationUpdate: (updateReservation: Reservation | null) => void;
 }
 
 export default function OrderDetails({
 	reservation,
 	handleNavigate,
+	onReservationUpdate,
 }: OrderDetailsProps) {
 	return (
 		<section className="my-10 mb-20">
@@ -19,6 +21,7 @@ export default function OrderDetails({
 					<PersonalInfo
 						reservation={reservation}
 						handleNavigate={handleNavigate}
+						onReservationUpdate={onReservationUpdate}
 					/>
 				</div>
 

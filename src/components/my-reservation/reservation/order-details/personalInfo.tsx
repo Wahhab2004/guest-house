@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
-import { Reservation } from "@/fetching";
-
+import { fetchReservationById, Reservation } from "@/fetching";
 
 interface AdditionalGuests {
 	id: string;
@@ -29,6 +28,7 @@ interface GuestFormData {
 interface Props {
 	reservation: Reservation | null;
 	handleNavigate: (section: string) => void;
+	onReservationUpdate: (updateReservation: Reservation | null) => void;
 }
 
 const initialGuestFormData: GuestFormData = {
@@ -56,6 +56,7 @@ const initialAdditionalGuest: Omit<
 export default function NavbarReservation({
 	reservation,
 	handleNavigate,
+	onReservationUpdate,
 }: Props) {
 	// State untuk guest utama (orderer)
 	const [mainGuestData, setMainGuestData] =
@@ -96,7 +97,7 @@ export default function NavbarReservation({
 	useEffect(() => {
 		if (useProfileData && reservation?.bookerId) {
 			fetch(
-				`${process.env.NEXT_PUBLIC_API_BASE_URL}/guests/${reservation.bookerId}`
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/guests/${reservation.bookerId}`,
 			)
 				.then((res) => {
 					if (!res.ok) throw new Error("Failed fetch profile data");
@@ -141,7 +142,7 @@ export default function NavbarReservation({
 			AdditionalGuests,
 			"id" | "reservationId" | "priceCategory"
 		>,
-		value: string
+		value: string,
 	) => {
 		setAdditionalGuests((prev) => {
 			const newList = [...prev];
@@ -150,19 +151,21 @@ export default function NavbarReservation({
 		});
 	};
 
+	// TODO: FIX NAME NOT PROVIDE ON PAYMENTFORM
 	const handleSubmit = async () => {
 		if (!reservation) {
 			toast.error("Reservation data not found");
 			return;
 		}
 
+		const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+		const token = Cookies.get("token");
+
 		try {
-			let currentGuestId = reservation.bookerId;
-			const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-			const token = Cookies.get("token");
+			let guestCurrentId = reservation.bookerId;
+			const isSingleGuest = reservation.adultCount === 1;
 
 			if (!useProfileData) {
-				// 1️⃣ Buat Guest Utama
 				const guestPayload = {
 					name: mainGuestData.name,
 					username: mainGuestData.name.toLowerCase().replace(/\s+/g, ""),
@@ -184,39 +187,21 @@ export default function NavbarReservation({
 				});
 
 				if (!guestRes.ok) {
-					const errData = await guestRes.json().catch(() => ({}));
-					throw new Error(errData.message || "Failed to create guest");
+					const err = await guestRes.json().catch(() => ({}));
+					throw new Error(err.message || "Failed to create guest");
 				}
 
 				const guestData = await guestRes.json();
-			
+				const newGuestId = guestData.data.id;
 
-				// Set guestId baru
-				currentGuestId = guestData.data.id;
-
-				// 2️⃣ Update reservation.guestId
-				const updateRes = await fetch(
-					`${baseUrl}/reservations/${reservation.id}`,
-					{
-						method: "PUT",
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${token}`,
-						},
-						body: JSON.stringify({ guestId: currentGuestId }),
-					}
-				);
-
-				if (!updateRes.ok) {
-					const errData = await updateRes.json().catch(() => ({}));
-					throw new Error(
-						errData.message || "Failed to update reservation guestId"
-					);
+				if (isSingleGuest) {
+					guestCurrentId = newGuestId;
+				} else {
+					guestCurrentId = reservation.bookerId;
 				}
 			}
 
-			// 2️⃣ Update reservation pakai booker id
-			const updateRes = await fetch(
+			const updateReservation = await fetch(
 				`${baseUrl}/reservations/${reservation.id}`,
 				{
 					method: "PUT",
@@ -224,48 +209,51 @@ export default function NavbarReservation({
 						"Content-Type": "application/json",
 						Authorization: `Bearer ${token}`,
 					},
-					body: JSON.stringify({
-						guestId: currentGuestId,
-					}),
-				}
+					body: JSON.stringify({ guestId: guestCurrentId }),
+				},
 			);
 
-			if (!updateRes.ok) {
-				const errData = await updateRes.json().catch(() => ({}));
+			const updateReservationData = await updateReservation.json();
+
+			if (!updateReservation.ok) {
 				throw new Error(
-					errData.message || "Failed to update reservation guestId"
+					updateReservationData.message || "Failed to update reservation",
 				);
 			}
 
-			// 3️⃣ Buat Additional Guests (jika ada)
-			await Promise.all(
-				additionalGuests.map((guest) =>
-					fetch(`${baseUrl}/additional-guests`, {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-							...(token && { Authorization: `Bearer ${token}` }),
-						},
-						body: JSON.stringify({
-							reservationId: reservation.id,
-							name: guest.name,
-							passport: guest.passport,
-							dateOfBirth: guest.dateOfBirth,
-							gender: guest.gender,
+			const freshReservation = await fetchReservationById(reservation.id);
+
+			onReservationUpdate(freshReservation);
+
+			if (additionalGuests.length > 0) {
+				await Promise.all(
+					additionalGuests.map((guest) =>
+						fetch(`${baseUrl}/additional-guests`, {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+								Authorization: `Bearer ${token}`,
+							},
+							body: JSON.stringify({
+								reservationId: reservation.id,
+								name: guest.name,
+								passport: guest.passport,
+								dateOfBirth: guest.dateOfBirth,
+								gender: guest.gender,
+							}),
 						}),
-					})
-				)
-			);
+					),
+				);
+			}
 
 			toast.success("Reservation details completed successfully!");
 
 			handleNavigate("payment");
-		} catch (error: unknown) {
-			
+		} catch (error) {
 			if (error instanceof Error) {
 				toast.error(error.message);
 			} else {
-				toast.error("Terjadi kesalahan tidak diketahui");
+				toast.error("Unexpected error occurred");
 			}
 		}
 	};
@@ -407,7 +395,7 @@ export default function NavbarReservation({
 										handleAdditionalGuestChange(
 											idx,
 											"dateOfBirth",
-											e.target.value
+											e.target.value,
 										)
 									}
 									required

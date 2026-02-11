@@ -45,14 +45,17 @@ export default function ReservationPage() {
 			payment: orderFilled,
 			summary: paymentCompleted,
 		});
+	}, [reservation]);
 
-		// Tentukan activeSection awal
+	useEffect(() => {
+		if (!reservation || activeSection) return;
+
 		if (reservation.status === "CONFIRMED") {
-			setActiveSection(orderFilled ? "payment" : "order-details");
+			setActiveSection("payment");
 		} else {
 			setActiveSection("order-details");
 		}
-	}, [reservation]);
+	}, [reservation, activeSection]);
 
 	useEffect(() => {
 		if (pathName === "/my-reservations/reservations") {
@@ -64,6 +67,10 @@ export default function ReservationPage() {
 		setActiveSection(section);
 	};
 
+	const handleReservationUpdate = (updateReservation: Reservation | null) => {
+		setReservation(updateReservation);
+	};
+
 	const renderSection = () => {
 		switch (activeSection) {
 			case "order-details":
@@ -71,6 +78,7 @@ export default function ReservationPage() {
 					<OrderDetails
 						handleNavigate={handleNavigate}
 						reservation={reservation}
+						onReservationUpdate={handleReservationUpdate}
 					/>
 				);
 			case "payment":
