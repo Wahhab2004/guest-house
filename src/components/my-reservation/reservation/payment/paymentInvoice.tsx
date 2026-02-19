@@ -202,7 +202,7 @@ const PaymentInvoice: React.FC<InvoiceProps> = ({
 					<div className="flex justify-between mt-6 pt-4 border-t font-bold text-lg">
 						<span className="text-amber-500">Grand Total</span>
 						<span className="text-amber-500">
-							{(finalPrice * 1.1).toLocaleString("jp-JP", {
+							{(finalPrice).toLocaleString("jp-JP", {
 								style: "currency",
 								currency: "JPY",
 							})}

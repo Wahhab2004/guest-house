@@ -14,14 +14,14 @@ interface BookingDetailsProps {
 export interface FormData {
 	paymentSender: string;
 	method: string;
-	proofUrl: string;
+	proofUrl: File | null;
 	bankOrWallet: string;
 }
 
 const initialFormData: FormData = {
 	paymentSender: "",
 	method: "",
-	proofUrl: "",
+	proofUrl: null,
 	bankOrWallet: "",
 };
 
@@ -42,7 +42,7 @@ const PaymentForm = ({ reservation, handleNavigate }: BookingDetailsProps) => {
 		if (e.target.files && e.target.files[0]) {
 			setFormData((prev) => ({
 				...prev,
-				proofUrl: e.target.files![0].name,
+				proofUrl: e.target.files?.[0] || null,
 			}));
 		}
 	};
@@ -53,22 +53,20 @@ const PaymentForm = ({ reservation, handleNavigate }: BookingDetailsProps) => {
 		const toastId = toast.loading("Updating payment...");
 
 		try {
-			const payload = {
-				paymentSender: formData.paymentSender,
-				method: formData.method,
-				bankOrWallet: formData.bankOrWallet,
-				proofUrl: formData.proofUrl, // string URL
-			};
+			const fd = new FormData();
+			fd.append("paymentSender", formData.paymentSender);
+			fd.append("method", formData.method);
+			fd.append("bankOrWallet", formData.bankOrWallet);
+			if (formData.proofUrl) {
+				fd.append("proofUrl", formData.proofUrl);
+			}
 
 			const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 			const response = await fetch(
 				`${baseUrl}/payments/${reservation?.payment?.id}`,
 				{
 					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(payload),
+					body: fd,
 				},
 			);
 

@@ -20,12 +20,13 @@ const ProofAndSender = ({
 				<input
 					type="file"
 					id="proofUrl"
+					accept="image/*"
 					onChange={handleFileChange}
 					className="block w-full mt-2 border rounded-lg p-2"
 				/>
 				{formData.proofUrl && (
 					<p className="mt-2 text-sm text-gray-600">
-						File selected: {formData.proofUrl}
+						File selected: {formData.proofUrl? formData.proofUrl.name : "No file selected"}
 					</p>
 				)}
 			</div>
