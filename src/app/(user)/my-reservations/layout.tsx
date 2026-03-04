@@ -1,7 +1,7 @@
 "use client";
 
 
-import NavbarReservation from "@/components/reservationNavbar";
+import NavbarReservation from "@/components/reservation-navbar";
 
 export default function RootLayout({
 	children,

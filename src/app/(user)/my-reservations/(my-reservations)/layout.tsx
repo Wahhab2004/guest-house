@@ -1,6 +1,6 @@
 "use client";
 
-import NavbarMyReservation from "@/components/myReservationNavbar";
+import NavbarMyReservation from "@/components/myreservation-navbar";
 import { usePathname } from "next/navigation";
 
 export default function RootLayout({

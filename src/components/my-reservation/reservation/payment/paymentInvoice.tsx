@@ -7,7 +7,7 @@ import Image from "next/image";
 import formatDateIndo, {
 	datedFormat,
 	formatTanggalIndonesia,
-} from "@/components/format-tanggal/formatTanggal";
+} from "@/components/format-tanggal/forma-tanggal";
 
 interface InvoiceProps {
 	bookingId: string;

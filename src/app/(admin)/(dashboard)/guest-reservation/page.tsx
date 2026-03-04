@@ -1,6 +1,6 @@
 "use client";
 
-import Reservasi from "@/components/admin/reservasi/reservasi";
+import Reservasi from "@/components/admin/reservation/reservasi";
 
 export default function GuestReservation() {
 	return (

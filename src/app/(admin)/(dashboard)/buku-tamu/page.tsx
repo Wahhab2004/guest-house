@@ -2,9 +2,9 @@
 
 import { fetchGuests, Guest } from "@/fetching";
 import { useEffect, useState } from "react";
-import GuestFormModal from "@/components/buku-tamu/guestFormModal";
+import GuestFormModal from "@/components/buku-tamu/guest-form-modal";
 import { createGuest, updateGuest, deleteGuest } from "@/lib/guests";
-import ActionButton from "@/components/ActionButton";
+import ActionButton from "@/components/action-button";
 import { Pencil, Trash2 } from "lucide-react";
 
 export default function Guests() {

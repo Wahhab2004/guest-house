@@ -7,7 +7,7 @@ import "swiper/css/autoplay";
 
 import { Pagination, Autoplay } from "swiper/modules";
 import Image from "next/image";
-import reviewers from "./feedbackData";
+import reviewers from "./feedback-data";
 
 const TestimonialsCarousel = () => {
 	return (

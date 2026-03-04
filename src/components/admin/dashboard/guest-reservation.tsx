@@ -1,7 +1,7 @@
 "use client";
 
-import Badge from "@/components/Badge";
-import formatDateIndo from "@/components/format-tanggal/formatTanggal";
+import Badge from "@/components/badge";
+import formatDateIndo from "@/components/format-tanggal/forma-tanggal";
 import { Reservation } from "@/fetching";
 import { fetchFilteredReservations } from "@/fetching";
 import Link from "next/link";

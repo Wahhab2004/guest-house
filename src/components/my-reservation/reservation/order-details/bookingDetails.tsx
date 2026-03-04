@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Reservation } from "@/fetching";
-import { datedFormat } from "@/components/format-tanggal/formatTanggal";
+import { datedFormat } from "@/components/format-tanggal/forma-tanggal";
 
 interface BookingDetailsProps {
 	reservation: Reservation | null;

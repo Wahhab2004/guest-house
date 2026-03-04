@@ -2,10 +2,10 @@
 
 import { fetchRooms, Room } from "@/fetching";
 import { useEffect, useState } from "react";
-import RoomFormModal from "@/components/admin/room/roomFormModal";
+import RoomFormModal from "@/components/admin/room/room-form-modal";
 import { createRoom, updateRoom, deleteRoom } from "@/lib/room";
-import { getProofUrl } from "@/components/admin/reservasi/reservasi";
-import ActionButton from "@/components/ActionButton";
+import { getProofUrl } from "@/components/admin/reservation/reservasi";
+import ActionButton from "@/components/action-button";
 import { Pencil, Trash2, Plus } from "lucide-react";
 
 export default function Rooms() {

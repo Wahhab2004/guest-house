@@ -1,4 +1,4 @@
-import ProductCard from "@/components/roomCard";
+import ProductCard from "@/components/room-card";
 
 async function Rooms() {
 	return (

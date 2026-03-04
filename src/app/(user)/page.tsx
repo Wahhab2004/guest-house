@@ -1,12 +1,12 @@
-import FacilitiesCarousel from "@/components/user/home/FacilitiesCarousel";
+import FacilitiesCarousel from "@/components/user/home/facilities-carousel";
 
-import ExclusiveOffers from "@/components/user/home/ExclusiveOffers";
-import PesanOwner from "@/components/user/home/PesanOwner";
-import Maps from "@/components/user/home/Maps";
+import ExclusiveOffers from "@/components/user/home/exclusive-offers";
+import PesanOwner from "@/components/user/home/pesan-owner";
+import Maps from "@/components/user/home/maps";
 import HeroSection from "@/components/user/home/home";
-import FeaturesSection from "@/components/user/home/FeaturesSection";
-import ProductCardWithAvailability from "@/components/user/home/productCardWithAvaibility";
-import TestimonialsCarousel from "@/components/user/home/TestimonialsCards";
+import FeaturesSection from "@/components/user/home/features-section";
+import ProductCardWithAvailability from "@/components/user/home/product-card-with-avaibility";
+import TestimonialsCarousel from "@/components/user/home/testimonial-card";
 
 export default function Home() {
 	return (

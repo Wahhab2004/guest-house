@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Reservation } from "@/fetching";
-import formatDateIndo from "../../format-tanggal/formatTanggal";
-import PaginationControl from "@/components/admin/reservasi/PaginationControl";
-import Badge from "@/components/Badge";
-import ActionButton from "@/components/ActionButton";
-import ReservationModal from "./reservationModalForm";
-import EditReservationModal from "./editReservationModal";
+import formatDateIndo from "../../format-tanggal/forma-tanggal";
+import PaginationControl from "@/components/admin/reservation/pagication-control";
+import Badge from "@/components/badge";
+import ActionButton from "@/components/action-button";
+import ReservationModal from "./modal-reservation-form";
+import EditReservationModal from "./modal-edit-reservation";
 import {
 	PaymentMethod,
 	PaymentStatus,

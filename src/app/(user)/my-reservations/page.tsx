@@ -1,7 +1,7 @@
 "use client";
 
-import ReservationDetailModal from "@/components/my-reservation/myReservationDetailModal";
-import ReservationCard from "@/components/my-reservation/myReservtionCard";
+import ReservationDetailModal from "@/components/my-reservation/detail-modal-myreservation";
+import ReservationCard from "@/components/my-reservation/myreservation-card";
 import { Guest, Reservation } from "@/fetching";
 import { useState, useEffect } from "react";
 import axios from "axios";

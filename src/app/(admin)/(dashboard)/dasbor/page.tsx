@@ -1,6 +1,6 @@
-import RoomInformation from "@/components/admin/dasbor/RoomInformation";
-import CurrentDate from "@/components/CurrentDate";
-import GuestReservation from "@/components/admin/dasbor/GuestReservation";
+import RoomInformation from "@/components/admin/dashboard/room-information";
+import CurrentDate from "@/components/current-date";
+import GuestReservation from "@/components/admin/dashboard/guest-reservation";
 
 export default function DashboardPage() {
 	return (
