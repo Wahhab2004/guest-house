@@ -51,44 +51,40 @@ const TestimonialsCarousel = () => {
 					modules={[Pagination, Autoplay]}
 					className="mySwiper pb-10"
 				>
-					{[1, 2, 3, 4, 5, 6].map((_, i) => (
-						<SwiperSlide key={i}>
+					{reviewers.map((rev, index) => (
+						<SwiperSlide key={index}>
 							<div
 								className="group bg-white/80 backdrop-blur-md
-								border border-amber-100 rounded-2xl p-6
-								transition-all duration-300
-								hover:-translate-y-2 hover:shadow-xl hover:border-amber-300"
+        border border-amber-100 rounded-2xl p-6
+        transition-all duration-300
+        hover:-translate-y-2 hover:shadow-xl hover:border-amber-300"
 							>
-								{reviewers.map((rev, index) => (
-									<div key={index}>
-										{/* User */}
-										<div className="flex items-center gap-4 border-t border-amber-100 pt-5">
-											<Image
-												width={44}
-												height={44}
-												className="rounded-full h-11 w-11 object-cover ring-2 ring-amber-200"
-												src={`${rev.avatar}`}
-												alt="avatar"
-											/>
-											<div>
-												<h5 className="text-slate-900 font-semibold mb-1">
-													{rev.name}
-												</h5>
-												<span className="text-sm text-slate-500">
-													Guest Traveler
-												</span>
-											</div>
-										</div>
-
-										{/* Text */}
-										<p
-											className="text-base text-slate-600 leading-relaxed pb-8
-										group-hover:text-slate-800 transition"
-										>
-											{rev.review}
-										</p>
+								{/* User */}
+								<div className="flex items-center gap-4 border-t border-amber-100 pt-5">
+									<Image
+										width={44}
+										height={44}
+										className="rounded-full h-11 w-11 object-cover ring-2 ring-amber-200"
+										src={`${rev.avatar}`}
+										alt="avatar"
+									/>
+									<div>
+										<h5 className="text-slate-900 font-semibold mb-1">
+											{rev.name}
+										</h5>
+										<span className="text-sm text-slate-500">
+											Guest Traveler
+										</span>
 									</div>
-								))}
+								</div>
+
+								{/* Text */}
+								<p
+									className="text-base text-slate-600 leading-relaxed pb-8
+          group-hover:text-slate-800 transition"
+								>
+									{rev.review}
+								</p>
 							</div>
 						</SwiperSlide>
 					))}
