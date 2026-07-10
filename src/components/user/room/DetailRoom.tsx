@@ -1,7 +1,7 @@
 import { Room } from "@/fetching";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import Calendar from "../../calendar";
+import Calendar from "@/components/calendar";
 
 interface BookingFormProps {
 	room: Room | null;
@@ -10,15 +10,18 @@ interface BookingFormProps {
 export default function DetailRoom({ room }: BookingFormProps) {
 	const fallbackImage = "/fallback-image.png";
 
-// Daftar gambar tambahan (dibuat hanya sekali)
-	const additionalImages = useMemo(() => [
-		"/images/facilities/facility-01.jpeg",
-		"/images/facilities/facility-02.jpeg",
-		"/images/facilities/facility-03.jpeg",
-		"/images/facilities/facility-01.jpeg",
-		"/images/facilities/facility-02.jpeg",
-		"/images/facilities/facility-03.jpeg",
-	], []);
+	// Daftar gambar tambahan (dibuat hanya sekali)
+	const additionalImages = useMemo(
+		() => [
+			"/images/facilities/facility-01.jpeg",
+			"/images/facilities/facility-02.jpeg",
+			"/images/facilities/facility-03.jpeg",
+			"/images/facilities/facility-01.jpeg",
+			"/images/facilities/facility-02.jpeg",
+			"/images/facilities/facility-03.jpeg",
+		],
+		[],
+	);
 
 	// Daftar image utama + tambahan (tanpa duplikat)
 	const fullImageList = useMemo(() => {
