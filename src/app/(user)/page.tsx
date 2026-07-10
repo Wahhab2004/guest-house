@@ -7,6 +7,7 @@ import HeroSection from "@/components/user/home/home";
 import FeaturesSection from "@/components/user/home/features-section";
 import ProductCardWithAvailability from "@/components/user/home/product-card-with-avaibility";
 import TestimonialsCarousel from "@/components/user/home/testimonial-card";
+import WhatsAppFloating from '@/components/whatsapp-floating/WhatsAppFloating';
 
 export default function Home() {
 	return (
@@ -31,6 +32,7 @@ export default function Home() {
 					<FeaturesSection />
 					<PesanOwner />
 					<Maps />
+					<WhatsAppFloating />
 				</div>
 			</div>
 		</>
