@@ -240,7 +240,7 @@ Room preference :`;
 							type="button"
 							onClick={() => setOpen(true)}
 							aria-label="WhatsApp"
-							className="flex h-24 w-24 items-center justify-center rounded-full bg-amber-500 text-white shadow-2xl shadow-amber-300/50 transition hover:scale-105"
+							className="flex h-24 w-24 items-center justify-center rounded-full bg-green-500 text-white shadow-2xl shadow-green-300/50 transition hover:scale-105"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
