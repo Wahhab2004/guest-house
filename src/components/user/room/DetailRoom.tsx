@@ -8,7 +8,7 @@ interface BookingFormProps {
 }
 
 export default function DetailRoom({ room }: BookingFormProps) {
-	const fallbackImage = "/fallback-image.png";
+	const fallbackImage = "/images/guestHouse.jpg";
 
 	// Daftar gambar tambahan (dibuat hanya sekali)
 	const additionalImages = useMemo(
